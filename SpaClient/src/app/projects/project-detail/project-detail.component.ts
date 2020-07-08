@@ -38,6 +38,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   searchTerm = '';
   issueType = '';
   label = '';
+  filterUserId = '';
 
   @ViewChild('inviteModal', {static: false})
   inviteModal: ModalDirective;
@@ -48,7 +49,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
               private phasesService: PhasesService,
               private issuesService: IssuesService,
               private route: ActivatedRoute,
-              private modalService: BsModalService,
               private usersService: UsersService,
               private authService: AuthService,
               private router: Router) { }
@@ -222,6 +222,9 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         if (this.label !== '') {
           result = result && issue.labels.findIndex(label => label.name === this.label) > -1;
         }
+        if (this.filterUserId !== '') {
+          result = result && issue.issuedToUserIds.findIndex(id => id === this.filterUserId) > -1;
+        }
         return result;
       });
     });
@@ -231,17 +234,23 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.searchTerm = '';
     this.issueType = '';
     this.label = '';
+    this.filterUserId = '';
     this.filterIssues();
   }
 
   viewResetFilter(): boolean {
-    return this.searchTerm !== '' || this.issueType !== '' || this.label !== '';
+    return this.searchTerm !== '' || this.issueType !== '' || this.label !== '' || this.filterUserId !== '';
   }
 
   getInitials(fullName: string) {
     const namesArray = fullName.split(' ');
     if (namesArray.length === 1) return `${namesArray[0].charAt(0)}`;
     return `${namesArray[0].charAt(0)}${namesArray[namesArray.length - 1].charAt(0)}`;
+  }
+
+  setFilterUserId(id: string) {
+    this.filterUserId = id;
+    this.filterIssues();
   }
 
 }

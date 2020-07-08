@@ -66,9 +66,14 @@
 <div class="row" id="invite" *ngIf="currentUserRole === 'manager'">
   <div class="col-md-12">
     <button
-      class="btn btn-primary"
       *ngFor="let user of project.projectUsers"
-      tooltip="{{user.userFullName}}">
+      class="btn"
+      [ngClass]="{
+        'btn-primary': user.userId === filterUserId,
+        'btn-outline-primary': user.userId !== filterUserId
+      }"
+      tooltip="{{user.userFullName}}"
+      (click)="setFilterUserId(user.userId)">
         {{getInitials(user.userFullName)}}
     </button>
     <button 
@@ -79,6 +84,7 @@
     </button>
   </div>
 </div>
+
 <app-phase-list 
   [project]="project"
   [projectId]="project.id" 
@@ -101,7 +107,7 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12">
-            <label for="name">User full name</label>
+            <label for="name">Name</label>
             <input [(ngModel)]="userFullNameSelected"
                    [typeahead]="users$"
                    [typeaheadAsync]="true"
@@ -117,6 +123,7 @@
         </div>
         <div class="row">
           <div class="col-md-12">
+            <label for="">Role</label>
             <select [(ngModel)]="selectedUserRole" class="form-control">
               <option value="user">User</option>
               <option value="manager">Manager</option>

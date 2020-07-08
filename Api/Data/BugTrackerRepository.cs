@@ -51,10 +51,14 @@ namespace Api.Data
             var project = await _context.ProjectUsers
                 .Where(pu => pu.ProjectId == projectId && pu.UserId == userId)
                 .Include(pu => pu.Project)
-                .ThenInclude(p => p.Phases)
-                .ThenInclude(p => p.Issues)
-                .ThenInclude(i => i.IssueLabels)
-                .ThenInclude(il => il.Label)
+                    .ThenInclude(project => project.Phases)
+                        .ThenInclude(phase => phase.Issues)
+                            .ThenInclude(issue => issue.IssuedTo)
+                .Include(pu => pu.Project)
+                    .ThenInclude(project => project.Phases)
+                        .ThenInclude(phase => phase.Issues)
+                            .ThenInclude(issue => issue.IssueLabels)
+                                .ThenInclude(issueLabel => issueLabel.Label)
                 .Select(pu => pu.Project)
                 .FirstOrDefaultAsync();
 

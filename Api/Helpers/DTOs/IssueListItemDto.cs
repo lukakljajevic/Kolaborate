@@ -16,5 +16,6 @@ namespace Api.Helpers.DTOs
         public ProjectListItemDto Project { get; set; }
         public string PhaseId { get; set; }
         public string Status { get; set; }
+        public ICollection<string> IssuedToUserIds { get; set; }
     }
 }

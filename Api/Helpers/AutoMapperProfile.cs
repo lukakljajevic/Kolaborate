@@ -22,10 +22,12 @@ namespace Api.Helpers
                 .ForMember(i => i.IssuedTo, opt => opt.Ignore());
             CreateMap<Issue, IssueListItemDto>()
                 .ForMember(li => li.Labels, opt => opt.MapFrom(iss => iss.IssueLabels.Select(il => il.Label).ToList()))
-                .ForMember(li => li.Project, opt => opt.MapFrom(iss => iss.Phase.Project));
+                .ForMember(li => li.Project, opt => opt.MapFrom(iss => iss.Phase.Project))
+                .ForMember(li => li.IssuedToUserIds, opt => opt.MapFrom(iss => iss.IssuedTo.Select(x => x.UserId).ToList()));
             CreateMap<Label, LabelDto>();
             CreateMap<ProjectUser, ProjectUserListItemDto>();
             CreateMap<IssueUser, IssueUserListItemDto>();
+
         }
     }
 }

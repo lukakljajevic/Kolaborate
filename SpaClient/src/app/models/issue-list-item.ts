@@ -9,4 +9,5 @@ export interface IssueListItem {
   project: ProjectListItem;
   phaseId: string;
   status: string;
+  issuedToUserIds: string[];
 }
