@@ -1,0 +1,49 @@
+# IDE - VSCode
+.vs/*
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+./SpaClient/dist
+./SpaClient/tmp
+./SpaClient/out-tsc
+# Only exists if Bazel was run
+./SpaClient//bazel-out
+
+# dependencies
+./SpaClient//node_modules
+
+# profiling files
+./SpaClient/chrome-profiler-events*.json
+./SpaClient/speed-measure-plugin*.json
+
+# IDEs and editors
+./SpaClient//.idea
+./SpaClient/.project
+./SpaClient/.classpath
+./SpaClient/.c9/
+./SpaClient/*.launch
+./SpaClient/.settings/
+./SpaClient/*.sublime-workspace
+
+# IDE - VSCode
+./SpaClient/.vscode/*
+./SpaClient/!.vscode/settings.json
+./SpaClient/!.vscode/tasks.json
+./SpaClient/!.vscode/launch.json
+./SpaClient/!.vscode/extensions.json
+./SpaClient/.history/*
+
+# misc
+./SpaClient/.sass-cache
+./SpaClient/connect.lock
+./SpaClient/coverage
+./SpaClient/libpeerconnection.log
+./SpaClient/npm-debug.log
+./SpaClient/yarn-error.log
+./SpaClient/testem.log
+./SpaClient/typings
+
+# System Files
+./SpaClient/.DS_Store
+./SpaClient/Thumbs.db

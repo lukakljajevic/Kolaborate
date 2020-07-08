@@ -1,0 +1,38 @@
+<h2>Create a new project</h2>
+<form [formGroup]="projectCreateForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="name">Project name</label>
+    <input type="text" class="form-control" placeholder="Project name" formControlName="name">
+  </div>
+  <div class="form-group">
+    <label for="description">Project description</label>
+    <textarea name="description" class="form-control" id="description" cols="30" rows="10" formControlName="description" placeholder="Enter project summary..."></textarea>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-md-6 form-group">
+      <label for="startDate">Project start date</label>
+      <input 
+      class="form-control"
+      placeholder="Select start date"
+      bsDatepicker
+      formControlName="startDate"
+      [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+    </div>
+    <div class="col-xs-12 col-md-6 form-group">
+      <label for="startDate">Project end date</label>
+      <input 
+      class="form-control"
+      placeholder="Select end date"
+      bsDatepicker
+      formControlName="endDate"
+      [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <button class="btn btn-success btn-block" id="submit-btn" [disabled]="!projectCreateForm.valid">Create project</button>
+    </div>
+  </div>
+</form>

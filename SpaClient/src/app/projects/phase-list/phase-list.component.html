@@ -1,0 +1,236 @@
+<button class="btn add-phase-btn" 
+        (click)="showModal(phaseCreateModal)"
+        *ngIf="currentUserRole === 'manager'">
+  <fa-icon [icon]="['fas', 'plus']" size="md"></fa-icon> Create phase
+</button>
+
+<div class="row" id="phases" *ngIf="phases.length > 0" cdkDropList [cdkDropListData]="project.phases" (cdkDropListDropped)="onPhaseDrop($event)" cdkDropListOrientation="horizontal">
+  <div class="phase" *ngFor="let phase of phases" cdkDrag [cdkDragDisabled]="!dragModeEnabled">
+    <div class="phase-content">
+      <div class="phase-name" [ngClass]="{'cursor-grab': dragModeEnabled}">
+        <div class="row">
+          <div class="col-md-8">
+            <h5>{{phase.name}}</h5>
+          </div>
+          <div class="col-md-4">
+            <div class="btn-group" dropdown placement="bottom right">
+              <button id="phase-options-button" 
+                      dropdownToggle 
+                      type="button" 
+                      class="btn" 
+                      aria-controls="dropdown-animated">
+                <fa-icon [icon]="['fas', 'ellipsis-h']" size="md"></fa-icon>
+              </button>
+              <ul id="dropdown-animated" 
+                  *dropdownMenu 
+                  class="dropdown-menu dropdown-menu-right" 
+                  role="menu" 
+                  aria-labelledby="phase-options-button">
+                <li role="menuitem">
+                  <a class="dropdown-item" 
+                     (click)="showModal(issueCreateModal, {phase: phase})">
+                      Add a new issue
+                  </a>
+                </li>
+                <li role="menuitem">
+                  <a class="dropdown-item" 
+                     (click)="showModal(deleteModal, {
+                       deleteType: 'phase',
+                       deleteItem: phase
+                     })">
+                      Delete phase
+                    </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="issue" *ngFor="let issue of phase.issues">
+        <div class="issue-title">
+          <div class="row">
+            <div class="col-md-8">
+              <span class="issue-name">{{issue.name}}</span>
+            </div>
+            <div class="col-md-4">
+              <div class="btn-group" dropdown placement="bottom right">
+                <button id="button-animated" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated"><fa-icon [icon]="['fas', 'ellipsis-h']" size="md"></fa-icon></button>
+                <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-animated">
+                  <li role="menuitem"><a class="dropdown-item" href="#">Add label</a></li>
+                  <li role="menuitem">
+                    <a class="dropdown-item" 
+                       (click)="showModal(deleteModal, {
+                         deleteType: 'issue',
+                         deleteItem: issue
+                       })">
+                        Delete issue
+                    </a>
+                </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="issue-labels">
+          <span class="label" *ngFor="let label of issue.labels">{{label.name}}</span>
+        </div>
+        <div class="issue-type">
+          <span *ngIf="issue.issueType === 'task'"><fa-icon [icon]="['fas', 'check-square']" size="md" class="task"></fa-icon> Task</span>
+          <span *ngIf="issue.issueType === 'bug'"><fa-icon [icon]="['fas', 'bug']" size="md" class="bug"></fa-icon> Bug</span>
+        </div>
+      </div>
+
+      <div class="create-issue">
+        <button class="btn" 
+                (click)="showModal(issueCreateModal, {
+                  phase: phase,
+                  modalOptions: {
+                    ignoreBackdropClick: true,
+                    keyboard: true
+                  }
+                })">
+          <fa-icon [icon]="['fas', 'plus']" size="md"></fa-icon>Create issue
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" 
+     bsModal 
+     #phaseCreateModal="bs-modal" 
+     (onHidden)="resetForm(phaseCreateForm)">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Create a new phase</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(phaseCreateModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="phaseCreateForm" (ngSubmit)="onPhaseCreateSubmit()">
+          <div class="row">
+            <div class="col-md-12">
+              <input type="text" placeholder="Phase name..." class="form-control" formControlName="name">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button class="btn btn-success btn-block" [disabled]="!phaseCreateForm.valid">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>   
+</div>
+
+<div class="modal fade" 
+     bsModal 
+     #issueCreateModal="bs-modal" 
+     (onHidden)="resetForm(issueCreateForm)">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Create a new issue</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(issueCreateModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="issueCreateForm" (ngSubmit)="onIssueCreateSubmit()">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="project">Project</label>
+              <select readonly class="form-control" formControlName="projectId">
+                <option value="{{project.id}}">{{project.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="phase">Phase</label>
+              <select readonly class="form-control" formControlName="phaseId">
+                <option *ngFor="let phase of project.phases" value="{{phase.id}}">{{phase.name}}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="type">Issue type</label>
+            <select class="form-control col-md-4 fa-select" formControlName="issueType">
+              <option value="task">&#xf14a; Task</option>
+              <option value="bug">&#xf188; Bug</option>
+            </select>
+          </div>
+          <hr>
+          <div class="form-group">
+            <label for="name">Summary</label>
+            <input type="text" class="form-control" formControlName="name" placeholder="Issue summary">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea cols="30" rows="10" class="form-control" formControlName="description" placeholder="Issue description"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="col-xs-12 col-md-6 form-group">
+              <label for="startDate">Due date</label>
+              <input 
+              class="form-control"
+              placeholder="Due date"
+              bsDatepicker
+              formControlName="dueDate"
+              [minDate]="minDate"
+              [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="priority">Priority</label>
+              <select class="form-control" formControlName="priority">
+                <option value="" selected disabled hidden>Priority</option>
+                <option value="1">Lowest</option>
+                <option value="2">Low</option>
+                <option value="3">Medium</option>
+                <option value="4">High</option>
+                <option value="5">Highest</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="asignee">Asignee</label>
+            <select multiple class="form-control" formControlName="issuedTo">
+              <option *ngFor="let projectUser of project.projectUsers" value="{{projectUser.userId}}">{{projectUser.userFullName}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="labels">Labels</label>
+            <select multiple class="form-control" formControlName="labels">
+              <option *ngFor="let label of labels" value="{{label.id}}">{{label.name}}</option>
+            </select>
+          </div>
+          <button class="btn btn-outline-success btn-block" type="submit" [disabled]="!issueCreateForm.valid">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>   
+</div>
+
+<div class="modal fade" 
+     bsModal 
+     #deleteModal="bs-modal" 
+     (onHidden)="resetForm(issueCreateForm)">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Delete {{deleteType}}</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(deleteModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <p>Are you sure you want to delete this {{deleteType}}?</p>
+        <button type="button" class="btn btn-outline-danger" (click)="confirmDelete()">Yes</button>
+        <button type="button" class="btn btn-default" (click)="hideModal(deleteModal)">No</button>
+      </div>
+    </div>
+  </div>   
+</div>

@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" [routerLink]="['/']">BugTracker App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" *ngIf="isAuthenticated">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/your-work']" routerLinkActive="active">Your work</a>
+        </li>
+        <li class="nav-item dropdown" dropdown>
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dropdownToggle>
+            Projects
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown" *dropdownMenu>
+            <a class="dropdown-item disabled" id="recent" *ngIf="recentProjects.length > 0">Recent</a>
+            <a class="dropdown-item" *ngFor="let project of recentProjects" [routerLink]="['/projects', project.id]">{{project.name}}</a>
+            <div class="dropdown-divider" *ngIf="recentProjects.length > 0"></div>
+            <a class="dropdown-item" [routerLink]="['/projects']">View all projects</a>
+            <a class="dropdown-item" [routerLink]="['/project-create']">Create project</a>
+          </div>
+        </li>
+        <button class="btn btn-primary btn ml-4 nav-button" type="button">Create</button>
+
+        
+      </ul>
+    </div>
+
+    <div class="navbar-nav mr-0">
+      <li class="nav-item dropdown" dropdown *ngIf="isAuthenticated">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dropdownToggle>
+          {{fullName}}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" *dropdownMenu>
+          <a class="dropdown-item" href="#">Account Settings</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="logout()">Logout</a>
+        </div>
+      </li>
+      <li class="nav-item" *ngIf="!isAuthenticated">
+        <a class="nav-link" (click)="login()">Login</a>
+      </li>
+    </div>
+
+    
+
+  </div>
+</nav>

@@ -1,0 +1,49 @@
+.breadcrumb {
+  background-color: #fff;
+  margin-top: .5rem;
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+
+h3 {
+  margin-bottom: 24px;
+}
+
+.col-md-2 div {
+  float: right;
+}
+
+.col-md-2 fa-icon:hover {
+  opacity: .5;
+  cursor: pointer;
+  transition: ease-in-out;
+  transition-duration: 200ms;
+}
+
+.inner-addon {
+  position: relative;
+}
+
+.inner-addon .icon {
+  position: absolute;
+  padding-top: 7px;
+  padding-right: 12px;
+  pointer-events: none;
+}
+
+.right-addon .icon { right: 0px;}
+
+.right-addon input { padding-right: 32px; }
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+.modal-body .row:nth-of-type(1), .modal-body .row:nth-of-type(2)  {
+  margin-bottom: 18px
+}
+
+#filter .col-lg-3, #filter .col-lg-2, #filter .col-lg-1 {
+  padding-left: 5px;
+  padding-right: 5px;
+}

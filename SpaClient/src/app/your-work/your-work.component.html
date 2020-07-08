@@ -1,0 +1,75 @@
+<h2>Your work</h2>
+
+<h5>Recent projects</h5>
+
+<div class="card-deck">
+  <div class="card" *ngFor="let project of recentProjects">
+    <div class="card-body">
+      <h5 class="card-title">{{project.name}}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">Created by: {{project.createdByFullName}}</h6>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      <a [routerLink]="['/projects', project.id]" class="card-link">Go to project page</a>
+    </div>
+  </div>
+</div>
+
+<div id="tabset">
+  <tabset>
+    <tab heading="Assigned to me">
+      <h6 id="in-progress">IN PROGRESS</h6>
+      <a class="issue" *ngFor="let issueInProgress of inProgress">
+        <div class="issue-logo">
+          <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+          <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+        </div>
+        <span class="issue-content">
+          <span class="issue-name">{{issueInProgress.name}}</span>
+          <small class="issue-project">{{issueInProgress.project.name}}</small>
+        </span>
+        <span class="issue-status">In progress</span>
+      </a>
+      <h6 id="to-do">TO DO</h6>
+      <a class="issue" *ngFor="let issueToDo of toDo">
+        <div class="issue-logo">
+          <fa-icon *ngIf="issueToDo.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+          <fa-icon *ngIf="issueToDo.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+        </div>
+        <span class="issue-content">
+          <span class="issue-name">{{issueToDo.name}}</span>
+          <small class="issue-project">{{issueToDo.project.name}}</small>
+        </span>
+        <span class="issue-status">To do</span>
+      </a>
+    </tab>
+    <tab heading="Starred">
+      <h6 id="in-progress">IN PROGRESS</h6>
+      <a class="issue" *ngFor="let issueInProgress of inProgressStarred">
+        <div class="issue-logo">
+          <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+          <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+        </div>
+        <span class="issue-content">
+          <span class="issue-name">{{issueInProgress.name}}</span>
+          <small class="issue-project">{{issueInProgress.project.name}}</small>
+        </span>
+        <span class="issue-status">In progress</span>
+      </a>
+      <h6 id="to-do">TO DO</h6>
+      <a class="issue" *ngFor="let issueToDo of toDoStarred">
+        <div class="issue-logo">
+          <fa-icon *ngIf="issueToDo.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+          <fa-icon *ngIf="issueToDo.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+        </div>
+        <span class="issue-content">
+          <span class="issue-name">{{issueToDo.name}}</span>
+          <small class="issue-project">{{issueToDo.project.name}}</small>
+        </span>
+        <span class="issue-status">To do</span>
+      </a>
+    </tab>
+    <tab heading="Completed">
+
+    </tab>
+
+  </tabset>
+</div>

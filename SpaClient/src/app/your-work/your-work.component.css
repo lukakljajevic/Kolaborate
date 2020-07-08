@@ -1,0 +1,80 @@
+h2 {
+  margin-top: 32px;
+  margin-bottom: 48px;
+}
+
+h5 {
+  margin-bottom: 16px;
+}
+
+.card {
+  max-width: 18rem;
+}
+
+#tabset {
+  margin-top: 32px;
+}
+
+.issue {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0%;
+  margin-top: 8px;
+  padding: 8px;
+  align-items: center;
+  border-radius: 3px;
+}
+
+.issue:hover {
+  background-color: #f5f6f8;
+}
+
+.task {
+  color: #4bade8;
+}
+
+.bug {
+  color: #e5493a;
+}
+
+.issue-name {
+  color: rgb(23, 43, 77);
+  font-weight: 600;
+  flex-grow: 1;
+  font-size: 16px;
+  line-height: 22px;
+  margin: 0;
+}
+
+.issue-project {
+  flex-grow: 1;
+  font-size: 13px;
+  color: rgb(107, 119, 140);
+  line-height: 16px;
+  margin: 0;
+}
+
+#in-progress, #to-do {
+  margin-top: 24px;
+  color: rgb(107, 119, 140);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 16px;
+  margin-bottom: 0;
+}
+
+.issue-content {
+  display: flex;
+  flex-direction: column;
+  flex: 6 1 0%;
+  margin: 0 8px;
+}
+
+.issue-status {
+  color: rgb(107, 119, 140);
+  min-width: 8em;
+  font-size: 12px;
+  padding-right: 16px;
+  flex: 1 1 0%;
+  margin: 0;
+}

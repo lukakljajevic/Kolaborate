@@ -1,0 +1,195 @@
+h1 {
+  margin-top: 32px;
+}
+
+.row:nth-of-type(1) {
+  margin-bottom: 18px;
+}
+
+
+#phases {
+  margin-top: 24px;
+  overflow-x: auto;
+  flex-flow: row nowrap;
+}
+
+.phase {
+  display: flex;
+  flex-direction: column;
+  /* align-self: auto; */
+  /* min-height: 282px; */
+  min-width: 282px;
+  margin-bottom: 50px;
+}
+
+.phase-content {
+  /* flex: 1; */
+  margin-left: 6px;
+  margin-right: 6px;
+  min-width: 270px;
+  max-width: 270px;
+  /* overflow: hidden; */
+  /* min-height: 600px; */
+  /* height: ; */
+  border-radius: 6px;
+  background-color: rgb(244, 245, 247);
+  color: rgba(0, 0, 0, .65);
+  /* position: sticky;
+  top: 0px; */
+}
+
+.phase-name {
+  /* width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: 100%;
+  position: relative;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px; */
+  /* font-size: 14px; */
+  padding: 16px;
+  padding-bottom: 0;
+  /* font-weight: 400; */
+}
+
+.phase-name h5 {
+  letter-spacing: .75px;
+}
+
+.phase-name a:hover {
+  cursor: pointer;
+}
+
+.cursor-grab {
+  cursor: grab;
+}
+
+.phase-name h5 {
+  margin-bottom: 0;
+  padding-top: 6px;
+}
+
+.phase-name .btn-group {
+  float: right;
+}
+
+#phase-options-button:hover {
+  background-color: lightgray;
+}
+
+.add-phase-btn {
+  margin-top: 12px;
+  /* height: 60px;
+  width: 60px; */
+  background-color: rgb(244, 245, 247);
+}
+
+.add-phase-btn:focus {
+  outline: none;
+}
+
+.issue {
+  background-color: #fff;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+}
+
+.issue:not(:nth-last-child(2)) {
+  margin-bottom: 10px;
+}
+
+.issue:hover {
+  cursor: pointer;
+}
+
+.issue-title {
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+.issue-title .row {
+  margin-bottom: 8px;
+}
+
+.col-md-8 {
+  overflow-wrap: break-word;
+}
+
+.issue-name {
+  font-size: 16px;
+}
+
+.issue .btn-group {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease-in-out;
+  background-color: rgb(244, 245, 247);
+  border-radius: 4px;
+  float: right;
+}
+
+#button-animated {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-radius: 4px;
+}
+
+#button-animated:hover {
+  background-color: lightgray;
+  border-radius: 4px;
+}
+
+.issue:hover .btn-group {
+  visibility: visible;
+  opacity: 1;
+}
+
+.issue-labels {
+  padding-left: 6px;
+  padding-right: 6px;
+  margin-bottom: 12px;
+}
+
+.label {
+  background-color: rgb(244, 245, 247);
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.issue-type {
+  padding-left: 6px;
+}
+
+.create-issue {
+  padding: 12px;
+}
+
+.create-issue button {
+  width: 100%;
+  text-align: left;
+}
+
+.create-issue button fa-icon {
+  margin-right: 8px;
+}
+
+.create-issue button:hover {
+  background-color: lightgray;
+}
+
+.fa-select {
+  font-family: 'FontAwesome', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";;
+}
+
+.task {
+  color: #4bade8;
+}
+
+.bug {
+  color: #e5493a;
+}
