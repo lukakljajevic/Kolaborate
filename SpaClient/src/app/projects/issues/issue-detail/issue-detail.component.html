@@ -1,0 +1,7 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects']">Projects</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects', issue.project.id]">{{issue.project.name}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{issue.name}}</li>
+  </ol>
+</nav>

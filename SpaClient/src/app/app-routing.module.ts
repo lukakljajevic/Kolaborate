@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProtectedComponent } from './protected/protected.component';
 import { AuthGuard } from 'src/app/guards/auth.guard';
-import { AuthCallbackComponent } from './auth-callback/auth-callback.component';
-import { CallApiComponent } from './call-api/call-api.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { YourWorkComponent } from './your-work/your-work.component';
 import { HomeComponent } from './home/home.component';
@@ -11,8 +8,8 @@ import { ProjectCreateComponent } from './projects/project-create/project-create
 import { ProjectDetailComponent } from './projects/project-detail/project-detail.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectDetailResolverService } from './services/resolvers/project-detail-resolver.service';
-import { LabelsResolverService } from './services/resolvers/labels-resolver.service';
-
+import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detail.component';
+import { IssueDetailResolverService } from './services/resolvers/issue-detail-resolver.service';
 
 const routes: Routes = [
   {
@@ -34,8 +31,14 @@ const routes: Routes = [
     path: 'projects/:id',
     component: ProjectDetailComponent,
     resolve: {
-      project: ProjectDetailResolverService,
-      labels: LabelsResolverService
+      project: ProjectDetailResolverService
+    }
+  },
+  {
+    path: 'projects/:id/issues/:issueId',
+    component: IssueDetailComponent,
+    resolve: {
+      issue: IssueDetailResolverService
     }
   },
   {

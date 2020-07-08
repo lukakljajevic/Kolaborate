@@ -1,3 +1,6 @@
+import { Label } from './label';
+import { ProjectListItem } from './project-list-item';
+
 export interface Issue {
   id: string;
   createdAt: string;
@@ -8,4 +11,6 @@ export interface Issue {
   name: string;
   phaseId: string;
   priority: number;
+  labels: Label[];
+  project: ProjectListItem;
 }

@@ -44,6 +44,10 @@ export class IssuesService {
     return this.http.get<IssueUser[]>('http://localhost:5002/api/issues');
   }
 
+  getIssue(id: string) {
+    return this.http.get<Issue>(`http://localhost:5002/api/issues/${id}`);
+  }
+
   deleteIssue(issue: IssueListItem) {
     this.http.delete<{message: string}>(`http://localhost:5002/api/issues/${issue.id}`)
       .subscribe({

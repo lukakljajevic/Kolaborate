@@ -43,7 +43,7 @@
       <div class="issue" *ngFor="let issue of phase.issues">
         <div class="issue-title">
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8" [routerLink]="['issues', issue.id]">
               <span class="issue-name">{{issue.name}}</span>
             </div>
             <div class="col-md-4">

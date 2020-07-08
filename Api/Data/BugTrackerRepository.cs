@@ -1,5 +1,6 @@
 ﻿using Api.Helpers.DTOs;
 using Api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -134,6 +135,10 @@ namespace Api.Data
         {
             return await _context.Issues
                 .Include(i => i.Phase)
+                    .ThenInclude(p => p.Project)
+                .Include(i => i.IssueLabels)
+                    .ThenInclude(il => il.Label)
+                .Include(i => i.IssuedTo)
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 

@@ -39,6 +39,21 @@ namespace Api.Controllers
 
         }
 
+        // GET /api/issues/:id
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var userId = User.GetUserId();
+            var issue = await _repo.GetIssue(id);
+            
+            if (issue != null)
+            {
+                var issueToReturn = _mapper.Map<IssueDetailDto>(issue);
+                return Ok(issueToReturn);
+            }
+            return NotFound("Issue not found.");
+        }
+
         // POST /api/issues
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] IssueCreateDto dto)

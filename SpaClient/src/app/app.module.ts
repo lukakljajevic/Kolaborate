@@ -9,11 +9,8 @@ import { AuthModule, LogLevel, OidcConfigService } from 'angular-auth-oidc-clien
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ProtectedComponent } from './protected/protected.component';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { AuthService } from './services/auth.service';
-import { AuthCallbackComponent } from './auth-callback/auth-callback.component';
-import { CallApiComponent } from './call-api/call-api.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { NavComponent } from './nav/nav.component';
 import { YourWorkComponent } from './your-work/your-work.component';
@@ -32,13 +29,13 @@ import { TokenInterceptor } from './services/token.interceptor';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { PhaseListComponent } from './projects/phase-list/phase-list.component';
-import { BsModalService, ModalDirective, ModalModule } from 'ngx-bootstrap/modal';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { NgbdSortableHeader } from './services/sortable.directive';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-
+import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detail.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
    return () =>
@@ -58,9 +55,6 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
 @NgModule({
    declarations: [
       AppComponent,
-      ProtectedComponent,
-      AuthCallbackComponent,
-      CallApiComponent,
       UnauthorizedComponent,
       NavComponent,
       YourWorkComponent,
@@ -69,7 +63,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       ProjectDetailComponent,
       ProjectListComponent,
       PhaseListComponent,
-      NgbdSortableHeader
+      NgbdSortableHeader,
+      IssueDetailComponent
    ],
    imports: [
       BrowserModule,
@@ -113,7 +108,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       AppComponent
    ]
 })
-export class AppModule { 
+export class AppModule {
    constructor(library: FaIconLibrary) {
       library.addIconPacks(fas, far);
    }
