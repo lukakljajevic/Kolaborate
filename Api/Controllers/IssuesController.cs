@@ -101,6 +101,30 @@ namespace Api.Controllers
         }
 
         // PUT /api/issues/:id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] IssueUpdateDto dto)
+        {
+            var issue = await _repo.GetIssue(id);
+            
+            foreach (var labelId in dto.Labels)
+            {
+                var label = await _repo.GetLabel(labelId);
+                issue.IssueLabels.Add(new IssueLabel
+                {
+                    IssueId = id,
+                    LabelId = labelId,
+                    Label = label
+                });
+            }
+
+            if (await _repo.SaveAll())
+            {
+                var issueToReturn = _mapper.Map<IssueListItemDto>(issue);
+                return Ok(new { issue = issueToReturn });
+            }
+
+            return BadRequest(new { message = "Error updating the issue." });
+        }
 
         // DELETE /api/issues/:id
         [HttpDelete("{id}")]

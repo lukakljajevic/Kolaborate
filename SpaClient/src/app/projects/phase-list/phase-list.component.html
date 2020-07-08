@@ -50,7 +50,7 @@
               <div class="btn-group" dropdown placement="bottom right">
                 <button id="button-animated" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated"><fa-icon [icon]="['fas', 'ellipsis-h']" size="md"></fa-icon></button>
                 <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-animated">
-                  <li role="menuitem"><a class="dropdown-item" href="#">Add label</a></li>
+                  <li role="menuitem"><a class="dropdown-item" (click)="showAddLabelModal(issue)">Add label</a></li>
                   <li role="menuitem">
                     <a class="dropdown-item" 
                        (click)="showModal(deleteModal, {
@@ -99,6 +99,7 @@
   </div>
 </div>
 
+<!-- Create phase modal -->
 <div class="modal fade" 
      bsModal 
      #phaseCreateModal="bs-modal" 
@@ -113,26 +114,22 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="phaseCreateForm" (ngSubmit)="onPhaseCreateSubmit()">
-          <div class="row">
-            <div class="col-md-12">
-              <input type="text" placeholder="Phase name..." class="form-control" formControlName="name">
-            </div>
+          <div class="form-group">
+            <label for="">Phase name</label>
+            <input type="text" placeholder="Phase name..." class="form-control" formControlName="name">
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <button class="btn btn-success btn-block" [disabled]="!phaseCreateForm.valid">Submit</button>
-            </div>
-          </div>
+          <button class="btn btn-outline-success btn-block" [disabled]="!phaseCreateForm.valid">Submit</button>
         </form>
       </div>
     </div>
   </div>   
 </div>
 
+<!-- Create issue modal -->
 <div class="modal fade" 
      bsModal 
      #issueCreateModal="bs-modal" 
-     (onHidden)="resetForm(issueCreateForm)">
+     (onHidden)="resetForm(issueCreateForm, {projectId: this.project.id, issueType: 'task', priority: ''})">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -216,10 +213,10 @@
   </div>   
 </div>
 
+<!-- Delete Modal -->
 <div class="modal fade" 
      bsModal 
-     #deleteModal="bs-modal" 
-     (onHidden)="resetForm(issueCreateForm)">
+     #deleteModal="bs-modal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -235,4 +232,46 @@
       </div>
     </div>
   </div>   
+</div>
+
+<!-- Add label to issue modal -->
+<div class="modal fade"
+     bsModal
+     #addLabelsModal="bs-modal"
+     (onHidden)="resetForm(addLabelsForm)">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Add label</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(addLabelsModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addLabelsForm" (ngSubmit)="onAddLabelSubmit()">
+          <div class="form-group">
+            <label for="">Issue Name</label>
+            <input 
+                type="text"
+                class="form-control"
+                disabled
+                formControlName="issueName">
+          </div>
+          <div class="form-group">
+            <label for="">Labels</label>
+            <select multiple
+                class="form-control"
+                formControlName="labels">
+                  <option 
+                    *ngFor="let label of availableLabels" 
+                    value="{{label.id}}">
+                      {{label.name}}
+                  </option>
+              </select>
+          </div>
+          <button class="btn btn-outline-success btn-block" [disabled]="!addLabelsForm.valid">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

@@ -30,12 +30,16 @@ export class PhaseListComponent implements OnInit {
   issueCreateModal: ModalDirective;
   @ViewChild('deleteModal', {static: false})
   deleteModal: ModalDirective;
+  @ViewChild('addLabelsModal', {static: false})
+  addLabelsModal: ModalDirective;
 
   labels: Label[] = [];
   minDate: Date;
+
   phaseCreateForm: FormGroup;
   issueCreateForm: FormGroup;
-
+  addLabelsForm: FormGroup;
+  availableLabels: Label[] = [];
   deleteType: string;
   deleteItem: Phase | IssueListItem;
 
@@ -65,6 +69,12 @@ export class PhaseListComponent implements OnInit {
       priority: new FormControl('', [Validators.required]),
       labels: new FormControl(),
       issuedTo: new FormControl(null, [Validators.required])
+    });
+
+    this.addLabelsForm = new FormGroup({
+      issueId: new FormControl('', [Validators.required]),
+      issueName: new FormControl('', [Validators.required]),
+      labels: new FormControl('', [Validators.required])
     });
 
     this.issuesService.getLabels().subscribe(labels => {
@@ -97,6 +107,13 @@ export class PhaseListComponent implements OnInit {
       error: err => alert(err.message)
     });
 
+    // Issue update subscription
+    this.issuesService.updatedIssue$.subscribe({
+      next: response => {
+        this.hideModal(this.addLabelsModal);
+      }
+    });
+
     // Issue delete subscription
     this.issuesService.deletedIssue$.subscribe(response => {
       alert(response.message);
@@ -105,12 +122,8 @@ export class PhaseListComponent implements OnInit {
 
   }
 
-  resetForm(form: FormGroup) {
-    form.reset({
-      projectId: this.project.id,
-      issueType: 'task',
-      priority: ''
-    });
+  resetForm(form: FormGroup, value?: any) {
+    form.reset(value);
   }
 
   showModal(modal: ModalDirective, options?: {
@@ -132,7 +145,7 @@ export class PhaseListComponent implements OnInit {
 
   confirmDelete() {
     if (this.deleteType === 'phase') {
-      this.phasesService.deletePhase(this.deleteItem as Phase)
+      this.phasesService.deletePhase(this.deleteItem as Phase);
     } else {
       this.issuesService.deleteIssue(this.deleteItem as IssueListItem);
     }
@@ -179,6 +192,31 @@ export class PhaseListComponent implements OnInit {
     let count = 0;
     this.project.phases.forEach(phase => {
       phase.index = count++;
+    });
+  }
+
+  showAddLabelModal(issue: IssueListItem) {
+    this.generateAvailableLabels(issue);
+    this.addLabelsForm.patchValue(
+      {
+        issueId: issue.id,
+        issueName: issue.name
+      }
+    );
+    this.showModal(this.addLabelsModal);
+  }
+
+  onAddLabelSubmit() {
+    const formData = this.addLabelsForm.getRawValue();
+    this.issuesService.addLabels({issueId: formData.issueId, labels: formData.labels});
+  }
+
+  generateAvailableLabels(issue: IssueListItem) {
+    this.availableLabels = [];
+    this.labels.forEach(label => {
+      if (issue.labels.findIndex(l => l.id === label.id) === -1) {
+        this.availableLabels.push(label);
+      }
     });
   }
 }

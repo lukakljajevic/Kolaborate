@@ -13,12 +13,14 @@ import { Issue } from '../models/issue';
 export class IssuesService {
 
   private createdIssue: Subject<{message: string, issue: IssueListItem}> = new Subject();
+  private updatedIssue: Subject<{message: string, issue: IssueListItem}> = new Subject();
   private deletedIssue: Subject<{message: string, issue: IssueListItem}> = new Subject();
 
   constructor(private http: HttpClient,
               private datepipe: DatePipe) { }
 
   get createdIssue$() { return this.createdIssue.asObservable(); }
+  get updatedIssue$() { return this.updatedIssue.asObservable(); }
   get deletedIssue$() { return this.deletedIssue.asObservable(); }
 
   getLabels(): Observable<Label[]> {
@@ -50,6 +52,17 @@ export class IssuesService {
           message: response.message
         }),
         error: (err: {message: string}) => this.deletedIssue.error(err)
+      });
+  }
+
+  addLabels(formData: {issueId: string, labels: string[]}) {
+    console.log(formData.issueId);
+    this.http.put<{message: string, issue: IssueListItem}>(`http://localhost:5002/api/issues/${formData.issueId}`, {labels: formData.labels})
+      .subscribe({
+        next: response => {
+          this.updatedIssue.next(response);
+        },
+        error: err => this.updatedIssue.error(err)
       });
   }
 

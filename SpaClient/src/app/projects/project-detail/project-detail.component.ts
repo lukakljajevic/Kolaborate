@@ -106,13 +106,26 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     // Issue create subscription
     this.issuesService.createdIssue$.subscribe({
       next: response => {
-        this.project.phases.find(p => p.id === response.issue.phaseId).issues.push(response.issue);
+        const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
+        phase.issues.push(response.issue);
         this.filterIssues();
         response.issue.labels.forEach(label => {
           if (this.labels.findIndex(l => l.id === label.id) === -1) {
             this.labels.push(label);
           }
         });
+      },
+      error: err => alert(err.message)
+    });
+
+    // Issue update subscription
+    this.issuesService.updatedIssue$.subscribe({
+      next: response => {
+        const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
+        const index = phase.issues.findIndex(i => i.id === response.issue.id);
+        phase.issues[index] = response.issue;
+        this.initializeLabelsFilter();
+        this.filterIssues();
       },
       error: err => alert(err.message)
     });

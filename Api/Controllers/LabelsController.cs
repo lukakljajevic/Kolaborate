@@ -34,5 +34,9 @@ namespace Api.Controllers
             }
             return Ok(labels);
         }
+
+        // POST /api/labels
+
+
     }
 }
