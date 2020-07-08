@@ -37,6 +37,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { NgbdSortableHeader } from './services/sortable.directive';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
@@ -86,7 +87,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       DragDropModule,
       TypeaheadModule.forRoot(),
       TabsModule.forRoot(),
-      ModalModule.forRoot()
+      ModalModule.forRoot(),
+      TooltipModule.forRoot()
    ],
    providers: [
       AuthGuard,

@@ -11,14 +11,14 @@
 ./SpaClient//bazel-out
 
 # dependencies
-./SpaClient//node_modules
+./SpaClient/node_modules
 
 # profiling files
 ./SpaClient/chrome-profiler-events*.json
 ./SpaClient/speed-measure-plugin*.json
 
 # IDEs and editors
-./SpaClient//.idea
+./SpaClient/.idea
 ./SpaClient/.project
 ./SpaClient/.classpath
 ./SpaClient/.c9/

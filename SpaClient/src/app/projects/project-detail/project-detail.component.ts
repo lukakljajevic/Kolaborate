@@ -81,8 +81,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     // Phase create subscription
     this.phasesService.createdPhase$.subscribe({
-      next: response => this.project.phases.push(response.phase),
-      error: (err: {message: string}) => alert(err.message)
+      next: response => {
+        this.project.phases.push(response.phase);
+        this.filterIssues();
+      },
+        error: (err: {message: string}) => alert(err.message)
     });
 
     // Phase update subscription
@@ -164,9 +167,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       .subscribe((response: {message: string, projectUser: ProjectUser}) => {
         alert(response.message);
         this.project.projectUsers.push(response.projectUser);
-        console.log(this.project);
+        this.closeModal(this.inviteModal);
       });
-    this.modalRef.hide();
   }
 
   typeaheadOnSelect(e: TypeaheadMatch) {
@@ -177,7 +179,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.projectsService.deleteProject(this.project.id).subscribe(response => {
       alert(response.message);
       this.projectsService.getRecentProjects();
-      // this.closeModal();
+      this.closeModal(this.deleteModal);
       this.router.navigate(['/your-work']);
     }, error => {
       alert(error.message);
@@ -217,6 +219,16 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.issueType = '';
     this.label = '';
     this.filterIssues();
+  }
+
+  viewResetFilter(): boolean {
+    return this.searchTerm !== '' || this.issueType !== '' || this.label !== '';
+  }
+
+  getInitials(fullName: string) {
+    const namesArray = fullName.split(' ');
+    if (namesArray.length === 1) return `${namesArray[0].charAt(0)}`;
+    return `${namesArray[0].charAt(0)}${namesArray[namesArray.length - 1].charAt(0)}`;
   }
 
 }

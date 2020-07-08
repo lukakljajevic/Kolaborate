@@ -1,10 +1,4 @@
-<button class="btn add-phase-btn" 
-        (click)="showModal(phaseCreateModal)"
-        *ngIf="currentUserRole === 'manager'">
-  <fa-icon [icon]="['fas', 'plus']" size="md"></fa-icon> Create phase
-</button>
-
-<div class="row" id="phases" *ngIf="phases.length > 0" cdkDropList [cdkDropListData]="project.phases" (cdkDropListDropped)="onPhaseDrop($event)" cdkDropListOrientation="horizontal">
+<div class="row" id="phases" cdkDropList [cdkDropListData]="project.phases" (cdkDropListDropped)="onPhaseDrop($event)" cdkDropListOrientation="horizontal">
   <div class="phase" *ngFor="let phase of phases" cdkDrag [cdkDragDisabled]="!dragModeEnabled">
     <div class="phase-content">
       <div class="phase-name" [ngClass]="{'cursor-grab': dragModeEnabled}">
@@ -94,6 +88,14 @@
       </div>
 
     </div>
+  </div>
+  <div class="add-phase">
+    <button 
+      class="btn btn-default add-phase-button"
+      (click)="showModal(phaseCreateModal)"
+      *ngIf="currentUserRole === 'manager'">
+        <fa-icon [icon]="['fas', 'plus']" size="lg"></fa-icon>
+    </button>
   </div>
 </div>
 

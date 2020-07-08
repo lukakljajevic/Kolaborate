@@ -167,6 +167,7 @@ export class PhaseListComponent implements OnInit {
   onPhaseDrop(event: CdkDragDrop<Phase>) {
     if (event.previousIndex !== event.currentIndex) {
       moveItemInArray(this.project.phases, event.previousIndex, event.currentIndex);
+      moveItemInArray(this.phases, event.previousIndex, event.currentIndex);
       this.updatePhaseIndexes();
       console.log(event);
       console.log(this.project.phases);

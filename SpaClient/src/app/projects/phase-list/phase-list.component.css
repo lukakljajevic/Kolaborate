@@ -88,6 +88,16 @@ h1 {
   outline: none;
 }
 
+.add-phase-button {
+  padding: 12px 16px;
+  background-color: rgb(244, 245, 247);
+  max-height: 80px;
+}
+
+.add-phase-button:hover {
+  background-color: lightgray;
+}
+
 .issue {
   background-color: #fff;
   margin-left: 10px;
