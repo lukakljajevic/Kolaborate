@@ -1,7 +1,81 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects']">Projects</a></li>
-    <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects', issue.project.id]">{{issue.project.name}}</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects', issue.phase.project.id]">{{issue.phase.project.name}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{issue.phase.name}}</li>
     <li class="breadcrumb-item active" aria-current="page">{{issue.name}}</li>
   </ol>
 </nav>
+
+<div class="row">
+  <div class="col-md-10">
+    <h6 class="issue-type">
+      <span *ngIf="issue.issueType === 'task'"><fa-icon [icon]="['fas', 'check-square']" size="md" class="task"></fa-icon> Task</span>
+      <span *ngIf="issue.issueType === 'bug'"><fa-icon [icon]="['fas', 'bug']" size="md" class="bug"></fa-icon> Bug</span>
+    </h6>
+    <h3>{{issue.name}}</h3>
+  </div>
+  <div class="col-md-2">
+    <div>
+      <!-- <button class="btn"><fa-icon [icon]="['far', 'star']" size="lg"></fa-icon></button> -->
+      <div class="btn-group" dropdown placement="bottom right">
+        <button id="issue-options-button" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated">
+          <fa-icon [icon]="['fas', 'ellipsis-h']" size="lg"></fa-icon>
+        </button>
+        <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="project-options-button">
+          <li role="menuitem">
+            <a class="dropdown-item">Delete issue</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <!-- Issue controls -->
+    <div class="row issue-controls">
+      <div class="col-md-12">
+        <button class="btn btn-default">
+          <fa-icon [icon]="['fas', 'paperclip']"></fa-icon> Attach
+        </button>
+        <div class="btn-group" dropdown placement="bottom right">
+          <button 
+            id="issue-status" 
+            dropdownToggle 
+            type="button" 
+            class="btn dropdown-toggle" 
+            aria-controls="dropdown-animated"
+            [ngClass]="{
+              'btn-default': issue.status === 'to_do',
+              'btn-warning': issue.status === 'in_progress',
+              'btn-success': issue.status === 'done'
+            }">
+              {{formatIssueStatus(this.issue.status)}} <span class="caret"></span>
+          </button>
+          <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="project-options-button">
+            <li role="menuitem">
+              <a 
+                class="dropdown-item" 
+                *ngFor="let status of generateAvailableIssueStatuses()"
+                (click)="updateStatus(status)">
+                  {{formatIssueStatus(status)}}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Description -->
+    <div class="row">
+      <div class="col-md-12">
+        <h6 class="description-title">Description</h6>
+        <p class="description">{{issue.description}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+
+  </div>
+</div>

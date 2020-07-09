@@ -9,6 +9,6 @@ namespace Api.Helpers.DTOs
 {
     public class PhasesUpdateDto
     {
-        public List<PhaseListItemDto> Phases { get; set; }
+        public List<PhaseDetailDto> Phases { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace Api.Data
         Task<IEnumerable<Project>> GetRecentProjects(string userId);
         Task<ProjectUser> GetProjectUser(string projectId, string userId);
         Task<IEnumerable<Label>> GetLabels();
-        Task<bool> UpdatePhases(IEnumerable<PhaseListItemDto> phases);
+        Task<bool> UpdatePhases(IEnumerable<PhaseDetailDto> phases);
         Task<ICollection<ProjectUser>> GetProjectUsers(string projectId);
         Task<Label> GetLabel(string labelId);
         Task<ICollection<IssueUser>> GetIssueUsers(string userId);
@@ -101,7 +101,7 @@ namespace Api.Data
             return await _context.Labels.ToListAsync();
         }
 
-        public async Task<bool> UpdatePhases(IEnumerable<PhaseListItemDto> phases)
+        public async Task<bool> UpdatePhases(IEnumerable<PhaseDetailDto> phases)
         {
             foreach (var phase in phases)
             {

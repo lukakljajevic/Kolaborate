@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Api.Helpers.DTOs
 {
-    public class PhaseListItemDto
+    public class UserDto
     {
         public string Id { get; set; }
-        public string Name { get; set; }
-        public ProjectListItemDto Project { get; set; }
+        public string Username { get; set; }
+        public string FullName { get; set; }
     }
 }

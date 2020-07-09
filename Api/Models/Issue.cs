@@ -20,7 +20,6 @@ namespace Api.Models
         public string Name { get; set; }
 
         [Required]
-        [MaxLength(255)]
         public string Description { get; set; }
         
         public string DueDate { get; set; }
@@ -40,6 +39,14 @@ namespace Api.Models
         [Required]
         [MaxLength(450)]
         public string CreatedBy { get; set; }
+
+        [Required]
+        [MaxLength(256)]
+        public string CreatedByUsername { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string CreatedByFullName { get; set; }
 
         [Required]
         public string PhaseId { get; set; }

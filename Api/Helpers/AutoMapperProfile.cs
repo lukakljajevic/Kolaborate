@@ -13,24 +13,32 @@ namespace Api.Helpers
     {
         public AutoMapperProfile()
         {
+            // Project
             CreateMap<ProjectCreateDto, Project>();
             CreateMap<Project, ProjectListItemDto>();
             CreateMap<Project, ProjectDetailDto>();
+            CreateMap<ProjectUser, ProjectUserListItemDto>();
+
+            // Phase
             CreateMap<PhaseCreateDto, Phase>();
+            CreateMap<Phase, PhaseDetailDto>();
             CreateMap<Phase, PhaseListItemDto>();
+            
+            // Issue
             CreateMap<IssueCreateDto, Issue>()
                 .ForMember(i => i.IssuedTo, opt => opt.Ignore());
             CreateMap<Issue, IssueListItemDto>()
                 .ForMember(li => li.Labels, opt => opt.MapFrom(iss => iss.IssueLabels.Select(il => il.Label).ToList()))
                 .ForMember(li => li.Project, opt => opt.MapFrom(iss => iss.Phase.Project))
                 .ForMember(li => li.IssuedToUserIds, opt => opt.MapFrom(iss => iss.IssuedTo.Select(x => x.UserId).ToList()));
-            CreateMap<Label, LabelDto>();
-            CreateMap<ProjectUser, ProjectUserListItemDto>();
             CreateMap<IssueUser, IssueUserListItemDto>();
             CreateMap<Issue, IssueDetailDto>()
-                .ForMember(li => li.Labels, opt => opt.MapFrom(iss => iss.IssueLabels.Select(il => il.Label).ToList()))
-                .ForMember(li => li.Project, opt => opt.MapFrom(iss => iss.Phase.Project))
-                .ForMember(dto => dto.IssuedTo, opt => opt.MapFrom(i => i.IssuedTo.Select(iu => iu.UserId).ToList()));
+                .ForMember(li => li.Labels, opt => opt.MapFrom(iss => iss.IssueLabels.Select(il => il.Label).ToList()));
+            CreateMap<IssueUser, UserDto>()
+                .ForMember(dto => dto.Id, opt => opt.MapFrom(iu => iu.UserId));
+
+            // Label
+            CreateMap<Label, LabelDto>();
 
         }
     }

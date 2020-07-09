@@ -52,7 +52,7 @@ namespace Api.Controllers
 
             if (await _repo.SaveAll())
             {
-                var phaseListItem = _mapper.Map<PhaseListItemDto>(phase);
+                var phaseListItem = _mapper.Map<PhaseDetailDto>(phase);
                 return Ok(new { phase = phaseListItem });
             }
 
@@ -95,7 +95,7 @@ namespace Api.Controllers
                 p.Index = count++;
             }
 
-            var phasesToReturn = _mapper.Map<PhaseListItemDto[]>(project.Phases);
+            var phasesToReturn = _mapper.Map<PhaseDetailDto[]>(project.Phases);
 
             if (await _repo.SaveAll())
                 return Ok(new { message = "Successfully deleted the phase.", phases = phasesToReturn });
