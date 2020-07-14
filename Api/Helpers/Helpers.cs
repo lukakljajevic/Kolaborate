@@ -17,6 +17,11 @@ namespace Api.Helpers
             return user.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
         }
 
+        public static string GetUsername(this ClaimsPrincipal user)
+        {
+            return user.Claims.FirstOrDefault(c => c.Type == "preferred_username").Value;
+        }
+
         public static string GetUserFullName(this ClaimsPrincipal user)
         {
             return user.Claims.FirstOrDefault(c => c.Type == "fullName").Value;

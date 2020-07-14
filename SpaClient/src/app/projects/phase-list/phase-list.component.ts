@@ -9,6 +9,7 @@ import { IssuesService } from 'src/app/services/issues.service';
 import { Label } from 'src/app/models/label';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { IssueListItem } from 'src/app/models/issue-list-item';
+import { UserListItem } from 'src/app/models/user-list-item';
 
 @Component({
   selector: 'app-phase-list',
@@ -162,9 +163,11 @@ export class PhaseListComponent implements OnInit {
     }
 
     const formValue = this.issueCreateForm.getRawValue();
-    if (formValue.labels) {
-      formValue.labels = this.formatLabels(formValue.labels);
-    }
+    // if (formValue.labels) {
+    //   formValue.labels = this.formatLabels(formValue.labels);
+    // }
+
+    formValue.issuedTo = this.formatIssuedTo(formValue.issuedTo);
 
     this.issuesService.createIssue(formValue);
   }
@@ -175,6 +178,16 @@ export class PhaseListComponent implements OnInit {
       labels.push(labelId);
     });
     return labels;
+  }
+
+  formatIssuedTo(issuedToIds: string[]) {
+    const issuedToUsers = [];
+    issuedToIds.forEach(id => {
+      const projectUser = this.project.projectUsers.find(pu => pu.userId === id);
+      const issueUser = { id, fullName: projectUser.userFullName };
+      issuedToUsers.push(issueUser);
+    });
+    return issuedToUsers;
   }
 
   onPhaseDrop(event: CdkDragDrop<Phase>) {

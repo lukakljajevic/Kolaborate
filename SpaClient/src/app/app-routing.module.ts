@@ -35,10 +35,10 @@ const routes: Routes = [
     }
   },
   {
-    path: 'projects/:id/issues/:issueId',
+    path: 'projects/:projectId/issues/:issueId',
     component: IssueDetailComponent,
     resolve: {
-      issue: IssueDetailResolverService
+      results: IssueDetailResolverService
     }
   },
   {

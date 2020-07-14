@@ -18,6 +18,6 @@ namespace Api.Helpers.DTOs
         public string PhaseId { get; set; }
 
         public ICollection<string> Labels { get; set; }
-        public ICollection<string> IssuedTo { get; set; }
+        public ICollection<UserDto> IssuedTo { get; set; }
     }
 }

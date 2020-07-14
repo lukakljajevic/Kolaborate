@@ -59,6 +59,9 @@ namespace Api.Controllers
         public async Task<IActionResult> Create([FromBody] IssueCreateDto dto)
         {
             var userId = User.GetUserId();
+            var username = User.GetUsername();
+            var userFullName = User.GetUserFullName();
+
             var project = await _repo.GetProject(dto.ProjectId, userId);
             if (project == null)
             {
@@ -72,6 +75,9 @@ namespace Api.Controllers
             var issue = _mapper.Map<Issue>(dto);
 
             issue.CreatedBy = userId;
+            issue.CreatedByUsername = username;
+            issue.CreatedByFullName = userFullName;
+
             issue.CreatedAt = DateTime.Today.ToShortDateString();
             issue.PhaseId = dto.PhaseId;
             issue.Status = Status.TO_DO;
@@ -95,12 +101,13 @@ namespace Api.Controllers
             }
             
 
-            foreach (var id in dto.IssuedTo)
+            foreach (var user in dto.IssuedTo)
             {
                 var iu = new IssueUser
                 {
                     IssueId = issue.Id,
-                    UserId = id
+                    UserId = user.Id,
+                    FullName = user.FullName
                 };
                 issue.IssuedTo.Add(iu);
             }

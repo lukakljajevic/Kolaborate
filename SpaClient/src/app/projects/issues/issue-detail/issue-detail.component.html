@@ -33,6 +33,7 @@
 </div>
 
 <div class="row">
+  <!-- Left column -->
   <div class="col-md-8">
     <!-- Issue controls -->
     <div class="row issue-controls">
@@ -70,12 +71,154 @@
     <!-- Description -->
     <div class="row">
       <div class="col-md-12">
-        <h6 class="description-title">Description</h6>
-        <p class="description">{{issue.description}}</p>
+        <h6>Description</h6>
+        <p>{{issue.description}}</p>
       </div>
     </div>
   </div>
+  
+  <!-- Right column -->
   <div class="col-md-4">
-
+    <div class="row">
+      <div class="col-md-12" id="assignees">
+        <h6>{{issue.issuedTo.length > 1 ? 'Assignees' : 'Assignee'}}</h6>
+        <p *ngFor="let assignee of issue.issuedTo" class="assignee">
+          <span class="initials">{{getInitials(assignee.fullName)}}</span>
+          <span>{{assignee.fullName}}</span>
+        </p>
+        <a (click)="showModal(assigneesModal)" *ngIf="true">Show more...</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12" id="created-by">
+        <h6>Created By</h6>
+        <p><span class="initials">{{getInitials(issue.createdByFullName)}}</span><span>{{issue.createdByFullName}}</span></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h6>Labels</h6>
+        <p>
+          <span class="label" *ngFor="let label of issue.labels; let i = index">
+            <span class="label-name">{{label.name}}</span>
+            <span *ngIf="i !== issue.labels.length - 1">, </span>
+          </span>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h6>Priority</h6>
+        <div class="btn-group" dropdown placement="bottom right">
+          <button 
+            id="priority" 
+            dropdownToggle 
+            type="button" 
+            class="btn dropdown-toggle btn-default" 
+            aria-controls="dropdown-animated">
+              <fa-icon [icon]="['fas', issueIcon[issue.priority]]" size="md" class="{{issuePriority[issue.priority] | lowercase}}"></fa-icon>
+              {{issuePriority[issue.priority]}} <span class="caret"></span>
+          </button>
+          <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="priority-button">
+            <li role="menuitem">
+              <a 
+                class="dropdown-item" 
+                *ngFor="let priority of generateAvailableIssuePriorities()"
+                (click)="updatePriority(priority)">
+                <fa-icon [icon]="['fas', issueIcon[issue.priority]]" size="md" class="{{issuePriority[priority] | lowercase}}"></fa-icon>
+                  {{issuePriority[priority]}}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<div class="modal fade"
+     bsModal
+     #assigneesModal="bs-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">List of all assignees</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(assigneesModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead class="">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Full Name</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let assignee of issue.issuedTo; let i = index">
+              <th>{{i+1}}</th>
+              <td>{{assignee.fullName}}</td>
+              <td>
+                <button class="btn btn-outline-danger">
+                  <fa-icon [icon]="['far', 'trash-alt']" size="md"></fa-icon> Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="showModal(addAssigneeModal)">
+          <fa-icon [icon]="['fas', 'user-plus']" size="md"></fa-icon> Add Assignee
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" 
+     bsModal 
+     #addAssigneeModal="bs-modal" 
+     (onHidden)="userFullName = ''">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Assign issue to</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(addAssigneeModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="name">Name</label>
+            <input [(ngModel)]="userFullName"
+                   [typeahead]="users$"
+                   [typeaheadAsync]="true"
+                   [typeaheadItemTemplate]="itemTemplate"
+                   [isAnimated]="true"
+                   (typeaheadOnSelect)="typeaheadOnSelect($event)"
+                   typeaheadOptionField="fullName"
+                   typeaheadWaitMs="1000"
+                   type="text" 
+                   placeholder="Please enter user's full name" 
+                   class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <button class="btn btn-outline-success btn-block" 
+                     
+                    [disabled]="selectedUser === null">Assign</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #itemTemplate let-model="item" let-index="index">
+  {{model.userFullName}} <i>({{model.userRole}})</i>
+</ng-template>
