@@ -39,6 +39,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   minDate: Date;
 
   phaseCreateForm: FormGroup;
+  phaseEditForm: FormGroup;
   issueCreateForm: FormGroup;
   addLabelsForm: FormGroup;
   availableLabels: Label[] = [];
@@ -58,6 +59,11 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     this.minDate = new Date();
 
     this.phaseCreateForm = new FormGroup({
+      name: new FormControl('', [Validators.required])
+    });
+
+    this.phaseEditForm = new FormGroup({
+      id: new FormControl('', [Validators.required]),
       name: new FormControl('', [Validators.required])
     });
 
@@ -146,12 +152,19 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     modalOptions?: ModalOptions,
     phase?: Phase,
     deleteType?: string,
-    deleteItem?: Phase | IssueListItem
+    deleteItem?: Phase | IssueListItem,
+    phaseEdit?: boolean
   }) {
     this.issueCreateForm.patchValue({phaseId: options?.phase?.id});
     modal.config = options?.modalOptions;
     this.deleteType = options?.deleteType;
     this.deleteItem = options?.deleteItem;
+    if (options?.phaseEdit) {
+      this.phaseEditForm.patchValue({
+        id: options.phase.id,
+        name: options.phase.name
+      });
+    }
     modal.show();
   }
 
@@ -169,6 +182,20 @@ export class PhaseListComponent implements OnInit, OnDestroy {
 
   onPhaseCreateSubmit() {
     this.phasesService.createPhase(this.project.id, this.phaseCreateForm.value);
+  }
+
+  onPhaseEditSubmit(modal: ModalDirective) {
+    const phaseId = this.phaseEditForm.value.id;
+    const phaseName = this.phaseEditForm.value.name;
+    this.phasesService.updatePhase(this.project.id, phaseId, phaseName)
+      .subscribe({
+        next: () => {
+          this.project.phases.find(p => p.id === phaseId).name = phaseName;
+          this.phases.find(p => p.id === phaseId).name = phaseName;
+          modal.hide();
+        },
+        error: (err: {message: string}) => alert(err.message)
+      });
   }
 
   onIssueCreateSubmit() {

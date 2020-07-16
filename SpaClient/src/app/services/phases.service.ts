@@ -35,6 +35,10 @@ export class PhasesService {
       }, error => console.error(error.message));
   }
 
+  updatePhase(projectId: string, phaseId: string, name: string) {
+    return this.http.put(`http://localhost:5002/api/projects/${projectId}/phases/${phaseId}`, {name});
+  }
+
   deletePhase(phase: Phase) {
     this.http.delete<{message: string, phases: Phase[]}>(`http://localhost:5002/api/projects/${phase.project.id}/phases/${phase.id}`)
       .subscribe({

@@ -59,6 +59,26 @@ namespace Api.Controllers
             return BadRequest(new { message = "Unable to create the phase." });
         }
 
+        // PUT /api/projects/{projectId}/phases/{phaseId}
+        [HttpPut("{phaseId}")]
+        public async Task<IActionResult> Update([FromRoute] string projectId, [FromRoute] string phaseId, [FromBody] PhaseUpdateDto dto)
+        {
+            var userId = User.GetUserId();
+            var projectUser = await _repo.GetProjectUser(projectId, userId);
+
+            if (projectUser == null)
+                return Unauthorized(new { message = "You do not have access to the project." });
+
+            var phase = await _repo.GetPhase(phaseId);
+            phase.Name = dto.Name;
+
+            if (await _repo.SaveAll())
+                return Ok();
+            return BadRequest(new { message = "Error updating the phase." });
+
+
+        }
+
         // POST /api/phases
         [HttpPost]
         [Route("/api/phases")]
