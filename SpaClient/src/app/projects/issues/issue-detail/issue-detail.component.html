@@ -16,8 +16,7 @@
     <h3>{{issue.name}}</h3>
   </div>
   <div class="col-md-2">
-    <div>
-      <!-- <button class="btn"><fa-icon [icon]="['far', 'star']" size="lg"></fa-icon></button> -->
+    <div id="issue-actions">
       <div class="btn-group" dropdown placement="bottom right">
         <button id="issue-options-button" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated">
           <fa-icon [icon]="['fas', 'ellipsis-h']" size="lg"></fa-icon>
@@ -28,6 +27,9 @@
           </li>
         </ul>
       </div>
+      <button class="btn btn-star" (click)="updateStarred()">
+        <fa-icon [icon]="[isStarred ? 'fas': 'far', 'star']" size="lg" [ngClass]="{'gold': isStarred}"></fa-icon>
+      </button>
     </div>
   </div>
 </div>
@@ -137,6 +139,7 @@
 </div>
 
 <div class="modal fade"
+     id="assignees-modal"
      bsModal
      #assigneesModal="bs-modal">
   <div class="modal-dialog">
@@ -170,7 +173,7 @@
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" (click)="showModal(addAssigneeModal)">
+        <button type="button" class="btn btn-default" (click)="showAddAssigneeModal(assigneesModal, addAssigneeModal)">
           <fa-icon [icon]="['fas', 'user-plus']" size="md"></fa-icon> Add Assignee
         </button>
       </div>
@@ -200,7 +203,7 @@
                    [typeaheadItemTemplate]="itemTemplate"
                    [isAnimated]="true"
                    (typeaheadOnSelect)="typeaheadOnSelect($event)"
-                   typeaheadOptionField="fullName"
+                   typeaheadOptionField="userFullName"
                    typeaheadWaitMs="1000"
                    type="text" 
                    placeholder="Please enter user's full name" 
@@ -209,8 +212,8 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <button class="btn btn-outline-success btn-block" 
-                     
+            <button class="btn btn-outline-success btn-block"
+                    (click)="addAssignee(addAssigneeModal)"
                     [disabled]="selectedUser === null">Assign</button>
           </div>
         </div>
@@ -220,5 +223,5 @@
 </div>
 
 <ng-template #itemTemplate let-model="item" let-index="index">
-  {{model.userFullName}} <i>({{model.userRole}})</i>
+  {{model.userFullName}} <i>({{model.username}})</i>
 </ng-template>

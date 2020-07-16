@@ -7,6 +7,9 @@ import { UserListItem } from 'src/app/models/user-list-item';
 import { switchMap, map } from 'rxjs/operators';
 import { UsersService } from 'src/app/services/users.service';
 import { Project } from 'src/app/models/project';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
+import { IssuesService } from 'src/app/services/issues.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-issue-detail',
@@ -38,19 +41,23 @@ export class IssueDetailComponent implements OnInit {
     5: 'arrow-up'
   };
 
+  isStarred: boolean;
+
   project: Project;
   userFullName = '';
   users$: Observable<UserListItem[]>;
-  selectedUser = null;
+  selectedUser: {userId: string, username: string, userFullName: string} = {userId: '', username: '', userFullName: ''};
 
   constructor(private route: ActivatedRoute,
-              private usersService: UsersService) { }
+              private authService: AuthService,
+              private issuesService: IssuesService) { }
 
   ngOnInit() {
     this.route.data.subscribe((data: {results: {issue: Issue, project: Project}}) => {
       console.log(data.results);
       this.issue = data.results.issue;
       this.project = data.results.project;
+      this.isStarred = this.issue.issuedTo.find(user => user.id === this.authService.getUserId()).isStarred;
     });
 
     this.users$ = new Observable((observer: Observer<string>) => {
@@ -59,12 +66,7 @@ export class IssueDetailComponent implements OnInit {
       switchMap((fullName: string) => {
         if (fullName) {
           return of(this.project.projectUsers).pipe(
-            map(users => {
-              console.log(users);
-              const filteredUsers = users.filter(user => !this.issue.issuedTo.find(u => u.id === user.userId));
-              console.log(filteredUsers);
-              return filteredUsers;
-            }
+            map(users => users.filter(user => !this.issue.issuedTo.find(u => u.id === user.userId))
           ));
         }
         return of([]);
@@ -86,7 +88,7 @@ export class IssueDetailComponent implements OnInit {
 
   updateStatus(status: string) {
     this.issue.status = status;
-    // service call
+    this.issuesService.updateStatus(this.issue.id, this.issue.status);
   }
 
   getInitials(fullName: string) {
@@ -101,8 +103,9 @@ export class IssueDetailComponent implements OnInit {
     return issuePriorities;
   }
 
-  updatePriority(priority) {
+  updatePriority(priority: number) {
     this.issue.priority = priority;
+    this.issuesService.updatePriority(this.issue.id, this.issue.priority);
   }
 
   showModal(modal: ModalDirective) {
@@ -113,8 +116,39 @@ export class IssueDetailComponent implements OnInit {
     modal.hide();
   }
 
-  typeaheadOnSelect(event: any) {
+  typeaheadOnSelect(e: TypeaheadMatch) {
+    this.selectedUser.userId = e.item.userId;
+    this.selectedUser.username = e.item.username;
+    this.selectedUser.userFullName = e.item.userFullName;
+  }
 
+  showAddAssigneeModal(assigneesModal: ModalDirective, addAssigneeModal: ModalDirective) {
+    this.showModal(addAssigneeModal);
+    this.hideModal(assigneesModal);
+  }
+
+  addAssignee(modal: ModalDirective) {
+    this.issuesService.addAssignee(this.issue.id, this.selectedUser, this.project.id)
+      .subscribe({
+        next: () => {
+          this.issue.issuedTo.push({
+            id: this.selectedUser.userId,
+            username: this.selectedUser.username,
+            fullName: this.selectedUser.userFullName,
+            isStarred: false,
+            issue: null
+          });
+          this.hideModal(modal);
+          this.selectedUser = {userId: '', username: '', userFullName: ''};
+          this.userFullName = '';
+        },
+        error: (err: {message: string}) => alert(err.message)
+      });
+  }
+
+  updateStarred() {
+    this.isStarred = !this.isStarred;
+    this.issuesService.updateIsStarred(this.issue.id, this.isStarred);
   }
 
 }

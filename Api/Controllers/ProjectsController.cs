@@ -144,13 +144,16 @@ namespace Api.Controllers
                 return Unauthorized("You are not authorized to invite users.");
             }
 
-            var newProjectUser = new ProjectUser
-            {
-                UserId = dto.UserId,
-                ProjectId = dto.ProjectId,
-                UserFullName = dto.UserFullName,
-                UserRole = dto.UserRole
-            };
+            //var newProjectUser = new ProjectUser
+            //{
+            //    UserId = dto.UserId,
+            //    ProjectId = dto.ProjectId,
+            //    UserFullName = dto.UserFullName,
+            //    Username = dto.Username,
+            //    UserRole = dto.UserRole
+            //};
+
+            var newProjectUser = _mapper.Map<ProjectUser>(dto);
 
             _repo.Add(newProjectUser);
 

@@ -128,21 +128,29 @@ namespace Api.Controllers
         {
             var issue = await _repo.GetIssue(id);
             
-            foreach (var labelId in dto.Labels)
+            if (dto.Labels != null)
             {
-                var label = await _repo.GetLabel(labelId);
-                issue.IssueLabels.Add(new IssueLabel
+                foreach (var labelId in dto.Labels)
                 {
-                    IssueId = id,
-                    LabelId = labelId,
-                    Label = label
-                });
+                    var label = await _repo.GetLabel(labelId);
+                    issue.IssueLabels.Add(new IssueLabel
+                    {
+                        IssueId = id,
+                        LabelId = labelId,
+                        Label = label
+                    });
+                }
             }
+
+            if (dto.Status != null)
+                issue.Status = dto.Status;
+
+            if (dto.Priority > 0)
+                issue.Priority = dto.Priority;
 
             if (await _repo.SaveAll())
             {
-                var issueToReturn = _mapper.Map<IssueListItemDto>(issue);
-                return Ok(new { issue = issueToReturn });
+                return Ok();
             }
 
             return BadRequest(new { message = "Error updating the issue." });
@@ -175,6 +183,52 @@ namespace Api.Controllers
             }
 
             return BadRequest(new { message = "Error deleting the issue." });
+        }
+
+        // POST /api/issues/:id/assign
+        [HttpPost("{id}/assign")]
+        public async Task<IActionResult> Assign([FromRoute] string id, [FromBody] IssueAssignDto dto)
+        {
+            // check if user has permission
+            var userId = User.GetUserId();
+            var project = await _repo.GetProject(dto.ProjectId, userId);
+            
+            if (project == null)
+                return Unauthorized(new { message = "You do not have the auhorization to assign the issue." });
+
+            var issue = await _repo.GetIssue(id);
+            issue.IssuedTo.Add(new IssueUser
+            {
+                FullName = dto.UserFullName,
+                IsStarred = false,
+                IssueId = id,
+                UserId = dto.UserId,
+                Username = dto.Username
+            });
+
+            if (await _repo.SaveAll())
+            {
+                return Ok();
+            }
+
+            return BadRequest(new { message = "Error assigning the issue." });
+        }
+
+        [HttpPost("{id}/starred")]
+        public async Task<IActionResult> Starred([FromRoute] string id, [FromBody] IsStarredDto dto)
+        {
+            var userId = User.GetUserId();
+            var issue = await _repo.GetIssue(id);
+            var issuedTo = issue.IssuedTo.FirstOrDefault(user => user.UserId == userId);
+
+            if (issuedTo == null)
+                return NotFound(new { message = "User not found." });
+
+            issuedTo.IsStarred = dto.IsStarred;
+
+            if (await _repo.SaveAll())
+                return Ok();
+            return BadRequest(new { message = "Error updating the issue." });
         }
     }
 }

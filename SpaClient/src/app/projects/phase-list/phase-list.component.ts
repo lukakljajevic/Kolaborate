@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
 import { Phase } from 'src/app/models/phase';
 import { ModalOptions, ModalDirective } from 'ngx-bootstrap/modal';
 import { PhasesService } from 'src/app/services/phases.service';
@@ -10,6 +10,7 @@ import { Label } from 'src/app/models/label';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { IssueListItem } from 'src/app/models/issue-list-item';
 import { UserListItem } from 'src/app/models/user-list-item';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-phase-list',
@@ -17,7 +18,7 @@ import { UserListItem } from 'src/app/models/user-list-item';
   styleUrls: ['./phase-list.component.css'],
   providers: [{ provide: BsDropdownConfig, useValue: { isAnimated: true, autoClose: true } }]
 })
-export class PhaseListComponent implements OnInit {
+export class PhaseListComponent implements OnInit, OnDestroy {
 
   @Input() project: Project;
   @Input() projectId: string;
@@ -43,6 +44,12 @@ export class PhaseListComponent implements OnInit {
   availableLabels: Label[] = [];
   deleteType: string;
   deleteItem: Phase | IssueListItem;
+
+  createdPhaseSubscription: Subscription;
+  deletedPhaseSubscription: Subscription;
+  createdIssueSubscription: Subscription;
+  updatedIssueSubscription: Subscription;
+  deletedIssueSubscription: Subscription;
 
   constructor(private phasesService: PhasesService,
               private issuesService: IssuesService) { }
@@ -83,7 +90,7 @@ export class PhaseListComponent implements OnInit {
     });
 
     // Phase create subscription
-    this.phasesService.createdPhase$.subscribe({
+    this.createdPhaseSubscription = this.phasesService.createdPhase$.subscribe({
       next: response => {
         this.resetForm(this.phaseCreateForm);
         this.hideModal(this.phaseCreateModal);
@@ -92,7 +99,7 @@ export class PhaseListComponent implements OnInit {
     });
 
     // Phase delete subscription
-    this.phasesService.deletedPhase$.subscribe({
+    this.deletedPhaseSubscription = this.phasesService.deletedPhase$.subscribe({
       next: response => {
         alert(response.message);
         this.hideModal(this.deleteModal);
@@ -100,7 +107,7 @@ export class PhaseListComponent implements OnInit {
     });
 
     // Issue create subscription
-    this.issuesService.createdIssue$.subscribe({
+    this.createdIssueSubscription = this.issuesService.createdIssue$.subscribe({
       next: () => {
         this.resetForm(this.issueCreateForm);
         this.hideModal(this.issueCreateModal);
@@ -109,18 +116,26 @@ export class PhaseListComponent implements OnInit {
     });
 
     // Issue update subscription
-    this.issuesService.updatedIssue$.subscribe({
+    this.updatedIssueSubscription = this.issuesService.updatedIssue$.subscribe({
       next: response => {
         this.hideModal(this.addLabelsModal);
       }
     });
 
     // Issue delete subscription
-    this.issuesService.deletedIssue$.subscribe(response => {
+    this.deletedIssueSubscription = this.issuesService.deletedIssue$.subscribe(response => {
       alert(response.message);
       this.hideModal(this.deleteModal);
     });
 
+  }
+
+  ngOnDestroy() {
+    this.createdPhaseSubscription.unsubscribe();
+    this.deletedPhaseSubscription.unsubscribe();
+    this.createdIssueSubscription.unsubscribe();
+    this.updatedIssueSubscription.unsubscribe();
+    this.deletedIssueSubscription.unsubscribe();
   }
 
   resetForm(form: FormGroup, value?: any) {

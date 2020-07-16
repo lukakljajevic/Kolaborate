@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Api.Helpers.DTOs
 {
-    public class UserDto
+    public class IsStarredDto
     {
-        public string Id { get; set; }
-        public string Username { get; set; }
-        public string FullName { get; set; }
         public bool IsStarred { get; set; }
     }
 }

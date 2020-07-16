@@ -8,6 +8,9 @@ namespace Api.Helpers.DTOs
 {
     public class IssueUpdateDto
     {
+        public string Status { get; set; }
+        public int Priority { get; set; }
+
         public ICollection<string> Labels { get; set; }
     }
 }

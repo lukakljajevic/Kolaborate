@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Api.Helpers.DTOs
 {
-    public class ProjectInviteDto
+    public class IssueAssignDto
     {
-        public string ProjectId { get; set; }
         public string UserId { get; set; }
         public string Username { get; set; }
         public string UserFullName { get; set; }
-        public string UserRole { get; set; }
+        public string ProjectId { get; set; }
     }
 }

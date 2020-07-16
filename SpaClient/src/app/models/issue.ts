@@ -2,6 +2,7 @@ import { Label } from './label';
 import { ProjectListItem } from './project-list-item';
 import { UserListItem } from './user-list-item';
 import { PhaseListItem } from './phase-list-item';
+import { IssueUser } from './issue-user';
 
 export interface Issue {
   id: string;
@@ -17,6 +18,6 @@ export interface Issue {
   createdByFullName: string;
   phaseId: string;
   labels: Label[];
-  issuedTo: UserListItem[];
+  issuedTo: IssueUser[];
   phase: PhaseListItem;
 }

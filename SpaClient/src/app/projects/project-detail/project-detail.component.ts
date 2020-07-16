@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Project } from 'src/app/models/project';
 import { Subscription, Observable, Observer, noop, of } from 'rxjs';
 import { Label } from 'src/app/models/label';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { UserListItem } from 'src/app/models/user-list-item';
 import { UsersService } from 'src/app/services/users.service';
 import { switchMap, tap, filter, map } from 'rxjs/operators';
@@ -26,11 +26,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   previewPhases: Phase[];
   labels: Label[] = [];
   dragModeEnabled = false;
-  modalRef: BsModalRef;
   userFullNameSelected = '';
   users$: Observable<UserListItem[]>;
   errorMessage: string;
-  selectedUser = null;
+  selectedUser: {id: string, username: string, fullName: string} = {id: '', username: '', fullName: ''};
   selectedUserRole = 'user';
   currentUserRole: string;
 
@@ -44,6 +43,13 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   inviteModal: ModalDirective;
   @ViewChild('deleteModal', {static: false})
   deleteModal: ModalDirective;
+
+  createdPhaseSubscription: Subscription;
+  updatedPhaseSubscription: Subscription;
+  deletedPhaseSubscription: Subscription;
+  createdIssueSubscription: Subscription;
+  updatedIssueSubscription: Subscription;
+  deletedIssueSubscription: Subscription;
 
   constructor(private projectsService: ProjectsService,
               private phasesService: PhasesService,
@@ -80,7 +86,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     );
 
     // Phase create subscription
-    this.phasesService.createdPhase$.subscribe({
+    this.createdPhaseSubscription = this.phasesService.createdPhase$.subscribe({
       next: response => {
         this.project.phases.push(response.phase);
         this.filterIssues();
@@ -89,12 +95,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     });
 
     // Phase update subscription
-    this.phasesService.updatedPhases$.subscribe(phases => {
+    this.updatedPhaseSubscription = this.phasesService.updatedPhases$.subscribe(phases => {
       this.project.phases = phases;
     });
 
     // Phase delete subscription
-    this.phasesService.deletedPhase$.subscribe({
+    this.deletedPhaseSubscription = this.phasesService.deletedPhase$.subscribe({
       next: response => {
         this.project.phases = response.phases;
         this.filterIssues();
@@ -104,7 +110,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     });
 
     // Issue create subscription
-    this.issuesService.createdIssue$.subscribe({
+    this.createdIssueSubscription = this.issuesService.createdIssue$.subscribe({
       next: response => {
         const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
         phase.issues.push(response.issue);
@@ -119,7 +125,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     });
 
     // Issue update subscription
-    this.issuesService.updatedIssue$.subscribe({
+    this.updatedIssueSubscription = this.issuesService.updatedIssue$.subscribe({
       next: response => {
         const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
         const index = phase.issues.findIndex(i => i.id === response.issue.id);
@@ -131,7 +137,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     });
 
     // Issue delete subscription
-    this.issuesService.deletedIssue$.subscribe({
+    this.deletedIssueSubscription = this.issuesService.deletedIssue$.subscribe({
       next: response => {
         const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
         const issueIndex = phase.issues.findIndex(i => i.id === response.issue.id);
@@ -144,6 +150,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.createdPhaseSubscription.unsubscribe();
+    this.updatedPhaseSubscription.unsubscribe();
+    this.deletedPhaseSubscription.unsubscribe();
+    this.createdIssueSubscription.unsubscribe();
+    this.updatedIssueSubscription.unsubscribe();
+    this.deletedIssueSubscription.unsubscribe();
   }
 
   initializeLabelsFilter() {
@@ -172,9 +184,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     const params = {
       projectId: this.project.id,
       userId: this.selectedUser.id,
+      username: this.selectedUser.username,
       userFullName: this.selectedUser.fullName,
       userRole: this.selectedUserRole
     };
+
+    console.log(params);
 
     this.projectsService.addUser(params)
       .subscribe((response: {message: string, projectUser: ProjectUser}) => {
@@ -185,7 +200,9 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   typeaheadOnSelect(e: TypeaheadMatch) {
-    this.selectedUser = e.item;
+    this.selectedUser.id = e.item.id;
+    this.selectedUser.username = e.item.userName;
+    this.selectedUser.fullName = e.item.fullName;
   }
 
   deleteProject() {

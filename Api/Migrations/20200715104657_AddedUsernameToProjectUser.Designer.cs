@@ -4,14 +4,16 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200715104657_AddedUsernameToProjectUser")]
+    partial class AddedUsernameToProjectUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,15 +105,10 @@ namespace Api.Migrations
                         .HasMaxLength(450);
 
                     b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsStarred")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
 
                     b.HasKey("IssueId", "UserId");
 

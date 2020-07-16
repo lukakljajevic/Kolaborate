@@ -22,6 +22,24 @@ h3 {
   margin-bottom: 16px;
 }
 
+#issue-actions button {
+  float: right;
+}
+
+.btn-star fa-icon:hover {
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+  color: gold;
+}
+
+.btn-star fa-icon.gold {
+  color: gold;
+}
+
+.btn-star fa-icon.gold:hover {
+  color: goldenrod;
+}
+
 .col-md-2 .btn-group {
   /* background-color: rgb(244, 245, 247); */
   border-radius: 4px;
@@ -107,16 +125,16 @@ h3 {
   text-decoration: underline;
 }
 
-.modal-body {
+#assignees-modal .modal-body {
   padding: 0px;
 }
 
-.modal-body h6 {
-  margin-bottom: 1rem;
+#assignees-modal .modal-body table {
+  margin-bottom: 0;
 }
 
-.modal-body table {
-  margin-bottom: 0;
+.modal-body .row:first-of-type {
+  margin-bottom: 1rem;
 }
 
 .table td, .table th {

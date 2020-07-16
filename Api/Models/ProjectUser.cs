@@ -17,6 +17,10 @@ namespace Api.Models
         public string UserId { get; set; }
         
         [Required]
+        [MaxLength(255)]
+        public string Username { get; set; }
+
+        [Required]
         public string UserFullName { get; set; }
 
         [Required]

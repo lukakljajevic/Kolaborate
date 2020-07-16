@@ -18,6 +18,7 @@ namespace Api.Helpers
             CreateMap<Project, ProjectListItemDto>();
             CreateMap<Project, ProjectDetailDto>();
             CreateMap<ProjectUser, ProjectUserListItemDto>();
+            CreateMap<ProjectInviteDto, ProjectUser>();
 
             // Phase
             CreateMap<PhaseCreateDto, Phase>();

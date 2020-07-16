@@ -60,13 +60,43 @@ export class IssuesService {
   }
 
   addLabels(formData: {issueId: string, labels: string[]}) {
-    console.log(formData.issueId);
-    this.http.put<{message: string, issue: IssueListItem}>(`http://localhost:5002/api/issues/${formData.issueId}`, {labels: formData.labels})
+    this.http.put<{
+      message: string,
+      issue: IssueListItem
+    }>(`http://localhost:5002/api/issues/${formData.issueId}`, {labels: formData.labels})
       .subscribe({
         next: response => {
           this.updatedIssue.next(response);
         },
         error: err => this.updatedIssue.error(err)
+      });
+  }
+
+  addAssignee(id: string, user: {userId: string, username: string, userFullName: string}, projectId: string) {
+    return this.http.post(`http://localhost:5002/api/issues/${id}/assign`, {...user, projectId});
+  }
+
+  updateStatus(id: string, status: string) {
+    this.http.put(`http://localhost:5002/api/issues/${id}`, {status})
+      .subscribe({
+        next: () => console.log('updated status'),
+        error: (err: {message: string}) => alert(err.message)
+      });
+  }
+
+  updatePriority(id: string, priority: number) {
+    this.http.put(`http://localhost:5002/api/issues/${id}`, {priority})
+      .subscribe({
+        next: () => console.log('updated priority'),
+        error: (err: {message: string}) => alert(err.message)
+      });
+  }
+
+  updateIsStarred(id: string, isStarred: boolean) {
+    this.http.post(`http://localhost:5002/api/issues/${id}/starred`, {isStarred})
+      .subscribe({
+        next: () => console.log('updated is starred'),
+        error: (err: {message: string}) => alert(err.message)
       });
   }
 
