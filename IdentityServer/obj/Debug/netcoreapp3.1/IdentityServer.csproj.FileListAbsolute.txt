@@ -85,3 +85,6 @@ C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\Identity
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\System.Collections.Immutable.dll
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\Auth\Register.cshtml.g.cs
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Layout.cshtml.g.cs
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\_ViewStart.cshtml.g.cs
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Nav.cshtml.g.cs

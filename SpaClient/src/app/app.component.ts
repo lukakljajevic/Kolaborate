@@ -10,18 +10,9 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
 
-  authSubscription: Subscription;
-
-  constructor(private oidcSecurityService: OidcSecurityService, private router: Router) {}
+  constructor() {}
 
   ngOnInit() {
   }
 
-  login() {
-    this.oidcSecurityService.authorize();
-  }
-
-  logout() {
-    this.oidcSecurityService.logoff();
-  }
 }

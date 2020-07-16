@@ -63,19 +63,21 @@ namespace IdentityServer
             services
                 .AddIdentityServer()
                 .AddDeveloperSigningCredential()
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                        sql => sql.MigrationsAssembly(assembly));
-                })
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                        sql => sql.MigrationsAssembly(assembly));
-                })
+                //.AddOperationalStore(options =>
+                //{
+                //    options.ConfigureDbContext = builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                //        sql => sql.MigrationsAssembly(assembly));
+                //})
+                //.AddConfigurationStore(options =>
+                //{
+                //    options.ConfigureDbContext = builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                //        sql => sql.MigrationsAssembly(assembly));
+                //})
                 .AddInMemoryIdentityResources(Config.IdentityResources)
+                .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryApiResources(Config.ApiResources)
                 .AddInMemoryClients(Config.Clients)
+
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<ProfileService>();
 
@@ -90,6 +92,8 @@ namespace IdentityServer
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles();
 
             app.UseCors("MyPolicy");
 

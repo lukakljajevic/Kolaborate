@@ -100,4 +100,8 @@ export class IssuesService {
       });
   }
 
+  deleteAssignee(issueId: string, assigneeId: string) {
+    return this.http.delete(`http://localhost:5002/api/issues/${issueId}/assignee/${assigneeId}`);
+  }
+
 }

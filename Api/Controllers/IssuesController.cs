@@ -184,6 +184,24 @@ namespace Api.Controllers
 
             return BadRequest(new { message = "Error deleting the issue." });
         }
+        
+        // POST /api/issues/:id/starred
+        [HttpPost("{id}/starred")]
+        public async Task<IActionResult> Starred([FromRoute] string id, [FromBody] IsStarredDto dto)
+        {
+            var userId = User.GetUserId();
+            var issue = await _repo.GetIssue(id);
+            var issuedTo = issue.IssuedTo.FirstOrDefault(user => user.UserId == userId);
+
+            if (issuedTo == null)
+                return NotFound(new { message = "User not found." });
+
+            issuedTo.IsStarred = dto.IsStarred;
+
+            if (await _repo.SaveAll())
+                return Ok();
+            return BadRequest(new { message = "Error updating the issue." });
+        }
 
         // POST /api/issues/:id/assign
         [HttpPost("{id}/assign")]
@@ -214,21 +232,26 @@ namespace Api.Controllers
             return BadRequest(new { message = "Error assigning the issue." });
         }
 
-        [HttpPost("{id}/starred")]
-        public async Task<IActionResult> Starred([FromRoute] string id, [FromBody] IsStarredDto dto)
+        // DELETE /api/issues/:issueId/assignee/:assigneeId
+        [HttpDelete("{issueId}/assignee/{assigneeId}")]
+        public async Task<IActionResult> DeleteAssignee([FromRoute] string issueId, [FromRoute] string assigneeId)
         {
             var userId = User.GetUserId();
-            var issue = await _repo.GetIssue(id);
-            var issuedTo = issue.IssuedTo.FirstOrDefault(user => user.UserId == userId);
+            var issue = await _repo.GetIssue(issueId);
 
-            if (issuedTo == null)
-                return NotFound(new { message = "User not found." });
+            if (issue.CreatedBy != userId)
+                return Unauthorized(new { message = "You do not have the authorization to remove assignees." });
 
-            issuedTo.IsStarred = dto.IsStarred;
+            var issueUser = issue.IssuedTo.FirstOrDefault(iu => iu.UserId == assigneeId);
+
+            if (issueUser == null)
+                return NotFound(new { message = "Issued to user not found." });
+
+            issue.IssuedTo.Remove(issueUser);
 
             if (await _repo.SaveAll())
                 return Ok();
-            return BadRequest(new { message = "Error updating the issue." });
+            return BadRequest(new { message = "Error deleting issued to user." });
         }
     }
 }

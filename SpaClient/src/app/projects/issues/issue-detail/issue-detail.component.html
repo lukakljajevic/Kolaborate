@@ -27,7 +27,7 @@
           </li>
         </ul>
       </div>
-      <button class="btn btn-star" (click)="updateStarred()">
+      <button class="btn btn-star" *ngIf="issuedToCurrentUser" (click)="updateStarred()">
         <fa-icon [icon]="[isStarred ? 'fas': 'far', 'star']" size="lg" [ngClass]="{'gold': isStarred}"></fa-icon>
       </button>
     </div>
@@ -156,6 +156,7 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Full Name</th>
+              <th scope="col">Username</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -163,8 +164,9 @@
             <tr *ngFor="let assignee of issue.issuedTo; let i = index">
               <th>{{i+1}}</th>
               <td>{{assignee.fullName}}</td>
+              <td>{{assignee.username}}</td>
               <td>
-                <button class="btn btn-outline-danger">
+                <button class="btn btn-outline-danger" (click)="deleteAssignee(assignee, assigneesModal)">
                   <fa-icon [icon]="['far', 'trash-alt']" size="md"></fa-icon> Remove
                 </button>
               </td>

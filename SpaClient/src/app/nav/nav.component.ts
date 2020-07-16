@@ -26,6 +26,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authSubscription = this.oidcSecurityService.checkAuth().subscribe(auth => {
+      console.log('nav auth ' + auth);
       this.isAuthenticated = auth;
       if (this.isAuthenticated) {
         this.fullName = this.authService.getFullName();
@@ -34,6 +35,8 @@ export class NavComponent implements OnInit, OnDestroy {
           this.recentProjects = projects;
         });
         this.projectsService.getRecentProjects();
+      } else {
+        // this.oidcSecurityService.authorize();
       }
     });
   }

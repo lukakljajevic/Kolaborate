@@ -1,0 +1,52 @@
+﻿.form-container {
+    height: 100vh;
+    position: relative;
+}
+
+form {
+    width: 375px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-row {
+    margin-bottom: 16px;
+}
+
+.form-row h3 {
+    width: 100%;
+    text-align: center;
+}
+
+.form-row span {
+    margin-right: 4px;
+}
+
+.form-row p {
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #a3a3a3;
+}
+
+.btn-default {
+    background-color: rgb(244, 245, 247);
+}
+
+.btn-default:hover {
+    background-color: lightgray;
+}
+
+.btn-default i {
+    color: #3b5998;
+}
+
+.btn-default img {
+    width: 13.7px;
+    margin-bottom: 3px;
+}
+

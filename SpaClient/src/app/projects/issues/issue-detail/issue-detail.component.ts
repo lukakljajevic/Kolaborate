@@ -10,6 +10,7 @@ import { Project } from 'src/app/models/project';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { IssuesService } from 'src/app/services/issues.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { IssueUser } from 'src/app/models/issue-user';
 
 @Component({
   selector: 'app-issue-detail',
@@ -42,6 +43,7 @@ export class IssueDetailComponent implements OnInit {
   };
 
   isStarred: boolean;
+  issuedToCurrentUser: boolean;
 
   project: Project;
   userFullName = '';
@@ -57,7 +59,13 @@ export class IssueDetailComponent implements OnInit {
       console.log(data.results);
       this.issue = data.results.issue;
       this.project = data.results.project;
-      this.isStarred = this.issue.issuedTo.find(user => user.id === this.authService.getUserId()).isStarred;
+
+      const index = this.issue.issuedTo.findIndex(user => user.id === this.authService.getUserId())
+      this.issuedToCurrentUser = index > -1 ? true : false;
+
+      if (this.issuedToCurrentUser) {
+        this.isStarred = this.issue.issuedTo[index].isStarred;
+      }
     });
 
     this.users$ = new Observable((observer: Observer<string>) => {
@@ -149,6 +157,22 @@ export class IssueDetailComponent implements OnInit {
   updateStarred() {
     this.isStarred = !this.isStarred;
     this.issuesService.updateIsStarred(this.issue.id, this.isStarred);
+  }
+
+  deleteAssignee(assignee: IssueUser, modal: ModalDirective) {
+    if (this.issue.issuedTo.length === 1) {
+      alert('You are not allowed to remove last issued to user.');
+      return modal.hide();
+    }
+    console.log(assignee);
+    this.issuesService.deleteAssignee(this.issue.id, assignee.id)
+      .subscribe({
+        next: () => {
+          const index = this.issue.issuedTo.findIndex(iu => iu.id === assignee.id);
+          this.issue.issuedTo.splice(index, 1);
+          modal.hide();
+        }
+      });
   }
 
 }

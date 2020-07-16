@@ -16,7 +16,7 @@ namespace IdentityServer
         public static IEnumerable<IdentityResource> IdentityResources = new List<IdentityResource>
         {
             new IdentityResources.OpenId(),
-            new IdentityResources.Profile()
+            new IdentityResources.Profile(),
         };
 
         public static IEnumerable<ApiResource> ApiResources = new List<ApiResource>
@@ -24,14 +24,7 @@ namespace IdentityServer
             new ApiResource
             {
                 Name = "api",
-                Scopes =
-                {
-                    new Scope
-                    {
-                        Name = "api.full_access",
-                        DisplayName = "Full access to API"
-                    }
-                }
+                Scopes = { "api.full_access" }
             }
         };
 
@@ -58,6 +51,11 @@ namespace IdentityServer
                 RequireConsent = false,
                 AllowedCorsOrigins = { "http://localhost:4200" }
             }
+        };
+
+        public static IEnumerable<ApiScope> ApiScopes = new List<ApiScope>
+        {
+            new ApiScope("api.full_access")
         };
 
     }
