@@ -9,7 +9,7 @@
     <h3>{{project.name}} board</h3>
   </div>
   <div class="col-md-2">
-    <div>
+    <div class="project-options">
       <!-- <button class="btn"><fa-icon [icon]="['far', 'star']" size="lg"></fa-icon></button> -->
       <div class="btn-group" dropdown placement="bottom right" *ngIf="currentUserRole === 'manager'">
         <button id="project-options-button" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated"><fa-icon [icon]="['fas', 'cog']" size="lg"></fa-icon></button>
@@ -23,7 +23,7 @@
   </div>
 </div>
 <div class="row" id="filter">
-  <div class="col-lg-2">
+  <div class="col-md-2">
     <div class="inner-addon right-addon" tabindex="1"> 
       <fa-icon [icon]="['fas', 'search']" class="icon"></fa-icon>
       <input 
@@ -35,7 +35,7 @@
         placeholder="Search" />
     </div>
   </div>
-  <div class="col-lg-2 max-width-150">
+  <div class="col-md-2 max-width-150">
     <select 
       [(value)]="issueType"
       (input)="search($event)" 
@@ -46,7 +46,7 @@
       <option value="bug">Bug</option>
     </select>
   </div>
-  <div class="col-lg-2 max-width-150">
+  <div class="col-md-2 max-width-150">
     <select 
       [(value)]="label"
       (input)="search($event)"
@@ -56,34 +56,57 @@
       <option *ngFor="let l of labels" [value]="l.name">{{l.name}}</option>
     </select>
   </div>
-  <div class="col-lg-1">
+  <div id="invite" class="col-md-6" >
+    <button
+      *ngFor="let user of project.projectUsers; let i = index"
+      class="btn"
+      [ngClass]="{
+        'btn-primary': user.userId === filterUserId,
+        'btn-default': user.userId !== filterUserId,
+        'margin-right-10': currentUserRole !== 'manager' && i === project.projectUsers.length - 1
+      }"
+      class="z-{{project.projectUsers.length - i}}"
+      tooltip="{{user.userFullName}}"
+      (click)="setFilterUserId(user.userId)">
+        {{getInitials(user.userFullName)}}
+    </button>
+    <button 
+      *ngIf="currentUserRole === 'manager'"
+      class="btn btn-default"
+      [ngClass]="{'margin-right-10': currentUserRole === 'manager'}"
+      id="invite-btn" 
+      (click)="openModal(inviteModal)"
+      tooltip="Add people">
+        <fa-icon [icon]="['fas', 'users']" class="icon"></fa-icon>
+    </button>
     <button 
       class="btn btn-outline-warning" 
       (click)="resetFilters()"
       *ngIf="viewResetFilter()">Reset</button>
   </div>
 </div>
-<div class="row" id="invite" *ngIf="currentUserRole === 'manager'">
+<!-- <div class="row" id="invite" *ngIf="currentUserRole === 'manager'">
   <div class="col-md-12">
     <button
-      *ngFor="let user of project.projectUsers"
+      *ngFor="let user of project.projectUsers; let i = index"
       class="btn"
       [ngClass]="{
         'btn-primary': user.userId === filterUserId,
-        'btn-outline-primary': user.userId !== filterUserId
+        'btn-default': user.userId !== filterUserId
       }"
+      class="z-{{project.projectUsers.length - i}}"
       tooltip="{{user.userFullName}}"
       (click)="setFilterUserId(user.userId)">
         {{getInitials(user.userFullName)}}
     </button>
     <button 
-      class="btn btn-outline-primary" 
+      class="btn btn-default" 
       (click)="openModal(inviteModal)"
       tooltip="Add people">
         <fa-icon [icon]="['fas', 'users']" class="icon"></fa-icon>
     </button>
   </div>
-</div>
+</div> -->
 
 <app-phase-list 
   [project]="project"
