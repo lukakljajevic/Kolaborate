@@ -55,13 +55,25 @@ h5 {
   margin: 0;
 }
 
-#in-progress, #to-do {
+#in-progress, #to-do, #done {
   margin-top: 24px;
   color: rgb(107, 119, 140);
   font-weight: 600;
   font-size: 13px;
   line-height: 16px;
   margin-bottom: 0;
+}
+
+.issue-done {
+  /* background-color: #f5f6f8; */
+}
+
+.issue-done .issue-name {
+  text-decoration: line-through #bcbcbc solid;
+}
+
+.issue-done .task, .issue-done .bug {
+  color: #bcbcbc;
 }
 
 .issue-content {

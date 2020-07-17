@@ -82,7 +82,21 @@
       </a>
     </tab>
     <tab heading="Completed">
-
+      <h6 id="done">DONE</h6>
+      <a 
+        class="issue issue-done" 
+        *ngFor="let issue of done"
+        [routerLink]="['/projects', issue.project.id, 'issues', issue.id]">
+        <div class="issue-logo">
+          <fa-icon *ngIf="issue.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+          <fa-icon *ngIf="issue.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+        </div>
+        <span class="issue-content">
+          <span class="issue-name">{{issue.name}}</span>
+          <small class="issue-project">{{issue.project.name}}</small>
+        </span>
+        <span class="issue-status">Done</span>
+      </a>
     </tab>
 
   </tabset>

@@ -17,9 +17,10 @@ export class YourWorkComponent implements OnInit, OnDestroy {
   recentProjects: ProjectListItem[];
 
   toDo: IssueListItem[] = [];
-  inProgress: IssueListItem[] = [];
   toDoStarred: IssueListItem[] = [];
+  inProgress: IssueListItem[] = [];
   inProgressStarred: IssueListItem[] = [];
+  done: IssueListItem[] = [];
 
   constructor(private projectsService: ProjectsService,
               private issuesService: IssuesService) { }
@@ -39,15 +40,7 @@ export class YourWorkComponent implements OnInit, OnDestroy {
       this.inProgress.push(...issueUsers.filter(iu => !iu.isStarred && iu.issue.status === 'in_progress').map(iu => iu.issue));
       this.toDoStarred.push(...issueUsers.filter(iu => iu.isStarred && iu.issue.status === 'to_do').map(iu => iu.issue));
       this.inProgressStarred.push(...issueUsers.filter(iu => iu.isStarred && iu.issue.status === 'in_progress').map(iu => iu.issue));
-
-      // console.log('TO_DO:');
-      // console.log(this.toDo);
-      // console.log('IN_PROGRESS:');
-      // console.log(this.inProgress);
-      // console.log('TO_DO STARRED:');
-      // console.log(this.toDoStarred);
-      // console.log('IN_PROGRESS STARRED:');
-      // console.log(this.inProgressStarred);
+      this.done.push(...issueUsers.filter(iu => iu.issue.status === 'done').map(iu => iu.issue));
     });
   }
 
