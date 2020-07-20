@@ -2,6 +2,7 @@
 using IdentityServer.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Controllers
 {
+
     public class AuthController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -99,6 +101,19 @@ namespace IdentityServer.Controllers
         {
             var user = await _userManager.FindByIdAsync(userId);
             return user.FullName;
+        }
+
+        [HttpPost]
+        [Route("auth/password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(dto.UserId);
+            var result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+
+            if (result.Succeeded)
+                return Ok();
+
+            return BadRequest();
         }
     }
 }

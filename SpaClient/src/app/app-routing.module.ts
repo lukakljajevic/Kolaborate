@@ -10,6 +10,7 @@ import { ProjectListComponent } from './projects/project-list/project-list.compo
 import { ProjectDetailResolverService } from './services/resolvers/project-detail-resolver.service';
 import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detail.component';
 import { IssueDetailResolverService } from './services/resolvers/issue-detail-resolver.service';
+import { AccountComponent } from './account/account.component';
 
 const routes: Routes = [
   {
@@ -46,9 +47,13 @@ const routes: Routes = [
     component: UnauthorizedComponent
   },
   {
-    path: '',
-    component: HomeComponent
+    path: 'account',
+    component: AccountComponent
   },
+  // {
+  //   path: '',
+  //   component: HomeComponent
+  // },
   {
     path: '**',
     component: HomeComponent

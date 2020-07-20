@@ -1,5 +1,6 @@
 ﻿using IdentityServer.Helpers;
 using IdentityServer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -30,5 +32,8 @@ namespace IdentityServer.Controllers
                 .Select(u => new { u.Id, u.FullName, u.UserName });
             return Ok(users);
         }
+
+        
+        
     }
 }

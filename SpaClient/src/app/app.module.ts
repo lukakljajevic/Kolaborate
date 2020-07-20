@@ -36,6 +36,7 @@ import { NgbdSortableHeader } from './services/sortable.directive';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detail.component';
+import { AccountComponent } from './account/account.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
    return () =>
@@ -64,7 +65,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       ProjectListComponent,
       PhaseListComponent,
       NgbdSortableHeader,
-      IssueDetailComponent
+      IssueDetailComponent,
+      AccountComponent
    ],
    imports: [
       BrowserModule,

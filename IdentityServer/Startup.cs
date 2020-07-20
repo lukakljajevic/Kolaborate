@@ -53,6 +53,8 @@ namespace IdentityServer
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "IdentityServer.Cookie";
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.LoginPath = "/Auth/Login";
                 options.LogoutPath = "/Auth/Logout";
             });
@@ -98,7 +100,7 @@ namespace IdentityServer
             app.UseCors("MyPolicy");
 
             app.UseRouting();
-
+            
             app.UseIdentityServer();
 
             app.UseEndpoints(endpoints =>

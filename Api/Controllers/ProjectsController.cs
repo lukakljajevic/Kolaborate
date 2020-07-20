@@ -47,6 +47,7 @@ namespace Api.Controllers
 
             var userId = User.GetUserId();
             var userFullName = User.GetUserFullName();
+            var username = User.GetUsername();
 
             var newProject = _mapper.Map<Project>(dto);
             newProject.CreatedBy = userId;
@@ -60,6 +61,7 @@ namespace Api.Controllers
                 {
                     ProjectId = newProject.Id,
                     UserId = userId,
+                    Username = username,
                     UserFullName = userFullName,
                     UserRole = Constants.Roles.MANAGER,
                     LastActive = DateTime.Now

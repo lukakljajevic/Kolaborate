@@ -10,6 +10,7 @@ import { ProjectsService } from 'src/app/services/projects.service';
 export class ProjectCreateComponent implements OnInit {
 
   projectCreateForm: FormGroup;
+
   constructor(private projectsService: ProjectsService) { }
 
   ngOnInit() {
@@ -28,9 +29,9 @@ export class ProjectCreateComponent implements OnInit {
   }
 }
 
-function validateDates(control: FormGroup): ValidationErrors | null {
-  const startDate = control.get('startDate').value;
-  const endDate = control.get('endDate').value;
+function validateDates(form: FormGroup): ValidationErrors | null {
+  const startDate = form.get('startDate').value;
+  const endDate = form.get('endDate').value;
   if ((startDate && endDate && !((startDate as Date) < (endDate as Date))) || (!startDate && endDate)) {
     return {datesInvalid: true};
   }

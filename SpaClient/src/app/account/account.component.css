@@ -1,0 +1,21 @@
+.container {
+  max-width: 75%;
+}
+
+h2 {
+  margin-top: 32px;
+  margin-bottom: 48px;
+}
+
+.row {
+  margin-bottom: 12px;
+}
+
+.input-group-text, fa-icon {
+  width: 46px;
+}
+
+h5 {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}

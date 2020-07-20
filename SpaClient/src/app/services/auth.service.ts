@@ -38,6 +38,10 @@ export class AuthService {
     return this.userId;
   }
 
+  updatePassword(currentPassword: string, newPassword: string) {
+    return this.http.post('http://localhost:5000/auth/password', {currentPassword, newPassword, userId: this.userId});
+  }
+
 }
 
 
