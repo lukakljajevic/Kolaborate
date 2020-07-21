@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Helpers;
+using IdentityServer.Helpers.DTOs;
 using IdentityServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -33,7 +33,32 @@ namespace IdentityServer.Controllers
             return Ok(users);
         }
 
-        
+        [HttpPost("taken")]
+        public async Task<IActionResult> CheckUsername([FromBody] CheckUsernameDto dto)
+        {
+            var user = await _userManager.FindByNameAsync(dto.Username);
+            if (user == null)
+                return Ok(new { isTaken = false });
+            return Ok(new { isTaken = true });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UserUpdateDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return NotFound();
+
+            user.FullName = dto.FullName;
+            user.UserName = dto.Username;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (updateResult.Succeeded)
+                return Ok();
+            return BadRequest();
+        }
         
     }
 }

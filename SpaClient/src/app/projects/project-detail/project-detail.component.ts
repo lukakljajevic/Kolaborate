@@ -66,7 +66,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       this.initializeLabelsFilter();
       this.previewPhases = JSON.parse(JSON.stringify(data.project.phases));
       this.projectsService.getRecentProjects();
-      this.currentUserRole = this.project.projectUsers.find(pu => pu.userId === this.authService.getUserId()).userRole;
+      this.currentUserRole = this.project.projectUsers.find(pu => pu.userId === this.authService.userId).userRole;
     });
 
     this.users$ = new Observable((observer: Observer<string>) => {
@@ -261,7 +261,9 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   getInitials(fullName: string) {
     const namesArray = fullName.split(' ');
-    if (namesArray.length === 1) return `${namesArray[0].charAt(0)}`;
+    if (namesArray.length === 1) {
+      return `${namesArray[0].charAt(0)}`;
+    }
     return `${namesArray[0].charAt(0)}${namesArray[namesArray.length - 1].charAt(0)}`;
   }
 

@@ -42,8 +42,8 @@ namespace Api
             services.AddCors(options =>
                 options.AddPolicy("AllowAll", p =>
                     p.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader())
+                     .AllowAnyMethod()
+                     .AllowAnyHeader())
                 );
 
             services.AddScoped<IBugTrackerRepository, BugTrackerRepository>();

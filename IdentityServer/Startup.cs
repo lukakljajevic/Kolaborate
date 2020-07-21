@@ -27,12 +27,11 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
+            services.AddCors(o => 
+                o.AddPolicy("MyPolicy", p =>
+                    p.AllowAnyOrigin()
+                     .AllowAnyMethod()
+                     .AllowAnyHeader()));
 
             services.AddDbContext<AppDbContext>(options =>
             {
@@ -100,7 +99,7 @@ namespace IdentityServer
             app.UseCors("MyPolicy");
 
             app.UseRouting();
-            
+
             app.UseIdentityServer();
 
             app.UseEndpoints(endpoints =>

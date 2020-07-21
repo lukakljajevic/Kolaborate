@@ -16,6 +16,7 @@ export class NavComponent implements OnInit, OnDestroy {
   fullName: string;
   isAuthenticated: boolean;
   authSubscription: Subscription;
+  userDataSubscription: Subscription;
   recentProjects: ProjectListItem[];
   recentProjectsSubscription: Subscription;
 
@@ -26,19 +27,21 @@ export class NavComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authSubscription = this.oidcSecurityService.checkAuth().subscribe(auth => {
-      console.log('nav auth ' + auth);
       this.isAuthenticated = auth;
       if (this.isAuthenticated) {
-        this.fullName = this.authService.getFullName();
+        this.fullName = this.authService.fullName;
         this.router.navigate(['/your-work']);
         this.recentProjectsSubscription = this.projectsService.recentProjects$.subscribe(projects => {
           this.recentProjects = projects;
         });
         this.projectsService.getRecentProjects();
-      } else {
-        // this.oidcSecurityService.authorize();
       }
     });
+
+    this.userDataSubscription = this.authService.userData$
+      .subscribe(data => {
+        this.fullName = data.fullName;
+      });
   }
 
   ngOnDestroy() {

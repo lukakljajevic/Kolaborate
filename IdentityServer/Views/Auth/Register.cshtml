@@ -1,36 +1,5 @@
 ﻿@model IdentityServer.Helpers.RegisterViewModel
 
-@*<form asp-controller="Auth" asp-action="Register" method="post">
-    <input type="hidden" asp-for="ReturnUrl" />
-    <div>
-        <label>Username</label>
-        <input asp-for="Username" />
-    </div>
-    <div>
-        <label>Full Name</label>
-        <input asp-for="FullName" />
-    </div>
-    <div>
-        <label>Password</label>
-        <input asp-for="Password" />
-    </div>
-    <div>
-        <label>Confirm Password</label>
-        <input asp-for="ConfirmPassword" />
-    </div>
-    <div>
-        <button type="submit">Sign Up</button>
-    </div>
-</form>
-
-<div>
-    <a asp-controller="Auth"
-       asp-action="Login"
-       asp-route-returnUrl="@Model.ReturnUrl">
-        Sign In
-    </a>
-</div>*@
-
 <div class="form-container">
     <form asp-controller="Auth" asp-action="Register" method="post">
         <div class="form-row">
@@ -39,19 +8,19 @@
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="form-row">
             <label>Username</label>
-            <input asp-for="Username" class="form-control" placeholder="Username" />
+            <input asp-for="Username" class="form-control" />
         </div>
         <div class="form-row">
             <label>Full name</label>
-            <input asp-for="FullName" class="form-control" placeholder="Full name" />
+            <input asp-for="FullName" class="form-control" />
         </div>
         <div class="form-row">
             <label>Password</label>
-            <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+            <input asp-for="Password" type="password" class="form-control" />
         </div>
         <div class="form-row">
             <label>Confirm password</label>
-            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
+            <input asp-for="ConfirmPassword" type="password" class="form-control" />
         </div>
         <div class="form-row">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
