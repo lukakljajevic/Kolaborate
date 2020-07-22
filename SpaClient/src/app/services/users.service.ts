@@ -20,8 +20,14 @@ export class UsersService {
     return this.http.post<{isTaken: boolean}>('http://localhost:5000/users/taken', {username});
   }
 
-  updateUserSettings(userData: {username: string, fullName: string}) {
+  updateUserSettings(userData: {username: string, fullName: string, avatar: File}) {
     const userId = this.authService.userId;
-    return this.http.put(`http://localhost:5000/users/${userId}`, userData);
+
+    const formData = new FormData();
+    formData.append('username', userData.username);
+    formData.append('fullName', userData.fullName);
+    formData.append('avatar', userData.avatar, userData.avatar.name);
+
+    return this.http.put(`http://localhost:5000/users/${userId}`, formData);
   }
 }

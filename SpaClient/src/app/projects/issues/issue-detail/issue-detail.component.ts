@@ -60,7 +60,7 @@ export class IssueDetailComponent implements OnInit {
       this.issue = data.results.issue;
       this.project = data.results.project;
 
-      const index = this.issue.issuedTo.findIndex(user => user.id === this.authService.getUserId())
+      const index = this.issue.issuedTo.findIndex(user => user.id === this.authService.userId)
       this.issuedToCurrentUser = index > -1 ? true : false;
 
       if (this.issuedToCurrentUser) {

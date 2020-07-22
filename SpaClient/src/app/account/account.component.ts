@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Observable, of } from 'rxjs';
 import { UsersService } from '../services/users.service';
 import { map, catchError, tap } from 'rxjs/operators';
 import { UsernameValidator } from '../helpers/username-validator';
+import { ImageCroppedEvent, base64ToFile } from 'ngx-image-cropper';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-account',
@@ -15,6 +17,14 @@ export class AccountComponent implements OnInit {
 
   userSettingsForm: FormGroup;
   passwordForm: FormGroup;
+
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  croppedImagePreview: any = '';
+  imageFileName = '';
+  @ViewChild('cropModal', {static: false})
+  cropModal: ModalDirective;
+  fileToUpload: File;
 
   constructor(private authService: AuthService,
               private usersService: UsersService) { }
@@ -35,6 +45,8 @@ export class AccountComponent implements OnInit {
       newPassword: new FormControl(''),
       confirmNewPassword: new FormControl('')
     }, {validators: [validatePasswords]});
+
+    this.croppedImagePreview = this.authService.avatar;
   }
 
   changePassword() {
@@ -71,32 +83,82 @@ export class AccountComponent implements OnInit {
     const username = this.userSettingsForm.value.username;
     const fullName = this.userSettingsForm.value.fullName;
 
-    console.log(this.userSettingsForm.value);
-
-    if (!this.userSettingsForm.valid
-        || (username === this.authService.username
-            && fullName === this.authService.fullName)) {
+    if (!this.userSettingsForm.valid) {
       return;
     }
-    console.log('here');
-    this.usersService.updateUserSettings({username, fullName})
-      .subscribe(() => {
+
+    this.usersService.updateUserSettings({username, fullName, avatar: this.fileToUpload})
+      .subscribe((response: {avatarUrl: string}) => {
         alert('Successfully updated the user');
         const storageItem: {
           fullName: string,
           name: string,
           preferred_username: string,
+          avatar: string,
           sub: string} = JSON.parse(sessionStorage.getItem('angular_spa_userData'));
         storageItem.name = username;
         storageItem.preferred_username = username;
         storageItem.fullName = fullName;
+        storageItem.avatar = response.avatarUrl;
         sessionStorage.setItem('angular_spa_userData', JSON.stringify(storageItem));
 
         this.authService.username = username;
         this.authService.fullName = fullName;
+        this.authService.avatar = response.avatarUrl;
         this.authService.refreshUserData();
 
       }, () => alert('Error updating the user'));
+  }
+
+  fileChangeEvent(event: any): void {
+    const name = event.srcElement.files[0].name;
+    // this.fileToUpload = event.srcElement.files[0];
+    this.imageFileName = name;
+    this.imageChangedEvent = event;
+    this.cropModal.show();
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64;
+    this.fileToUpload = new File([base64ToFile(event.base64)], this.imageFileName);
+  }
+
+  imageLoaded() {
+    // show cropper
+  }
+  cropperReady() {
+      // cropper ready
+  }
+  loadImageFailed() {
+      // show message
+  }
+
+  cropImage() {
+    this.croppedImagePreview = this.croppedImage;
+    this.cropModal.hide();
+  }
+
+  showModal(modal: ModalDirective) {
+    modal.show();
+  }
+
+  hideModal(modal: ModalDirective) {
+    modal.hide();
+  }
+
+  getImageName() {
+    return this.imageFileName === '' ? 'Choose file' : this.imageFileName;
+  }
+
+  isSaveSettingsButtonEnabled(): boolean {
+    const username = this.userSettingsForm.get('username').value;
+    const fullName = this.userSettingsForm.get('fullName').value;
+    const avatar = this.userSettingsForm.get('avatar').value;
+
+    return this.userSettingsForm.valid &&
+           (username !== this.authService.username ||
+            fullName !== this.authService.fullName ||
+            avatar !== null);
   }
 
 }

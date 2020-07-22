@@ -11,6 +11,7 @@ export class AuthService {
   private _fullName: string;
   private _userId: string;
   private _username: string;
+  private _avatar: string;
   private _userData: Subject<{fullName: string, username: string}> = new Subject();
 
   constructor(private http: HttpClient,
@@ -20,6 +21,7 @@ export class AuthService {
         this._fullName = userData.fullName;
         this._userId = userData.sub;
         this._username = userData.name;
+        this._avatar = userData.avatar;
       }
     });
   }
@@ -41,6 +43,10 @@ export class AuthService {
   get username() { return this._username; }
 
   set username(value: string) { this._username = value; }
+
+  get avatar() { return this._avatar === '' ? 'assets/default-avatar.png' : `http://localhost:5000/${this._avatar}`; }
+
+  set avatar(value: string) { this._avatar = value; }
 
   updatePassword(currentPassword: string, newPassword: string) {
     return this.http.post('http://localhost:5000/auth/password', {currentPassword, newPassword, userId: this.userId});

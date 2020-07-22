@@ -15,7 +15,11 @@ h2 {
   width: 46px;
 }
 
-h5 {
+.password-header {
   margin-top: 32px;
   margin-bottom: 32px;
+}
+
+img {
+  width: 100%;
 }

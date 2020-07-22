@@ -22,7 +22,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   constructor(private oidcSecurityService: OidcSecurityService,
               private projectsService: ProjectsService,
-              private authService: AuthService,
+              public authService: AuthService,
               private router: Router) { }
 
   ngOnInit() {

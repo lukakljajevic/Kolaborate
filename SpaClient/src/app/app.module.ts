@@ -4,9 +4,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe, CommonModule } from '@angular/common';
-
 import { AuthModule, LogLevel, OidcConfigService } from 'angular-auth-oidc-client';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from 'src/app/guards/auth.guard';
@@ -17,7 +15,6 @@ import { YourWorkComponent } from './your-work/your-work.component';
 import { HomeComponent } from './home/home.component';
 import { ProjectCreateComponent } from './projects/project-create/project-create.component';
 import { ProjectsService } from './services/projects.service';
-
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ProjectDetailComponent } from './projects/project-detail/project-detail.component';
@@ -25,7 +22,6 @@ import { ProjectListComponent } from './projects/project-list/project-list.compo
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { TokenInterceptor } from './services/token.interceptor';
-
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { PhaseListComponent } from './projects/phase-list/phase-list.component';
@@ -37,6 +33,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detail.component';
 import { AccountComponent } from './account/account.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
    return () =>
@@ -85,7 +82,8 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       TypeaheadModule.forRoot(),
       TabsModule.forRoot(),
       ModalModule.forRoot(),
-      TooltipModule.forRoot()
+      TooltipModule.forRoot(),
+      ImageCropperModule
    ],
    providers: [
       AuthGuard,

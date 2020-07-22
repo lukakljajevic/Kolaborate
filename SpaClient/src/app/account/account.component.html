@@ -58,13 +58,23 @@
         </div>
         <div class="custom-file">
           <input 
-            type="file" 
+            type="file"
+            (change)="fileChangeEvent($event)" 
             class="custom-file-input" 
             formControlName="avatar"
             aria-describedby="avatar">
-          <label class="custom-file-label" for="avatar">Choose file</label>
+          <label class="custom-file-label" for="avatar">{{getImageName()}}</label>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="croppedImagePreview !== ''">
+    <div class="col-sm-2">
+      <label class="col-form-label">Avatar preview: </label>
+    </div>
+    <div class="col-sm-4">
+      <img [src]="croppedImagePreview" />
     </div>
   </div>
 
@@ -73,12 +83,12 @@
       <button 
         class="btn btn-block btn-primary"
         type="submit"
-        [disabled]="!userSettingsForm.valid">Save settings</button>
+        [disabled]="!isSaveSettingsButtonEnabled()">Save settings</button>
     </div>
   </div>
 </form>
 
-<h5>Change your password</h5>
+<h5 class="password-header">Change your password</h5>
 <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
   <!-- Current password -->
   <div class="row">
@@ -151,3 +161,33 @@
     </div>
   </div>
 </form>
+
+<!-- Image cropping modal -->
+<div class="modal fade" 
+     bsModal 
+     #cropModal="bs-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Crop your image</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(cropModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <image-cropper
+            [imageChangedEvent]="imageChangedEvent"
+            [maintainAspectRatio]="true"
+            [aspectRatio]="1 / 1"
+            format="png"
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded()"
+            (cropperReady)="cropperReady()"
+            (loadImageFailed)="loadImageFailed()"></image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-success" (click)="cropImage()">Save</button>
+      </div>
+    </div>
+  </div>   
+</div>

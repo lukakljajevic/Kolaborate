@@ -24,11 +24,16 @@ namespace IdentityServer.Services
         {
             var user = await _userManager.GetUserAsync(context.Subject);
 
+            var avatar = "";
+            if (user.Avatar != null)
+                avatar = user.Avatar;
+
             var claims = new List<Claim>
             {
                 new Claim("name", user.UserName),
                 new Claim("preferred_username", user.UserName),
-                new Claim("fullName", user.FullName)
+                new Claim("fullName", user.FullName),
+                new Claim("avatar", avatar)
             };
 
             context.IssuedClaims.AddRange(claims);

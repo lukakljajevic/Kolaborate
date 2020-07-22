@@ -7,6 +7,23 @@
   color: rgba(0, 0, 0, .65);
 }
 
+.nav-item span {
+  vertical-align: middle;
+  line-height: 26px;
+  padding-left: 6px;
+}
+
+.nav-item img {
+  /* width: 26px; */
+  height: 26px;
+  border-radius: 50%;
+  /* padding-bottom: 2px; */
+}
+
+.dropdown-toggle::after {
+  vertical-align: .1em;
+}
+
 .dropdown-item {
   padding-left: 16px;
   padding-right: 16px;
