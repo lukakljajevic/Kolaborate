@@ -50,7 +50,12 @@ namespace IdentityServer.Controllers
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
-                return NotFound();
+                return NotFound(new { message = "User not found." });
+
+            var validPassword = await _userManager.CheckPasswordAsync(user, dto.Password);
+            
+            if (!validPassword)
+                return BadRequest(new { message = "Invalid password." });
 
             user.FullName = dto.FullName;
             user.UserName = dto.Username;
@@ -59,7 +64,7 @@ namespace IdentityServer.Controllers
             var folderName = Path.Combine("Resources", "Avatars");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
-            if (avatar.Length > 0)
+            if (avatar != null && avatar.Length > 0)
             {
                 var fileName = ContentDispositionHeaderValue.Parse(avatar.ContentDisposition).FileName.Trim('"');
                 var fileExtension = fileName.Split('.')[^1];

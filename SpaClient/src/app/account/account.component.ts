@@ -26,6 +26,10 @@ export class AccountComponent implements OnInit {
   cropModal: ModalDirective;
   fileToUpload: File;
 
+  @ViewChild('passwordModal', {static: false})
+  passwordModal: ModalDirective;
+  password = '';
+
   constructor(private authService: AuthService,
               private usersService: UsersService) { }
 
@@ -37,7 +41,8 @@ export class AccountComponent implements OnInit {
         asyncValidators: UsernameValidator.createValidator(this.authService, this.usersService)
       }),
       fullName: new FormControl(this.authService.fullName, Validators.required),
-      avatar: new FormControl(null)
+      avatar: new FormControl(null),
+      password: new FormControl('', Validators.required)
     });
 
     this.passwordForm = new FormGroup({
@@ -79,40 +84,49 @@ export class AccountComponent implements OnInit {
     );
   }
 
+  submitUserSettingsForm() {
+    this.userSettingsForm.patchValue({password: this.password});
+    this.updateUserSettings();
+    this.password = '';
+  }
+
   updateUserSettings() {
     const username = this.userSettingsForm.value.username;
     const fullName = this.userSettingsForm.value.fullName;
+    const password = this.userSettingsForm.value.password;
 
-    if (!this.userSettingsForm.valid) {
+    if (!this.userSettingsForm.valid || password === '') {
       return;
     }
 
-    this.usersService.updateUserSettings({username, fullName, avatar: this.fileToUpload})
-      .subscribe((response: {avatarUrl: string}) => {
-        alert('Successfully updated the user');
-        const storageItem: {
-          fullName: string,
-          name: string,
-          preferred_username: string,
-          avatar: string,
-          sub: string} = JSON.parse(sessionStorage.getItem('angular_spa_userData'));
-        storageItem.name = username;
-        storageItem.preferred_username = username;
-        storageItem.fullName = fullName;
-        storageItem.avatar = response.avatarUrl;
-        sessionStorage.setItem('angular_spa_userData', JSON.stringify(storageItem));
+    this.usersService.updateUserSettings({username, fullName, avatar: this.fileToUpload, password})
+      .subscribe({
+        next: (response: {avatarUrl: string}) => {
+          alert('Successfully updated the user');
+          const storageItem: {
+            fullName: string,
+            name: string,
+            preferred_username: string,
+            avatar: string,
+            sub: string} = JSON.parse(sessionStorage.getItem('angular_spa_userData'));
+          storageItem.name = username;
+          storageItem.preferred_username = username;
+          storageItem.fullName = fullName;
+          storageItem.avatar = response.avatarUrl;
+          sessionStorage.setItem('angular_spa_userData', JSON.stringify(storageItem));
 
-        this.authService.username = username;
-        this.authService.fullName = fullName;
-        this.authService.avatar = response.avatarUrl;
-        this.authService.refreshUserData();
-
-      }, () => alert('Error updating the user'));
+          this.authService.username = username;
+          this.authService.fullName = fullName;
+          this.authService.avatar = response.avatarUrl;
+          this.authService.refreshUserData();
+          this.passwordModal.hide();
+        },
+        error: error => alert(error.error.message)
+      });
   }
 
   fileChangeEvent(event: any): void {
     const name = event.srcElement.files[0].name;
-    // this.fileToUpload = event.srcElement.files[0];
     this.imageFileName = name;
     this.imageChangedEvent = event;
     this.cropModal.show();
@@ -155,10 +169,9 @@ export class AccountComponent implements OnInit {
     const fullName = this.userSettingsForm.get('fullName').value;
     const avatar = this.userSettingsForm.get('avatar').value;
 
-    return this.userSettingsForm.valid &&
-           (username !== this.authService.username ||
-            fullName !== this.authService.fullName ||
-            avatar !== null);
+    return username !== this.authService.username ||
+           fullName !== this.authService.fullName ||
+           avatar !== null;
   }
 
 }

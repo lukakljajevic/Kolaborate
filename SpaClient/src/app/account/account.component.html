@@ -1,7 +1,7 @@
 <!-- <div class="container">
 </div> -->
 <h2>Account settings</h2>
-<form [formGroup]="userSettingsForm" (ngSubmit)="updateUserSettings()">
+<form [formGroup]="userSettingsForm">
   <!-- Username -->
   <div class="row">
     <div class="col-sm-2">
@@ -82,7 +82,8 @@
     <div class="col-sm-4 offset-sm-2">
       <button 
         class="btn btn-block btn-primary"
-        type="submit"
+        type="button"
+        (click)="showModal(passwordModal)"
         [disabled]="!isSaveSettingsButtonEnabled()">Save settings</button>
     </div>
   </div>
@@ -187,6 +188,28 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline-success" (click)="cropImage()">Save</button>
+      </div>
+    </div>
+  </div>   
+</div>
+
+<!-- Password modal -->
+<div class="modal fade" 
+     bsModal 
+     #passwordModal="bs-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Please enter your password</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(passwordModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-success" (click)="submitUserSettingsForm()">Save</button>
       </div>
     </div>
   </div>   
