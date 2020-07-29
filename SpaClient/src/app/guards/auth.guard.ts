@@ -9,18 +9,16 @@ import { map } from 'rxjs/operators';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private router: Router, private oidcSecurityService: OidcSecurityService) { }
+  constructor(private router: Router,
+              private oidcSecurityService: OidcSecurityService) { }
 
   canActivate(): Observable<boolean> {
     return this.oidcSecurityService.isAuthenticated$.pipe(
       map((isAuthorized: boolean) => {
-          console.log('AuthorizationGuard, canActivate isAuthorized: ' + isAuthorized);
-
           if (!isAuthorized) {
               this.router.navigate(['/unauthorized']);
               return false;
           }
-
           return true;
       })
     );

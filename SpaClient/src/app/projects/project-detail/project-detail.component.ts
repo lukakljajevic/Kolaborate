@@ -14,7 +14,8 @@ import { ProjectUser } from 'src/app/models/project-user';
 import { Phase } from 'src/app/models/phase';
 import { PhasesService } from 'src/app/services/phases.service';
 import { IssuesService } from 'src/app/services/issues.service';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { validateDates } from '../project-create/project-create.component';
 
 @Component({
   selector: 'app-project-detail',
@@ -43,13 +44,18 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   inviteModal: ModalDirective;
   @ViewChild('deleteModal', {static: false})
   deleteModal: ModalDirective;
+  @ViewChild('editProjectModal', {static: false})
+  editProjectModal: ModalDirective;
 
+  updatedProjectSubscription: Subscription;
   createdPhaseSubscription: Subscription;
   updatedPhaseSubscription: Subscription;
   deletedPhaseSubscription: Subscription;
   createdIssueSubscription: Subscription;
   updatedIssueSubscription: Subscription;
   deletedIssueSubscription: Subscription;
+
+  projectEditForm: FormGroup;
 
   constructor(private projectsService: ProjectsService,
               private phasesService: PhasesService,
@@ -84,6 +90,30 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         return of([]);
       })
     );
+
+    this.projectEditForm = new FormGroup({
+      name: new FormControl(this.project.name, Validators.required),
+      description: new FormControl(this.project.description, Validators.required),
+      startDate: new FormControl(this.formatDate(this.project.startDate)),
+      endDate: new FormControl(this.formatDate(this.project.endDate))
+    }, {validators: validateDates});
+
+    // Project update subscription
+    this.updatedProjectSubscription = this.projectsService.updatedProject$.subscribe({
+      next: (updatedProjectFields: {
+        name: string,
+        description: string,
+        startDate: string,
+        endDate: string
+      }) => {
+        this.project.name = updatedProjectFields.name;
+        this.project.description = updatedProjectFields.description;
+        this.project.startDate = updatedProjectFields.startDate;
+        this.project.endDate = updatedProjectFields.endDate;
+        this.closeModal(this.editProjectModal);
+      },
+      error: error => alert(error)
+    });
 
     // Phase create subscription
     this.createdPhaseSubscription = this.phasesService.createdPhase$.subscribe({
@@ -179,7 +209,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     modal.hide();
   }
 
-
   inviteUser() {
     const params = {
       projectId: this.project.id,
@@ -203,6 +232,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.selectedUser.id = e.item.id;
     this.selectedUser.username = e.item.userName;
     this.selectedUser.fullName = e.item.fullName;
+  }
+
+  updateProject() {
+    this.projectsService.updateProject(this.project.id, this.projectEditForm.value);
   }
 
   deleteProject() {
@@ -270,6 +303,16 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   setFilterUserId(id: string) {
     this.filterUserId = id;
     this.filterIssues();
+  }
+
+  formatDate(date: string) {
+    if (!date) return null;
+    const dateArray = date.split('-');
+    const day = +dateArray[2];
+    const month = +dateArray[1];
+    const year = +dateArray[0];
+    // return new Date(year, month, day);
+    return `${day}.${month}.${year}.`;
   }
 
 }

@@ -56,6 +56,8 @@ export class ProjectsService {
   private _total$ = new BehaviorSubject<number>(0);
   private _recentProjects$ = new Subject<ProjectListItem[]>();
 
+  private projectUpdated = new Subject();
+
   private _state: State = {
     page: 1,
     pageSize: 4,
@@ -70,9 +72,7 @@ export class ProjectsService {
               private router: Router) {
     this._search$.pipe(
       tap(() => this._loading$.next(true)),
-      // debounceTime(200),
       switchMap(() => this._search()),
-      // delay(200),
       tap(() => this._loading$.next(false))
     ).subscribe(result => {
       this._projects$.next(result.projects);
@@ -87,6 +87,8 @@ export class ProjectsService {
   get page() { return this._state.page; }
   get pageSize() { return this._state.pageSize; }
   get searchTerm() { return this._state.searchTerm; }
+  
+  get updatedProject$() { return this.projectUpdated.asObservable(); }
 
   set page(page: number) { this._set({page}); }
   set pageSize(pageSize: number) { this._set({pageSize}); }
@@ -153,6 +155,27 @@ export class ProjectsService {
 
   addUser(params: {projectId: string, userId: string, userFullName: string, userRole: string}) {
     return this.http.post('http://localhost:5002/api/projects/invite', params);
+  }
+
+  updateProject(id: string, data: any) {
+    if (data.startDate) {
+      data.startDate = this.datepipe.transform(data.startDate, 'yyyy-MM-dd');
+    }
+
+    if (data.endDate) {
+      data.endDate = this.datepipe.transform(data.endDate, 'yyyy-MM-dd');
+    }
+
+    this.http.put(`http://localhost:5002/api/projects/${id}`, data)
+      .subscribe({
+        next: (updatedProjectFields: {
+          name: string,
+          description: string,
+          startDate: string,
+          endDate: string
+        }) => this.projectUpdated.next(updatedProjectFields),
+        error: () => this.projectUpdated.error('Error updating the project.')
+      });
   }
 
   deleteProject(id: string) {

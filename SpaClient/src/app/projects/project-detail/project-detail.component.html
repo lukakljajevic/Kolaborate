@@ -4,6 +4,7 @@
     <li class="breadcrumb-item active" aria-current="page">{{project.name}}</li>
   </ol>
 </nav>
+
 <div class="row">
   <div class="col-md-10">
     <h3>{{project.name}} board</h3>
@@ -12,16 +13,42 @@
     <div class="project-options">
       <!-- <button class="btn"><fa-icon [icon]="['far', 'star']" size="lg"></fa-icon></button> -->
       <div class="btn-group" dropdown placement="bottom right" *ngIf="currentUserRole === 'manager'">
-        <button id="project-options-button" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated"><fa-icon [icon]="['fas', 'cog']" size="lg"></fa-icon></button>
+        <button id="project-options-button" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated">
+          <fa-icon [icon]="['fas', 'cog']" size="lg"></fa-icon>
+        </button>
         <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="project-options-button">
-          <li role="menuitem"><a class="dropdown-item" (click)="dragModeEnabled = !dragModeEnabled">{{dragModeEnabled ? 'Disable' : 'Enable'}} drag mode</a></li>
-          <li role="menuitem"><a class="dropdown-item" (click)="openModal(deleteModal)">Delete project</a></li>
+          <li role="menuitem">
+            <a class="dropdown-item" 
+               (click)="dragModeEnabled = !dragModeEnabled">{{dragModeEnabled ? 'Disable' : 'Enable'}} drag mode</a>
+          </li>
+          <li role="menuitem">
+            <a class="dropdown-item" 
+               (click)="openModal(editProjectModal)">Edit project</a>
+          </li>
+          <li role="menuitem">
+            <a class="dropdown-item" 
+               (click)="openModal(deleteModal)">Delete project</a>
+          </li>
         </ul>
       </div>
 
     </div>
   </div>
 </div>
+
+<div class="row" *ngIf="project.startDate" id="project-dates">
+  <div class="col-md-10">
+    <fa-icon [icon]="['far', 'calendar-alt']" class="icon"></fa-icon>
+    <span id="start-date">{{formatDate(project.startDate)}} - </span><span *ngIf="project.endDate">{{formatDate(project.endDate)}}</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <p>{{project.description}}</p>
+  </div>
+</div>
+
 <div class="row" id="filter">
   <div class="col-md-2">
     <div class="inner-addon right-addon" tabindex="1"> 
@@ -85,28 +112,6 @@
       *ngIf="viewResetFilter()">Reset</button>
   </div>
 </div>
-<!-- <div class="row" id="invite" *ngIf="currentUserRole === 'manager'">
-  <div class="col-md-12">
-    <button
-      *ngFor="let user of project.projectUsers; let i = index"
-      class="btn"
-      [ngClass]="{
-        'btn-primary': user.userId === filterUserId,
-        'btn-default': user.userId !== filterUserId
-      }"
-      class="z-{{project.projectUsers.length - i}}"
-      tooltip="{{user.userFullName}}"
-      (click)="setFilterUserId(user.userId)">
-        {{getInitials(user.userFullName)}}
-    </button>
-    <button 
-      class="btn btn-default" 
-      (click)="openModal(inviteModal)"
-      tooltip="Add people">
-        <fa-icon [icon]="['fas', 'users']" class="icon"></fa-icon>
-    </button>
-  </div>
-</div> -->
 
 <app-phase-list 
   [project]="project"
@@ -115,6 +120,7 @@
   [dragModeEnabled]="dragModeEnabled"
   [currentUserRole]="currentUserRole"></app-phase-list>
 
+<!-- Invite modal -->
 <div class="modal fade" 
      bsModal 
      #inviteModal="bs-modal" 
@@ -169,6 +175,62 @@
   {{model.fullName}} <i>({{model.userName}})</i>
 </ng-template>
 
+<!-- Edit modal -->
+<div class="modal fade" 
+     bsModal 
+     #editProjectModal="bs-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Edit {{project.name}}</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal(editProjectModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="projectEditForm" (ngSubmit)="updateProject()">
+          <div class="form-group">
+            <label for="name">Project name</label>
+            <input type="text" class="form-control" placeholder="Project name" formControlName="name">
+          </div>
+          <div class="form-group">
+            <label for="description">Project description</label>
+            <textarea name="description" class="form-control" id="description" cols="30" rows="10" formControlName="description" placeholder="Enter project summary..."></textarea>
+          </div>
+        
+          <div class="row">
+            <div class="col-xs-12 col-md-6 form-group">
+              <label for="startDate">Project start date</label>
+              <input 
+                class="form-control"
+                placeholder="Select start date"
+                bsDatepicker
+                formControlName="startDate"
+                [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+            </div>
+            <div class="col-xs-12 col-md-6 form-group">
+              <label for="startDate">Project end date</label>
+              <input 
+                class="form-control"
+                placeholder="Select end date"
+                bsDatepicker
+                formControlName="endDate"
+                [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-12">
+              <button class="btn btn-success btn-block" [disabled]="!projectEditForm.valid">Save changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete modal -->
 <div class="modal fade" 
      bsModal 
      #deleteModal="bs-modal">

@@ -33,14 +33,16 @@ const routes: Routes = [
     component: ProjectDetailComponent,
     resolve: {
       project: ProjectDetailResolverService
-    }
+    },
+    canActivate: [AuthGuard]
   },
   {
     path: 'projects/:projectId/issues/:issueId',
     component: IssueDetailComponent,
     resolve: {
       results: IssueDetailResolverService
-    }
+    },
+    canActivate: [AuthGuard]
   },
   {
     path: 'unauthorized',
@@ -48,16 +50,17 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    component: AccountComponent
+    component: AccountComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '',
+    component: HomeComponent
   },
   // {
-  //   path: '',
+  //   path: '**',
   //   component: HomeComponent
-  // },
-  {
-    path: '**',
-    component: HomeComponent
-  }
+  // }
 ];
 
 @NgModule({

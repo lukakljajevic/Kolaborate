@@ -20,6 +20,14 @@ h3 {
   transition-duration: 200ms;
 }
 
+#project-dates {
+  margin-bottom: 12px;
+}
+
+#start-date {
+  padding-left: 5px;
+}
+
 .inner-addon {
   position: relative;
 }

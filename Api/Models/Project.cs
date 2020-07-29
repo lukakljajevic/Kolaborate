@@ -18,7 +18,6 @@ namespace Api.Models
         [MaxLength(255)]
         public string Name { get; set; }
 
-        [MaxLength(255)]
         public string Description { get; set; }
 
         [MaxLength(10)]

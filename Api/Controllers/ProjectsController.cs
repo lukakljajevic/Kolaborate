@@ -86,7 +86,6 @@ namespace Api.Controllers
         {
             var userId = User.GetUserId();
             var project = await _repo.GetProject(id, userId);
-
             if (project != null)
             {
                 var projectUser = await _repo.GetProjectUser(id, userId);
@@ -104,6 +103,34 @@ namespace Api.Controllers
         }
 
         // PUT /api/projects/:id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] ProjectCreateDto dto)
+        {
+            if (!dto.IsValid()) return BadRequest(new { message = "Invalid information" });
+
+            var userId = User.GetUserId();
+            var project = await _repo.GetProject(id, userId);
+            if (project == null)
+            {
+                return NotFound("Project not found.");
+            }
+
+            project.Name = dto.Name;
+            project.Description = dto.Description;
+            project.StartDate = dto.StartDate;
+            project.EndDate = dto.EndDate;
+
+            if (await _repo.SaveAll())
+                return Ok(new
+                {
+                    project.Name,
+                    project.Description,
+                    project.StartDate,
+                    project.EndDate
+                });
+
+            return BadRequest();
+        }
 
         // DELETE /api/projects/:id
         [HttpDelete("{id}")]

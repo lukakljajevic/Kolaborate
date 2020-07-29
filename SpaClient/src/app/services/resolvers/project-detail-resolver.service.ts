@@ -3,18 +3,33 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@a
 import { Project } from '../../models/project';
 import { Observable, EMPTY } from 'rxjs';
 import { ProjectsService } from '../projects.service';
+import { map } from 'rxjs/operators';
+import { AuthService } from '../auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectDetailResolverService implements Resolve<Project> {
 
-  constructor(private projectsService: ProjectsService, 
+  constructor(private projectsService: ProjectsService,
+              private authService: AuthService,
               private router: Router) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Project | Observable<Project> | Promise<Project> {
+  resolve(route: ActivatedRouteSnapshot): Project | Observable<Project> | Promise<Project> {
     const id = route.paramMap.get('id');
-    return this.projectsService.getProject(id);
+    const userId = this.authService.userId;
+    console.log(userId);
+    return this.projectsService.getProject(id).pipe(
+      map(project => {
+        console.log(project);
+        const projectUser = project.projectUsers.find(u => u.userId === userId);
+        if (!projectUser) {
+          this.router.navigate(['/unauthorized']);
+          return null;
+        }
+        return project;
+      })
+    );
   }
 
 }

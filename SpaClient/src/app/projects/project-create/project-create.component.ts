@@ -19,7 +19,7 @@ export class ProjectCreateComponent implements OnInit {
       description: new FormControl(''),
       startDate: new FormControl(),
       endDate: new FormControl()
-    }, {validators: [validateDates]});
+    }, {validators: validateDates});
   }
 
   onSubmit() {
@@ -29,7 +29,7 @@ export class ProjectCreateComponent implements OnInit {
   }
 }
 
-function validateDates(form: FormGroup): ValidationErrors | null {
+export function validateDates(form: FormGroup): ValidationErrors | null {
   const startDate = form.get('startDate').value;
   const endDate = form.get('endDate').value;
   if ((startDate && endDate && !((startDate as Date) < (endDate as Date))) || (!startDate && endDate)) {
