@@ -107,7 +107,8 @@ namespace Api.Controllers
                 {
                     IssueId = issue.Id,
                     UserId = user.Id,
-                    FullName = user.FullName
+                    FullName = user.FullName,
+                    Username = user.Username
                 };
                 issue.IssuedTo.Add(iu);
             }
