@@ -131,6 +131,7 @@ namespace Api.Controllers
             
             if (dto.Labels != null)
             {
+                issue.IssueLabels = new List<IssueLabel>();
                 foreach (var labelId in dto.Labels)
                 {
                     var label = await _repo.GetLabel(labelId);
@@ -143,11 +144,11 @@ namespace Api.Controllers
                 }
             }
 
-            if (dto.Status != null)
-                issue.Status = dto.Status;
+            issue.Name = dto.Name;
+            issue.Description = dto.Description;
+            issue.IssueType = dto.IssueType;
+            issue.DueDate = dto.DueDate;
 
-            if (dto.Priority > 0)
-                issue.Priority = dto.Priority;
 
             if (await _repo.SaveAll())
             {
@@ -186,6 +187,68 @@ namespace Api.Controllers
             return BadRequest(new { message = "Error deleting the issue." });
         }
         
+        // POST /api/issues/:id/labels
+        [HttpPost("{id}/labels")]
+        public async Task<IActionResult> AddLabels([FromRoute] string id, [FromBody] AddLabelsDto dto)
+        {
+            var issue = await _repo.GetIssue(id);
+
+            if (dto.Labels != null)
+            {
+                foreach (var labelId in dto.Labels)
+                {
+                    var label = await _repo.GetLabel(labelId);
+                    issue.IssueLabels.Add(new IssueLabel
+                    {
+                        IssueId = id,
+                        LabelId = labelId,
+                        Label = label
+                    });
+                }
+            }
+
+            if (await _repo.SaveAll())
+            {
+                return Ok();
+            }
+
+            return BadRequest(new { message = "Error adding labels to the issue." });
+        }
+
+        // POST /api/issues/:id/priority
+        [HttpPost("{id}/priority")]
+        public async Task<IActionResult> Priority([FromRoute] string id, [FromBody] UpdatePriorityDto dto)
+        {
+            var issue = await _repo.GetIssue(id);
+
+            if (dto.Priority > 0)
+                issue.Priority = dto.Priority;
+
+            if (await _repo.SaveAll())
+            {
+                return Ok();
+            }
+
+            return BadRequest(new { message = "Error adding labels to the issue." });
+        }
+
+        // POST /api/issues/:id/status
+        [HttpPost("{id}/status")]
+        public async Task<IActionResult> UpdateStatus([FromRoute] string id, [FromBody] UpdateStatusDto dto)
+        {
+            var issue = await _repo.GetIssue(id);
+
+            if (dto.Status != null)
+                issue.Status = dto.Status;
+
+            if (await _repo.SaveAll())
+            {
+                return Ok();
+            }
+
+            return BadRequest(new { message = "Error adding labels to the issue." });
+        }
+
         // POST /api/issues/:id/starred
         [HttpPost("{id}/starred")]
         public async Task<IActionResult> Starred([FromRoute] string id, [FromBody] IsStarredDto dto)

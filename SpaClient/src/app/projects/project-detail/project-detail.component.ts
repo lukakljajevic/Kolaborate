@@ -309,10 +309,17 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     if (!date) return null;
     const dateArray = date.split('-');
     const day = +dateArray[2];
+    const month = +dateArray[1] - 1;
+    const year = +dateArray[0];
+    return new Date(year, month, day);
+  }
+
+  printDate(date: string) {
+    const dateArray = date.split('-');
+    const day = +dateArray[2];
     const month = +dateArray[1];
     const year = +dateArray[0];
-    // return new Date(year, month, day);
-    return `${day}.${month}.${year}.`;
+    return `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}.`;
   }
 
 }

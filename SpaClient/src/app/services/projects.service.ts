@@ -56,7 +56,7 @@ export class ProjectsService {
   private _total$ = new BehaviorSubject<number>(0);
   private _recentProjects$ = new Subject<ProjectListItem[]>();
 
-  private projectUpdated = new Subject();
+  private projectUpdated = new Subject<any>();
 
   private _state: State = {
     page: 1,

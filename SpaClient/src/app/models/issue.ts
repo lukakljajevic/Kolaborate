@@ -16,7 +16,6 @@ export interface Issue {
   createdBy: string;
   createdByUsername: string;
   createdByFullName: string;
-  phaseId: string;
   labels: Label[];
   issuedTo: IssueUser[];
   phase: PhaseListItem;

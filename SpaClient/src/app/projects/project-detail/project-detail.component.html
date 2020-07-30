@@ -39,7 +39,7 @@
 <div class="row" *ngIf="project.startDate" id="project-dates">
   <div class="col-md-10">
     <fa-icon [icon]="['far', 'calendar-alt']" class="icon"></fa-icon>
-    <span id="start-date">{{formatDate(project.startDate)}} - </span><span *ngIf="project.endDate">{{formatDate(project.endDate)}}</span>
+    <span id="start-date">{{printDate(project.startDate)}} - </span><span *ngIf="project.endDate">{{printDate(project.endDate)}}</span>
   </div>
 </div>
 
@@ -175,7 +175,7 @@
   {{model.fullName}} <i>({{model.userName}})</i>
 </ng-template>
 
-<!-- Edit modal -->
+<!-- Edit project modal -->
 <div class="modal fade" 
      bsModal 
      #editProjectModal="bs-modal">
@@ -230,7 +230,7 @@
   </div>
 </div>
 
-<!-- Delete modal -->
+<!-- Delete project modal -->
 <div class="modal fade" 
      bsModal 
      #deleteModal="bs-modal">

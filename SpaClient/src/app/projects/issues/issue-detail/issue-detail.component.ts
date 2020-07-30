@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Issue } from 'src/app/models/issue';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Observable, Observer, of, from } from 'rxjs';
+import { Observable, Observer, of, from, Subscribable, Subscription } from 'rxjs';
 import { UserListItem } from 'src/app/models/user-list-item';
 import { switchMap, map } from 'rxjs/operators';
 import { UsersService } from 'src/app/services/users.service';
@@ -11,6 +11,8 @@ import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { IssuesService } from 'src/app/services/issues.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { IssueUser } from 'src/app/models/issue-user';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Label } from 'src/app/models/label';
 
 @Component({
   selector: 'app-issue-detail',
@@ -50,6 +52,15 @@ export class IssueDetailComponent implements OnInit {
   users$: Observable<UserListItem[]>;
   selectedUser: {userId: string, username: string, userFullName: string} = {userId: '', username: '', userFullName: ''};
 
+  labels: Label[];
+  selectedLabelIds: string[] = [];
+  issueEditForm: FormGroup;
+
+  updatedIssueSubscription: Subscription;
+
+  @ViewChild('editIssueModal', {static: false})
+  editIssueModal: ModalDirective;
+
   constructor(private route: ActivatedRoute,
               private authService: AuthService,
               private issuesService: IssuesService) { }
@@ -60,12 +71,22 @@ export class IssueDetailComponent implements OnInit {
       this.issue = data.results.issue;
       this.project = data.results.project;
 
-      const index = this.issue.issuedTo.findIndex(user => user.id === this.authService.userId)
-      this.issuedToCurrentUser = index > -1 ? true : false;
+      const index = this.issue.issuedTo.findIndex(user => user.id === this.authService.userId);
+      this.issuedToCurrentUser = index > -1;
 
       if (this.issuedToCurrentUser) {
         this.isStarred = this.issue.issuedTo[index].isStarred;
       }
+
+      this.issueEditForm = new FormGroup({
+        issueType: new FormControl(this.issue.issueType, Validators.required),
+        name: new FormControl(this.issue.name, Validators.required),
+        description: new FormControl(this.issue.description, Validators.required),
+        dueDate: new FormControl(this.formatDate(this.issue.dueDate)),
+        labels: new FormControl(this.selectedLabelIds),
+      });
+
+      this.issue.labels.forEach(l => this.selectedLabelIds.push(l.id));
     });
 
     this.users$ = new Observable((observer: Observer<string>) => {
@@ -81,6 +102,46 @@ export class IssueDetailComponent implements OnInit {
       })
     );
 
+    this.issuesService.getLabels().subscribe(labels => {
+      this.labels = labels;
+    });
+
+    this.updatedIssueSubscription = this.issuesService.updatedIssue$
+      .subscribe((data: {
+        name: string,
+        description: string,
+        dueDate: string,
+        issueType: string,
+        labels: string[]
+      }) => {
+        this.issue.issueType = data.issueType;
+        this.issue.dueDate = data.dueDate;
+        this.issue.name = data.name;
+        this.issue.description = data.description;
+        this.issue.labels = [];
+        data.labels.forEach(id => this.issue.labels.push(this.labels.find(l => l.id === id)));
+        this.editIssueModal.hide();
+      });
+
+  }
+
+  hasLabel(id: string): boolean {
+    return this.issue.labels.findIndex(l => l.id === id) > -1;
+  }
+
+  labelChecked(event: any) {
+    if (event.target.checked) {
+      this.selectedLabelIds.push(event.target.id);
+    } else {
+      const index = this.selectedLabelIds.findIndex(id => id === event.target.id);
+      this.selectedLabelIds.splice(index, 1);
+    }
+  }
+
+  onIssueUpdateSubmit() {
+    this.issueEditForm.value.labels = this.selectedLabelIds;
+    // console.log(this.issueEditForm.value);
+    this.issuesService.updateIssue(this.issue.id, this.issueEditForm.value);
   }
 
   formatIssueStatus(status: string) {
@@ -173,6 +234,23 @@ export class IssueDetailComponent implements OnInit {
           modal.hide();
         }
       });
+  }
+
+  formatDate(date: string) {
+    if (!date) return null;
+    const dateArray = date.split('-');
+    const day = +dateArray[2];
+    const month = +dateArray[1] - 1;
+    const year = +dateArray[0];
+    return new Date(year, month, day);
+  }
+
+  printDate(date: string) {
+    const dateArray = date.split('-');
+    const day = +dateArray[2];
+    const month = +dateArray[1];
+    const year = +dateArray[0];
+    return `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}.`;
   }
 
 }

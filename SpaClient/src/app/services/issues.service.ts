@@ -13,7 +13,8 @@ import { Issue } from '../models/issue';
 export class IssuesService {
 
   private createdIssue: Subject<{message: string, issue: IssueListItem}> = new Subject();
-  private updatedIssue: Subject<{message: string, issue: IssueListItem}> = new Subject();
+  // private updatedIssue: Subject<{message: string, issue: IssueListItem}> = new Subject();
+  private updatedIssue: Subject<any> = new Subject();
   private deletedIssue: Subject<{message: string, issue: IssueListItem}> = new Subject();
 
   constructor(private http: HttpClient,
@@ -48,6 +49,19 @@ export class IssuesService {
     return this.http.get<Issue>(`http://localhost:5002/api/issues/${id}`);
   }
 
+  updateIssue(id: string, data: any) {
+    if (data.dueDate) {
+      data.dueDate = this.datepipe.transform(data.dueDate, 'yyyy-MM-dd');
+    }
+
+    this.http.put(`http://localhost:5002/api/issues/${id}`, data)
+      .subscribe({
+        next: () => this.updatedIssue.next(data),
+        error: () => alert('Error updating the issue')
+      });
+  }
+
+
   deleteIssue(issue: IssueListItem) {
     this.http.delete<{message: string}>(`http://localhost:5002/api/issues/${issue.id}`)
       .subscribe({
@@ -60,10 +74,10 @@ export class IssuesService {
   }
 
   addLabels(formData: {issueId: string, labels: string[]}) {
-    this.http.put<{
+    this.http.post<{
       message: string,
       issue: IssueListItem
-    }>(`http://localhost:5002/api/issues/${formData.issueId}`, {labels: formData.labels})
+    }>(`http://localhost:5002/api/issues/${formData.issueId}/labels`, {labels: formData.labels})
       .subscribe({
         next: response => {
           this.updatedIssue.next(response);
@@ -77,7 +91,7 @@ export class IssuesService {
   }
 
   updateStatus(id: string, status: string) {
-    this.http.put(`http://localhost:5002/api/issues/${id}`, {status})
+    this.http.post(`http://localhost:5002/api/issues/${id}/status`, {status})
       .subscribe({
         next: () => console.log('updated status'),
         error: (err: {message: string}) => alert(err.message)
@@ -85,7 +99,7 @@ export class IssuesService {
   }
 
   updatePriority(id: string, priority: number) {
-    this.http.put(`http://localhost:5002/api/issues/${id}`, {priority})
+    this.http.post(`http://localhost:5002/api/issues/${id}/priority`, {priority})
       .subscribe({
         next: () => console.log('updated priority'),
         error: (err: {message: string}) => alert(err.message)

@@ -145,3 +145,11 @@ h3 {
 td .btn {
   padding: 6px 10px;
 }
+
+.fa-select {
+  font-family: 'FontAwesome', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";;
+}
+
+#priority-row {
+  margin-bottom: 12px;
+}

@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Api.Helpers.DTOs
 {
-    public class IssueUpdateDto
+    public class AddLabelsDto
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string DueDate { get; set; }
-        public string IssueType { get; set; }
         public ICollection<string> Labels { get; set; }
     }
 }

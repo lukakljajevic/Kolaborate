@@ -23,7 +23,10 @@
         </button>
         <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="project-options-button">
           <li role="menuitem">
-            <a class="dropdown-item">Delete issue</a>
+            <a class="dropdown-item" (click)="showModal(editIssueModal)">Edit</a>
+          </li>
+          <li role="menuitem">
+            <a class="dropdown-item">Delete</a>
           </li>
         </ul>
       </div>
@@ -97,7 +100,7 @@
         <p><span class="initials">{{getInitials(issue.createdByFullName)}}</span><span>{{issue.createdByFullName}}</span></p>
       </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="issue.labels.length > 0">
       <div class="col-md-12">
         <h6>Labels</h6>
         <p>
@@ -108,7 +111,7 @@
         </p>
       </div>
     </div>
-    <div class="row">
+    <div class="row" id="priority-row">
       <div class="col-md-12">
         <h6>Priority</h6>
         <div class="btn-group" dropdown placement="bottom right">
@@ -135,9 +138,16 @@
         </div>
       </div>
     </div>
+    <div class="row" *ngIf="issue.dueDate">
+      <div class="col-md-12">
+        <h6>Due date</h6>
+        <p>{{printDate(issue.dueDate)}}</p>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- Assignees modal -->
 <div class="modal fade"
      id="assignees-modal"
      bsModal
@@ -183,6 +193,7 @@
   </div>
 </div>
 
+<!-- Add assignee modal -->
 <div class="modal fade" 
      bsModal 
      #addAssigneeModal="bs-modal" 
@@ -227,3 +238,68 @@
 <ng-template #itemTemplate let-model="item" let-index="index">
   {{model.userFullName}} <i>({{model.username}})</i>
 </ng-template>
+
+<!-- Edit issue modal -->
+<div class="modal fade" 
+     bsModal 
+     #editIssueModal="bs-modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Edit {{issue.name}}</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(editIssueModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="issueEditForm" (ngSubmit)="onIssueUpdateSubmit()">       
+          <div class="form-row">
+            <div class="col-md-6">
+              <label for="type">Issue type</label>
+              <select class="form-control fa-select" formControlName="issueType">
+                <option value="task">&#xf14a; Task</option>
+                <option value="bug">&#xf188; Bug</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="startDate">Due date</label>
+              <input 
+                class="form-control"
+                placeholder="Due date"
+                bsDatepicker
+                formControlName="dueDate"
+                [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+            </div>
+          </div>
+          <hr>
+          <div class="form-group">
+            <label for="name">Summary</label>
+            <input type="text" class="form-control" formControlName="name" placeholder="Issue summary">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea cols="30" rows="10" class="form-control" formControlName="description" placeholder="Issue description"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="labels">Labels</label>
+            <br>
+            <!-- <select multiple class="form-control" formControlName="labels">
+              <option *ngFor="let label of labels" value="{{label.id}}">{{label.name}}</option>
+            </select> -->
+            <div class="form-check form-check-inline" *ngFor="let label of labels">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="{{label.id}}" 
+                [value]="label.id"
+                (change)="labelChecked($event)" 
+                [checked]="hasLabel(label.id)">
+              <label class="form-check-label" for="{{label.id}}">{{label.name}}</label>
+            </div>
+          </div>
+          <button class="btn btn-outline-success btn-block" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>   
+</div>
