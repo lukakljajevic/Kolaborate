@@ -59,25 +59,19 @@ namespace Api.Controllers
         public async Task<IActionResult> Create([FromBody] IssueCreateDto dto)
         {
             var userId = User.GetUserId();
-            var username = User.GetUsername();
-            var userFullName = User.GetUserFullName();
+            var user = await _repo.GetUser(userId);
+
+            if (user == null) return NotFound(new { message = "User not found" });
 
             var project = await _repo.GetProject(dto.ProjectId, userId);
-            if (project == null)
-            {
-                return NotFound("Project not found.");
-            }
+            if (project == null) return NotFound(new { message = "Project not found." });
+
             var phase = project.Phases.FirstOrDefault(p => p.Id == dto.PhaseId);
-            if (phase == null)
-            {
-                return NotFound("Phase not found.");
-            }
+            if (phase == null) return NotFound(new { message = "Phase not found." });
+
             var issue = _mapper.Map<Issue>(dto);
 
-            issue.CreatedBy = userId;
-            issue.CreatedByUsername = username;
-            issue.CreatedByFullName = userFullName;
-
+            issue.CreatedById = userId;
             issue.CreatedAt = DateTime.Today.ToShortDateString();
             issue.PhaseId = dto.PhaseId;
             issue.Status = Status.TO_DO;
@@ -93,22 +87,20 @@ namespace Api.Controllers
                     {
                         IssueId = issue.Id,
                         LabelId = label.Id,
-                        Label = label,
-                        Issue = issue
+                        Issue = issue,
+                        Label = label
                     };
                     issue.IssueLabels.Add(il);
                 }
             }
             
 
-            foreach (var user in dto.IssuedTo)
+            foreach (var id in dto.IssuedTo)
             {
                 var iu = new IssueUser
                 {
                     IssueId = issue.Id,
-                    UserId = user.Id,
-                    FullName = user.FullName,
-                    Username = user.Username
+                    UserId = id
                 };
                 issue.IssuedTo.Add(iu);
             }
@@ -167,8 +159,7 @@ namespace Api.Controllers
             // Option 1: Check if the user has access to the project and then delete
             var issue = await _repo.GetIssue(id);
 
-            if (issue == null) 
-                return NotFound(new { message = "Issue not found." });
+            if (issue == null) return NotFound(new { message = "Issue not found." });
 
             var projectId = issue.Phase.ProjectId;
             var projectUser = await _repo.GetProjectUser(projectId, userId);
@@ -281,11 +272,9 @@ namespace Api.Controllers
             var issue = await _repo.GetIssue(id);
             issue.IssuedTo.Add(new IssueUser
             {
-                FullName = dto.UserFullName,
                 IsStarred = false,
                 IssueId = id,
                 UserId = dto.UserId,
-                Username = dto.Username
             });
 
             if (await _repo.SaveAll())
@@ -303,7 +292,7 @@ namespace Api.Controllers
             var userId = User.GetUserId();
             var issue = await _repo.GetIssue(issueId);
 
-            if (issue.CreatedBy != userId)
+            if (issue.CreatedBy.Id != userId)
                 return Unauthorized(new { message = "You do not have the authorization to remove assignees." });
 
             var issueUser = issue.IssuedTo.FirstOrDefault(iu => iu.UserId == assigneeId);

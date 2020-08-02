@@ -10,5 +10,6 @@ namespace Api.Helpers.DTOs
     {
         public bool IsStarred { get; set; }
         public IssueListItemDto Issue { get; set; }
+        public UserDto User { get; set; }
     }
 }

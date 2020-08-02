@@ -21,14 +21,17 @@ namespace IdentityServer.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IIdentityServerInteractionService _interactionService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public AuthController(UserManager<ApplicationUser> userManager,
                               SignInManager<ApplicationUser> signInManager,
-                              IIdentityServerInteractionService interactionService)
+                              IIdentityServerInteractionService interactionService,
+                              IHttpClientFactory httpClientFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _interactionService = interactionService;
+            _httpClientFactory = httpClientFactory;
         }
 
         [HttpGet]
@@ -87,12 +90,12 @@ namespace IdentityServer.Controllers
 
             var signUpResult = await _userManager.CreateAsync(user, vm.Password);
             if (signUpResult.Succeeded)
-            {
+            {                
                 await _signInManager.PasswordSignInAsync(vm.Username, vm.Password, false, false);
                 return Redirect(vm.ReturnUrl);
             }
 
-            return View();
+            return View(vm);
         }
 
         [HttpGet]

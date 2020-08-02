@@ -225,9 +225,8 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   formatIssuedTo(issuedToIds: string[]) {
     const issuedToUsers = [];
     issuedToIds.forEach(id => {
-      const projectUser = this.project.projectUsers.find(pu => pu.userId === id);
-      const issueUser = { id, fullName: projectUser.userFullName, username: projectUser.username };
-      issuedToUsers.push(issueUser);
+      const projectUser = this.project.projectUsers.find(pu => pu.user.id === id);
+      issuedToUsers.push(projectUser.user.id);
     });
     return issuedToUsers;
   }

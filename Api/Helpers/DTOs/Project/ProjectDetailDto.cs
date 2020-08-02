@@ -14,9 +14,9 @@ namespace Api.Helpers.DTOs
         public string Description { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
-        public string CompletedOn { get; set; }
-        public string CreatedBy { get; set; }
+        public UserDto CreatedBy { get; set; }
+
         public ICollection<PhaseDetailDto> Phases { get; set; }
-        public ICollection<ProjectUserListItemDto> ProjectUsers { get; set; }
+        public ICollection<ProjectUserDto> ProjectUsers { get; set; }
     }
 }

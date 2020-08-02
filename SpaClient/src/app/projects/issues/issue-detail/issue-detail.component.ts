@@ -71,7 +71,7 @@ export class IssueDetailComponent implements OnInit {
       this.issue = data.results.issue;
       this.project = data.results.project;
 
-      const index = this.issue.issuedTo.findIndex(user => user.id === this.authService.userId);
+      const index = this.issue.issuedTo.findIndex(iu => iu.user.id === this.authService.userId);
       this.issuedToCurrentUser = index > -1;
 
       if (this.issuedToCurrentUser) {
@@ -95,7 +95,7 @@ export class IssueDetailComponent implements OnInit {
       switchMap((fullName: string) => {
         if (fullName) {
           return of(this.project.projectUsers).pipe(
-            map(users => users.filter(user => !this.issue.issuedTo.find(u => u.id === user.userId))
+            map(users => users.filter(pu => !this.issue.issuedTo.find(iu => iu.user.id === pu.user.id))
           ));
         }
         return of([]);
@@ -201,9 +201,12 @@ export class IssueDetailComponent implements OnInit {
       .subscribe({
         next: () => {
           this.issue.issuedTo.push({
-            id: this.selectedUser.userId,
-            username: this.selectedUser.username,
-            fullName: this.selectedUser.userFullName,
+            user: {
+              id: this.selectedUser.userId,
+              username: this.selectedUser.username,
+              fullName: this.selectedUser.userFullName,
+              avatar: null
+            },
             isStarred: false,
             issue: null
           });
@@ -226,10 +229,10 @@ export class IssueDetailComponent implements OnInit {
       return modal.hide();
     }
     console.log(assignee);
-    this.issuesService.deleteAssignee(this.issue.id, assignee.id)
+    this.issuesService.deleteAssignee(this.issue.id, assignee.user.id)
       .subscribe({
         next: () => {
-          const index = this.issue.issuedTo.findIndex(iu => iu.id === assignee.id);
+          const index = this.issue.issuedTo.findIndex(iu => iu.user.id === assignee.user.id);
           this.issue.issuedTo.splice(index, 1);
           modal.hide();
         }

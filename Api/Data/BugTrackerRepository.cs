@@ -27,6 +27,7 @@ namespace Api.Data
         Task<ICollection<IssueUser>> GetIssueUsers(string userId);
         Task<Issue> GetIssue(string id);
         Task<Phase> GetPhase(string id);
+        Task<User> GetUser(string id);
 
     }
 
@@ -60,6 +61,8 @@ namespace Api.Data
                         .ThenInclude(phase => phase.Issues)
                             .ThenInclude(issue => issue.IssueLabels)
                                 .ThenInclude(issueLabel => issueLabel.Label)
+                .Include(pu => pu.Project)
+                    .ThenInclude(project => project.CreatedBy)
                 .Select(pu => pu.Project)
                 .FirstOrDefaultAsync();
 
@@ -113,7 +116,10 @@ namespace Api.Data
 
         public async Task<ICollection<ProjectUser>> GetProjectUsers(string projectId)
         {
-            return await _context.ProjectUsers.Where(pu => pu.ProjectId == projectId).ToListAsync();
+            return await _context.ProjectUsers
+                .Where(pu => pu.ProjectId == projectId)
+                .Include(pu => pu.User)
+                .ToListAsync();
         }
 
         public async Task<Label> GetLabel(string labelId)
@@ -125,6 +131,7 @@ namespace Api.Data
         {
             return await _context.IssueUsers
                 .Where(iu => iu.UserId == userId)
+                .Include(iu => iu.User)
                 .Include(iu => iu.Issue)
                 .ThenInclude(i => i.Phase)
                 .ThenInclude(p => p.Project)
@@ -139,6 +146,7 @@ namespace Api.Data
                 .Include(i => i.IssueLabels)
                     .ThenInclude(il => il.Label)
                 .Include(i => i.IssuedTo)
+                    .ThenInclude(iu => iu.User)
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 
@@ -146,6 +154,12 @@ namespace Api.Data
         {
             return await _context.Phases
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<User> GetUser(string id)
+        {
+            return await _context.Users
+                    .FirstOrDefaultAsync(u => u.Id == id);
         }
     }
 }

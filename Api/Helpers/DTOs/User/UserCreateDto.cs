@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Api.Helpers.DTOs
+namespace Api.Helpers.DTOs.User
 {
-    public class UserDto
+    public class UserCreateDto
     {
         public string Id { get; set; }
         public string Username { get; set; }
         public string FullName { get; set; }
-        public string Avatar { get; set; }
     }
 }

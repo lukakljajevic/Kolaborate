@@ -88,8 +88,8 @@
       <div class="col-md-12" id="assignees">
         <h6>{{issue.issuedTo.length > 1 ? 'Assignees' : 'Assignee'}}</h6>
         <p *ngFor="let assignee of issue.issuedTo" class="assignee">
-          <span class="initials">{{getInitials(assignee.fullName)}}</span>
-          <span>{{assignee.fullName}}</span>
+          <span class="initials">{{getInitials(assignee.user.fullName)}}</span>
+          <span>{{assignee.user.fullName}}</span>
         </p>
         <a (click)="showModal(assigneesModal)" *ngIf="true">Show more...</a>
       </div>
@@ -97,7 +97,7 @@
     <div class="row">
       <div class="col-md-12" id="created-by">
         <h6>Created By</h6>
-        <p><span class="initials">{{getInitials(issue.createdByFullName)}}</span><span>{{issue.createdByFullName}}</span></p>
+        <p><span class="initials">{{getInitials(issue.createdBy.fullName)}}</span><span>{{issue.createdBy.fullName}}</span></p>
       </div>
     </div>
     <div class="row" *ngIf="issue.labels.length > 0">
@@ -173,8 +173,8 @@
           <tbody>
             <tr *ngFor="let assignee of issue.issuedTo; let i = index">
               <th>{{i+1}}</th>
-              <td>{{assignee.fullName}}</td>
-              <td>{{assignee.username}}</td>
+              <td>{{assignee.user.fullName}}</td>
+              <td>{{assignee.user.username}}</td>
               <td>
                 <button class="btn btn-outline-danger" (click)="deleteAssignee(assignee, assigneesModal)">
                   <fa-icon [icon]="['far', 'trash-alt']" size="md"></fa-icon> Remove

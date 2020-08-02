@@ -1,8 +1,7 @@
 import { Label } from './label';
-import { ProjectListItem } from './project-list-item';
-import { UserListItem } from './user-list-item';
 import { PhaseListItem } from './phase-list-item';
 import { IssueUser } from './issue-user';
+import { User } from './user';
 
 export interface Issue {
   id: string;
@@ -13,9 +12,8 @@ export interface Issue {
   issueType: string;
   priority: number;
   status: string;
-  createdBy: string;
-  createdByUsername: string;
-  createdByFullName: string;
+
+  createdBy: User;
   labels: Label[];
   issuedTo: IssueUser[];
   phase: PhaseListItem;

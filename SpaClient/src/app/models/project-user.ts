@@ -1,8 +1,6 @@
+import { User } from './user';
+
 export interface ProjectUser {
-  lastActive: string;
-  projectId: string;
-  username: string;
-  userFullName: string;
-  userId: string;
+  user: User;
   userRole: string;
 }

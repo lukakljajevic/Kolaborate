@@ -22,7 +22,7 @@ export class ProjectDetailResolverService implements Resolve<Project> {
     return this.projectsService.getProject(id).pipe(
       map(project => {
         console.log(project);
-        const projectUser = project.projectUsers.find(u => u.userId === userId);
+        const projectUser = project.projectUsers.find(pu => pu.user.id === userId);
         if (!projectUser) {
           this.router.navigate(['/unauthorized']);
           return null;

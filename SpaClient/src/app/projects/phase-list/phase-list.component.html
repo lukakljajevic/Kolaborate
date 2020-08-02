@@ -233,7 +233,7 @@
           <div class="form-group">
             <label for="asignee">Asignee</label>
             <select multiple class="form-control" formControlName="issuedTo">
-              <option *ngFor="let projectUser of project.projectUsers" value="{{projectUser.userId}}">{{projectUser.userFullName}}</option>
+              <option *ngFor="let projectUser of project.projectUsers" value="{{projectUser.user.id}}">{{projectUser.user.fullName}}</option>
             </select>
           </div>
           <div class="form-group">

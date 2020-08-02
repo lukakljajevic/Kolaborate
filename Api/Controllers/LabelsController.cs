@@ -28,10 +28,10 @@ namespace Api.Controllers
         public async Task<IActionResult> Get()
         {
             var labels = await _repo.GetLabels();
-            if (labels.Count() == 0)
-            {
-                return NotFound("Unable to get labels.");
-            }
+            //if (labels.Count() == 0)
+            //{
+            //    return NotFound("Unable to get labels.");
+            //}
             return Ok(labels);
         }
 

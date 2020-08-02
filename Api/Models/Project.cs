@@ -26,15 +26,9 @@ namespace Api.Models
         [MaxLength(10)]
         public string EndDate { get; set; }
 
-        [MaxLength(10)]
-        public string CompletedOn { get; set; }
-
         [Required]
-        [MaxLength(450)]
-        public string CreatedBy { get; set; }
-
-        [Required]
-        public string CreatedByFullName { get; set; }
+        public string CreatedById { get; set; }
+        public User CreatedBy { get; set; }
 
         public ICollection<Phase> Phases { get; set; }
         public ICollection<ProjectUser> ProjectUsers { get; set; }

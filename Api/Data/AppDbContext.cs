@@ -19,6 +19,7 @@ namespace Api.Data
         public DbSet<IssueLabel> IssueLabels { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueUser> IssueUsers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -37,19 +37,13 @@ namespace Api.Models
         public string Status { get; set; }
 
         [Required]
-        [MaxLength(450)]
-        public string CreatedBy { get; set; }
-
-        [Required]
-        [MaxLength(256)]
-        public string CreatedByUsername { get; set; }
-
-        [Required]
-        [MaxLength(255)]
-        public string CreatedByFullName { get; set; }
+        public string CreatedById { get; set; }
+        public User CreatedBy { get; set; }
 
         [Required]
         public string PhaseId { get; set; }
+
+        [Required]
         public Phase Phase { get; set; }
 
         public ICollection<IssueLabel> IssueLabels { get; set; }

@@ -28,7 +28,7 @@ namespace Api.Controllers
             _repo = repo;
         }
 
-        // GET /api/projects
+        //GET /api/projects
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -46,12 +46,12 @@ namespace Api.Controllers
             if (!dto.IsValid()) return BadRequest(new { message = "Invalid information" });
 
             var userId = User.GetUserId();
-            var userFullName = User.GetUserFullName();
-            var username = User.GetUsername();
+            var user = await _repo.GetUser(userId);
+
+            if (user == null) return NotFound(new { message = "User not found" });
 
             var newProject = _mapper.Map<Project>(dto);
-            newProject.CreatedBy = userId;
-            newProject.CreatedByFullName = userFullName;
+            newProject.CreatedById = userId;
 
             _repo.Add(newProject);
 
@@ -61,9 +61,7 @@ namespace Api.Controllers
                 {
                     ProjectId = newProject.Id,
                     UserId = userId,
-                    Username = username,
-                    UserFullName = userFullName,
-                    UserRole = Constants.Roles.MANAGER,
+                    UserRole = Roles.MANAGER,
                     LastActive = DateTime.Now
                 };
                 
@@ -110,10 +108,8 @@ namespace Api.Controllers
 
             var userId = User.GetUserId();
             var project = await _repo.GetProject(id, userId);
-            if (project == null)
-            {
-                return NotFound("Project not found.");
-            }
+            
+            if (project == null) return NotFound("Project not found.");
 
             project.Name = dto.Name;
             project.Description = dto.Description;

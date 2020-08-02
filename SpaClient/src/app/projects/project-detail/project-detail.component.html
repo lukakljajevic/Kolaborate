@@ -85,17 +85,17 @@
   </div>
   <div id="invite" class="col-md-6" >
     <button
-      *ngFor="let user of project.projectUsers; let i = index"
+      *ngFor="let projectUser of project.projectUsers; let i = index"
       class="btn"
       [ngClass]="{
-        'btn-primary': user.userId === filterUserId,
-        'btn-default': user.userId !== filterUserId,
+        'btn-primary': projectUser.user.id === filterUserId,
+        'btn-default': projectUser.user.id !== filterUserId,
         'margin-right-10': currentUserRole !== 'manager' && i === project.projectUsers.length - 1
       }"
       class="z-{{project.projectUsers.length - i}}"
-      tooltip="{{user.userFullName}}"
-      (click)="setFilterUserId(user.userId)">
-        {{getInitials(user.userFullName)}}
+      tooltip="{{projectUser.user.fullName}}"
+      (click)="setFilterUserId(projectUser.user.id)">
+        {{getInitials(projectUser.user.fullName)}}
     </button>
     <button 
       *ngIf="currentUserRole === 'manager'"

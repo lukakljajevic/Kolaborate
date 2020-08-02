@@ -15,14 +15,9 @@ namespace Api.Models
         public Issue Issue { get; set; }
         
         [Required]
-        [MaxLength(450)]
         public string UserId { get; set; }
+        public User User { get; set; }
 
-        [MaxLength(255)]
-        public string Username { get; set; }
-
-        [MaxLength(255)]
-        public string FullName { get; set; }
         public bool IsStarred { get; set; }
 
     }

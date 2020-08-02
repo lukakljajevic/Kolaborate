@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Api.Helpers.DTOs.Issue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,11 +17,9 @@ namespace Api.Helpers.DTOs
         public string IssueType { get; set; }
         public int Priority { get; set; }
         public string Status { get; set; }
-        public string CreatedBy { get; set; }
-        public string CreatedByUsername { get; set; }
-        public string CreatedByFullName { get; set; }
+        public UserDto CreatedBy { get; set; }
         public PhaseListItemDto Phase { get; set; }
         public ICollection<LabelDto> Labels { get; set; }
-        public ICollection<UserDto> IssuedTo { get; set; }
+        public ICollection<IssueUserDetailDto> IssuedTo { get; set; }
     }
 }

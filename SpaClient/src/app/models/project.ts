@@ -1,5 +1,6 @@
 import { Phase } from './phase';
 import { ProjectUser } from './project-user';
+import { User } from './user';
 
 export interface Project {
   id: string;
@@ -7,9 +8,8 @@ export interface Project {
   description: string;
   startDate: string;
   endDate: string;
-  completedOn: string;
-  createdBy: string;
-  createdByFullName: string;
+  createdBy: User;
+
   phases: Phase[];
   projectUsers: ProjectUser[];
 }

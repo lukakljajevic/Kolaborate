@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { ProjectListItem } from '../models/project-list-item';
 import { ProjectsService } from '../services/projects.service';
+import { UsersService } from '../services/users.service';
 
 @Component({
   selector: 'app-nav',
@@ -22,6 +23,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   constructor(private oidcSecurityService: OidcSecurityService,
               private projectsService: ProjectsService,
+              private usersService: UsersService,
               public authService: AuthService,
               private router: Router) { }
 
@@ -35,6 +37,7 @@ export class NavComponent implements OnInit, OnDestroy {
           this.recentProjects = projects;
         });
         this.projectsService.getRecentProjects();
+        this.usersService.register();
       }
     });
 

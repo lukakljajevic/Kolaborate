@@ -9,19 +9,13 @@ namespace Api.Models
 {
     public class ProjectUser
     {
+        [Required]
         public string ProjectId { get; set; }
         public Project Project { get; set; }
         
         [Required]
-        [MaxLength(450)]
         public string UserId { get; set; }
-        
-        [Required]
-        [MaxLength(255)]
-        public string Username { get; set; }
-
-        [Required]
-        public string UserFullName { get; set; }
+        public User User { get; set; }
 
         [Required]
         public string UserRole { get; set; }

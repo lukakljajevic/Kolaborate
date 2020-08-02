@@ -37,4 +37,17 @@ export class UsersService {
       //   catchError(error => alert(error.error.message))
       // );
   }
+
+  register() {
+    const user = {
+      id: this.authService.userId,
+      username: this.authService.username,
+      fullName: this.authService.fullName
+    };
+
+    this.http.post('http://localhost:5002/api/users', user)
+      .subscribe({
+        next: () => console.log('successfully registered user on api')
+      });
+  }
 }
