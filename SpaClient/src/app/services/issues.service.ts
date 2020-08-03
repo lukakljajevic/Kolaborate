@@ -6,6 +6,7 @@ import { DatePipe } from '@angular/common';
 import { IssueListItem } from '../models/issue-list-item';
 import { IssueUser } from '../models/issue-user';
 import { Issue } from '../models/issue';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -86,8 +87,8 @@ export class IssuesService {
       });
   }
 
-  addAssignee(id: string, user: {userId: string, username: string, userFullName: string}, projectId: string) {
-    return this.http.post(`http://localhost:5002/api/issues/${id}/assign`, {...user, projectId});
+  addAssignee(id: string, user: User, projectId: string) {
+    return this.http.post(`http://localhost:5002/api/issues/${id}/assign`, {user, projectId});
   }
 
   updateStatus(id: string, status: string) {

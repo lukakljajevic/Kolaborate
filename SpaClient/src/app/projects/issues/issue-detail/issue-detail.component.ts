@@ -13,6 +13,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { IssueUser } from 'src/app/models/issue-user';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Label } from 'src/app/models/label';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-issue-detail',
@@ -50,7 +51,7 @@ export class IssueDetailComponent implements OnInit {
   project: Project;
   userFullName = '';
   users$: Observable<UserListItem[]>;
-  selectedUser: {userId: string, username: string, userFullName: string} = {userId: '', username: '', userFullName: ''};
+  selectedUser: User;
 
   labels: Label[];
   selectedLabelIds: string[] = [];
@@ -186,9 +187,8 @@ export class IssueDetailComponent implements OnInit {
   }
 
   typeaheadOnSelect(e: TypeaheadMatch) {
-    this.selectedUser.userId = e.item.userId;
-    this.selectedUser.username = e.item.username;
-    this.selectedUser.userFullName = e.item.userFullName;
+    console.log(e.item);
+    this.selectedUser = e.item.user;
   }
 
   showAddAssigneeModal(assigneesModal: ModalDirective, addAssigneeModal: ModalDirective) {
@@ -201,17 +201,12 @@ export class IssueDetailComponent implements OnInit {
       .subscribe({
         next: () => {
           this.issue.issuedTo.push({
-            user: {
-              id: this.selectedUser.userId,
-              username: this.selectedUser.username,
-              fullName: this.selectedUser.userFullName,
-              avatar: null
-            },
+            user: this.selectedUser,
             isStarred: false,
             issue: null
           });
           this.hideModal(modal);
-          this.selectedUser = {userId: '', username: '', userFullName: ''};
+          this.selectedUser = null;
           this.userFullName = '';
         },
         error: (err: {message: string}) => alert(err.message)

@@ -216,7 +216,7 @@
                    [typeaheadItemTemplate]="itemTemplate"
                    [isAnimated]="true"
                    (typeaheadOnSelect)="typeaheadOnSelect($event)"
-                   typeaheadOptionField="userFullName"
+                   typeaheadOptionField="user.fullName"
                    typeaheadWaitMs="1000"
                    type="text" 
                    placeholder="Please enter user's full name" 
@@ -236,7 +236,7 @@
 </div>
 
 <ng-template #itemTemplate let-model="item" let-index="index">
-  {{model.userFullName}} <i>({{model.username}})</i>
+  {{model.user.fullName}} <i>({{model.user.username}})</i>
 </ng-template>
 
 <!-- Edit issue modal -->

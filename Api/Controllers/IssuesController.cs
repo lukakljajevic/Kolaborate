@@ -274,7 +274,7 @@ namespace Api.Controllers
             {
                 IsStarred = false,
                 IssueId = id,
-                UserId = dto.UserId,
+                UserId = dto.User.Id,
             });
 
             if (await _repo.SaveAll())
