@@ -3,15 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { UserListItem } from '../models/user-list-item';
 import { Observable, Subject } from 'rxjs';
 import { AuthService } from './auth.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, flatMap, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
 
+  private _avatar: Subject<string> = new Subject();
+
   constructor(private http: HttpClient,
               private authService: AuthService) { }
+
+  get avatar$() { return this._avatar.asObservable(); }
 
   getUsers(fullName: string): Observable<UserListItem[]> {
     return this.http.post<UserListItem[]>('http://localhost:5000/users', {fullName});
@@ -28,14 +32,15 @@ export class UsersService {
     formData.append('username', userData.username);
     formData.append('fullName', userData.fullName);
     formData.append('password', userData.password);
-    if (userData.avatar) {
-      formData.append('avatar', userData.avatar, userData.avatar.name);
-    }
 
-    return this.http.put(`http://localhost:5000/users/${userId}`, formData);
-      // .pipe(
-      //   catchError(error => alert(error.error.message))
-      // );
+    return this.http.put(`http://localhost:5000/users/${userId}`, formData).pipe(
+      flatMap(() => {
+        if (userData.avatar) {
+          formData.append('avatar', userData.avatar, userData.avatar.name);
+        }
+        return this.http.put(`http://localhost:5002/api/users`, formData);
+      })
+    );
   }
 
   register() {
@@ -50,4 +55,7 @@ export class UsersService {
         next: () => console.log('successfully registered user on api')
       });
   }
+
+  
+
 }

@@ -112,7 +112,6 @@ export class AccountComponent implements OnInit {
           storageItem.name = username;
           storageItem.preferred_username = username;
           storageItem.fullName = fullName;
-          storageItem.avatar = response.avatarUrl;
           sessionStorage.setItem('angular_spa_userData', JSON.stringify(storageItem));
 
           this.authService.username = username;

@@ -44,7 +44,7 @@ namespace IdentityServer.Controllers
             return Ok(new { isTaken = true });
         }
 
-        [HttpPut("{id}"), DisableRequestSizeLimit]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] string id, [FromForm] UserUpdateDto dto)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -60,39 +60,10 @@ namespace IdentityServer.Controllers
             user.FullName = dto.FullName;
             user.UserName = dto.Username;
 
-            var avatar = dto.Avatar;
-            var folderName = Path.Combine("Resources", "Avatars");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-
-            if (avatar != null && avatar.Length > 0)
-            {
-                var fileName = ContentDispositionHeaderValue.Parse(avatar.ContentDisposition).FileName.Trim('"');
-                var fileExtension = fileName.Split('.')[^1];
-                fileName = $"{user.UserName}-{GenerateCurrentDateTime()}.{fileExtension}";
-                var fullPath = Path.Combine(pathToSave, fileName);
-                var dbPath = Path.Combine(folderName, fileName);
-
-                if (user.Avatar != null)
-                {
-                    var currentFileName = user.Avatar.Split('\\')[^1];
-                    var currentFullpath = Path.Combine(pathToSave, currentFileName);
-
-                    if (System.IO.File.Exists(currentFullpath))
-                        System.IO.File.Delete(currentFullpath);
-                }
-                
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    avatar.CopyTo(stream);
-                }
-
-                user.Avatar = dbPath;
-            }
-
             var updateResult = await _userManager.UpdateAsync(user);
 
             if (updateResult.Succeeded)
-                return Ok(new { avatarUrl = user.Avatar });
+                return Ok();
             return BadRequest();
         }
 

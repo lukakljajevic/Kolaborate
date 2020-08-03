@@ -13,7 +13,5 @@ namespace IdentityServer.Models
         [Required]
         [MaxLength(255)]
         public string FullName { get; set; }
-
-        public string Avatar { get; set; }
     }
 }
