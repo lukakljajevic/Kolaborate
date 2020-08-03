@@ -63,11 +63,11 @@ export class IssuesService {
   }
 
 
-  deleteIssue(issue: IssueListItem) {
-    this.http.delete<{message: string}>(`http://localhost:5002/api/issues/${issue.id}`)
+  deleteIssue(id: string) {
+    this.http.delete<{message: string, issue: IssueListItem}>(`http://localhost:5002/api/issues/${id}`)
       .subscribe({
         next: response => this.deletedIssue.next({
-          issue,
+          issue: response.issue,
           message: response.message
         }),
         error: (err: {message: string}) => this.deletedIssue.error(err)

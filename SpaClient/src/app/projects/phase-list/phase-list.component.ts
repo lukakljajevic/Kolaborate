@@ -176,7 +176,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     if (this.deleteType === 'phase') {
       this.phasesService.deletePhase(this.deleteItem as Phase);
     } else {
-      this.issuesService.deleteIssue(this.deleteItem as IssueListItem);
+      this.issuesService.deleteIssue((this.deleteItem as IssueListItem).id);
     }
   }
 
@@ -209,7 +209,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     //   formValue.labels = this.formatLabels(formValue.labels);
     // }
 
-    formValue.issuedTo = this.formatIssuedTo(formValue.issuedTo);
+    // formValue.issuedTo = this.formatIssuedTo(formValue.issuedTo);
 
     this.issuesService.createIssue(formValue);
   }

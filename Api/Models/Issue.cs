@@ -50,10 +50,10 @@ namespace Api.Models
         public ICollection<IssueUser> IssuedTo { get; set; }
         public ICollection<Comment> Comments { get; set; }
 
-        //public Issue()
-        //{
-        //    IssueLabels = new List<IssueLabel>();
-        //    IssuedTo = new List<IssueUser>();
-        //}
+        public Issue()
+        {
+            IssueLabels = new List<IssueLabel>();
+            IssuedTo = new List<IssueUser>();
+        }
     }
 }

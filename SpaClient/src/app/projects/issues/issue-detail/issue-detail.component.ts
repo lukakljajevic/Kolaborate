@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Issue } from 'src/app/models/issue';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Observable, Observer, of, from, Subscribable, Subscription } from 'rxjs';
@@ -73,7 +73,10 @@ export class IssueDetailComponent implements OnInit {
   deleteType = '';
   deleteId = '';
 
+  deletedIssueSubscription: Subscription;
+
   constructor(private route: ActivatedRoute,
+              private router: Router,
               public authService: AuthService,
               private issuesService: IssuesService,
               private commentsService: CommentsService) { }
@@ -134,6 +137,15 @@ export class IssueDetailComponent implements OnInit {
         this.issue.labels = [];
         data.labels.forEach(id => this.issue.labels.push(this.labels.find(l => l.id === id)));
         this.editIssueModal.hide();
+      });
+
+    this.issuesService.deletedIssue$
+      .subscribe({
+        next: response => {
+          alert(response.message);
+          this.router.navigate(['/projects', this.issue.phase.project.id]);
+        },
+        error: err => alert(err.message)
       });
 
   }
@@ -313,6 +325,8 @@ export class IssueDetailComponent implements OnInit {
           },
           error: () => alert('Error deleting the comment.')
         });
+    } else {
+      this.issuesService.deleteIssue(this.deleteId);
     }
   }
 

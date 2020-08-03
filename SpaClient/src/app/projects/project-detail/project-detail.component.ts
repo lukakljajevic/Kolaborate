@@ -169,6 +169,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     // Issue delete subscription
     this.deletedIssueSubscription = this.issuesService.deletedIssue$.subscribe({
       next: response => {
+        console.log(response);
         const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
         const issueIndex = phase.issues.findIndex(i => i.id === response.issue.id);
         phase.issues.splice(issueIndex, 1);
