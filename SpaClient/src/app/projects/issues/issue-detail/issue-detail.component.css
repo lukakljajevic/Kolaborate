@@ -55,7 +55,7 @@ h3 {
 }
 
 .col-md-8 .issue-controls {
-  margin-bottom: 46px;
+  margin-bottom: 24px;
 }
 
 .btn-default {
@@ -152,4 +152,42 @@ td .btn {
 
 #priority-row {
   margin-bottom: 12px;
+}
+
+#comment-avatar {
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+}
+
+#comments .btn {
+  margin-top: 12px;
+  margin-right: 8px;
+}
+
+h6 {
+  margin-bottom: 16px;
+}
+
+.comment {
+  margin-top: 16px;
+}
+
+.comment p {
+  margin-bottom: 8px;
+}
+
+.comment-fullName {
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.comment-time, .comment-action {
+  color: rgb(66, 82, 110);
+}
+
+.comment-footer a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: rgb(66, 82, 110);
 }

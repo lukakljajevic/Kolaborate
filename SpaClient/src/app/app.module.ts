@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, Pipe } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe, CommonModule } from '@angular/common';
@@ -34,6 +34,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detail.component';
 import { AccountComponent } from './account/account.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { TimeAgoPipe } from 'time-ago-pipe';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
    return () =>
@@ -50,6 +51,12 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
        });
 }
 
+@Pipe({
+   name: 'timeAgo',
+   pure: false
+})
+export class TimeAgoExtendsPipe extends TimeAgoPipe {}
+
 @NgModule({
    declarations: [
       AppComponent,
@@ -61,6 +68,7 @@ export function configureAuth(oidcConfigService: OidcConfigService) {
       ProjectDetailComponent,
       ProjectListComponent,
       PhaseListComponent,
+      TimeAgoExtendsPipe,
       NgbdSortableHeader,
       IssueDetailComponent,
       AccountComponent

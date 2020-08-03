@@ -14,6 +14,8 @@ import { IssueUser } from 'src/app/models/issue-user';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Label } from 'src/app/models/label';
 import { User } from 'src/app/models/user';
+import { Comment } from 'src/app/models/comment';
+import { CommentsService } from 'src/app/services/comments.service';
 
 @Component({
   selector: 'app-issue-detail',
@@ -61,10 +63,20 @@ export class IssueDetailComponent implements OnInit {
 
   @ViewChild('editIssueModal', {static: false})
   editIssueModal: ModalDirective;
+  @ViewChild('deleteModal', {static: false})
+  deleteModal: ModalDirective;
+
+  typingComment: boolean = false;
+  newCommentText = '';
+  editCommentText = '';
+
+  deleteType = '';
+  deleteId = '';
 
   constructor(private route: ActivatedRoute,
-              private authService: AuthService,
-              private issuesService: IssuesService) { }
+              public authService: AuthService,
+              private issuesService: IssuesService,
+              private commentsService: CommentsService) { }
 
   ngOnInit() {
     this.route.data.subscribe((data: {results: {issue: Issue, project: Project}}) => {
@@ -249,6 +261,59 @@ export class IssueDetailComponent implements OnInit {
     const month = +dateArray[1];
     const year = +dateArray[0];
     return `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}.`;
+  }
+
+  initializeCreateComment() {
+    this.typingComment = true;
+    this.issue.comments.forEach(comment => comment.editMode = false);
+  }
+
+  createComment() {
+    this.commentsService.createComment({text: this.newCommentText, issueId: this.issue.id})
+      .subscribe((comment) => {
+        console.log(comment);
+        this.issue.comments.unshift(comment);
+        this.newCommentText = '';
+        this.typingComment = false;
+      });
+  }
+
+  editComment(comment: Comment) {
+    comment.editMode = true;
+    this.typingComment = false;
+    this.editCommentText = comment.text;
+  }
+
+  updateComment(comment: Comment) {
+    this.commentsService.updateComment(comment.id, this.editCommentText)
+      .subscribe({
+        next: () => {
+          const editedComment = this.issue.comments.find(c => c.id === comment.id);
+          editedComment.text = this.editCommentText;
+          editedComment.editMode = false;
+        },
+        error: () => alert('Error updating the comment.')
+      });
+  }
+
+  delete(deleteType: string, deleteId: string) {
+    this.deleteType = deleteType;
+    this.deleteId = deleteId;
+    this.showModal(this.deleteModal);
+  }
+
+  confirmDelete() {
+    if (this.deleteType === 'comment') {
+      this.commentsService.deleteComment(this.deleteId)
+        .subscribe({
+          next: () => {
+            const i = this.issue.comments.findIndex(c => c.id === this.deleteId);
+            this.issue.comments.splice(i, 1);
+            this.deleteModal.hide();
+          },
+          error: () => alert('Error deleting the comment.')
+        });
+    }
   }
 
 }

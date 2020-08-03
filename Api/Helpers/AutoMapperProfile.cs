@@ -1,4 +1,5 @@
 ﻿using Api.Helpers.DTOs;
+using Api.Helpers.DTOs.Comment;
 using Api.Helpers.DTOs.Issue;
 using Api.Helpers.DTOs.User;
 using Api.Models;
@@ -50,6 +51,9 @@ namespace Api.Helpers
             // User
             CreateMap<User, UserDto>();
             CreateMap<UserCreateDto, User>();
+
+            // Comment
+            CreateMap<Comment, CommentDto>();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Api.Data
         Task<Issue> GetIssue(string id);
         Task<Phase> GetPhase(string id);
         Task<User> GetUser(string id);
+        Task<Comment> GetComment(string id);
 
     }
 
@@ -140,7 +141,7 @@ namespace Api.Data
 
         public async Task<Issue> GetIssue(string id)
         {
-            return await _context.Issues
+            var issue = await _context.Issues
                 .Include(i => i.Phase)
                     .ThenInclude(p => p.Project)
                 .Include(i => i.IssueLabels)
@@ -148,6 +149,15 @@ namespace Api.Data
                 .Include(i => i.IssuedTo)
                     .ThenInclude(iu => iu.User)
                 .FirstOrDefaultAsync(i => i.Id == id);
+
+            var comments = await _context.Comments
+                .Where(c => c.IssueId == id)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+
+            issue.Comments = comments;
+
+            return issue;
         }
 
         public async Task<Phase> GetPhase(string id)
@@ -160,6 +170,12 @@ namespace Api.Data
         {
             return await _context.Users
                     .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<Comment> GetComment(string id)
+        {
+            return await _context.Comments
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

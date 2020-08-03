@@ -23,7 +23,11 @@ namespace Api.Models
         [Required]
         public string CreatedById { get; set; }
 
-        [Required]
         public User CreatedBy { get; set; }
+
+        [Required]
+        public string IssueId { get; set; }
+
+        public Issue Issue { get; set; }
     }
 }
