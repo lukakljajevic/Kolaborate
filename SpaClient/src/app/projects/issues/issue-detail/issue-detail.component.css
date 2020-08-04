@@ -54,7 +54,7 @@ h3 {
   cursor: pointer;
 }
 
-.col-md-8 .issue-controls {
+.col-md-9 .issue-controls {
   margin-bottom: 24px;
 }
 
@@ -189,5 +189,22 @@ h6 {
 .comment-footer a:hover {
   text-decoration: underline;
   cursor: pointer;
+  color: rgb(66, 82, 110);
+}
+
+#attachments {
+  margin-bottom: 16px;
+}
+
+.attachment {
+  width: 250px;
+  height: 150px;
+  padding: 20px;
+  margin-right: 12px;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.attachment h6 a {
   color: rgb(66, 82, 110);
 }

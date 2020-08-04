@@ -1,4 +1,5 @@
 ﻿using Api.Helpers.DTOs;
+using Api.Helpers.DTOs.Attachment;
 using Api.Helpers.DTOs.Comment;
 using Api.Helpers.DTOs.Issue;
 using Api.Helpers.DTOs.User;
@@ -54,6 +55,9 @@ namespace Api.Helpers
 
             // Comment
             CreateMap<Comment, CommentDto>();
+
+            // Attachment
+            CreateMap<Attachment, AttachmentDto>();
         }
     }
 }

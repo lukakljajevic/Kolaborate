@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Label } from '../models/label';
 import { Observable, Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
@@ -117,6 +117,18 @@ export class IssuesService {
 
   deleteAssignee(issueId: string, assigneeId: string) {
     return this.http.delete(`http://localhost:5002/api/issues/${issueId}/assignee/${assigneeId}`);
+  }
+
+  addAttachment(issueId: string, attachment: File) {
+    const formData: FormData = new FormData();
+
+    formData.append('attachment', attachment);
+
+    return this.http.post(`http://localhost:5002/api/issues/${issueId}/attachment`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
+
   }
 
 }

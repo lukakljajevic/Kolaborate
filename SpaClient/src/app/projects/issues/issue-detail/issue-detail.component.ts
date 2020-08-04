@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Issue } from 'src/app/models/issue';
-import { ModalDirective } from 'ngx-bootstrap/modal';
+import { ModalDirective, ModalOptions } from 'ngx-bootstrap/modal';
 import { Observable, Observer, of, from, Subscribable, Subscription } from 'rxjs';
 import { UserListItem } from 'src/app/models/user-list-item';
 import { switchMap, map } from 'rxjs/operators';
@@ -16,6 +16,8 @@ import { Label } from 'src/app/models/label';
 import { User } from 'src/app/models/user';
 import { Comment } from 'src/app/models/comment';
 import { CommentsService } from 'src/app/services/comments.service';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { Attachment } from 'src/app/models/attachment';
 
 @Component({
   selector: 'app-issue-detail',
@@ -65,8 +67,10 @@ export class IssueDetailComponent implements OnInit {
   editIssueModal: ModalDirective;
   @ViewChild('deleteModal', {static: false})
   deleteModal: ModalDirective;
+  @ViewChild('attachmentsModal', {static: false})
+  attachmentsModal: ModalDirective;
 
-  typingComment: boolean = false;
+  typingComment = false;
   newCommentText = '';
   editCommentText = '';
 
@@ -74,6 +78,14 @@ export class IssueDetailComponent implements OnInit {
   deleteId = '';
 
   deletedIssueSubscription: Subscription;
+
+  @ViewChild('fileInput', {static: false})
+  fileInput: ElementRef;
+  selectedFiles: FileList;
+  progressInfos = [];
+  successMessage = '';
+  errorMessage = '';
+  fileInfos: Observable<any>;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -328,6 +340,53 @@ export class IssueDetailComponent implements OnInit {
     } else {
       this.issuesService.deleteIssue(this.deleteId);
     }
+  }
+
+  selectFiles(event) {
+    this.progressInfos = [];
+    this.selectedFiles = event.target.files;
+  }
+
+  uploadFiles() {
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      this.upload(i, this.selectedFiles[i]);
+    }
+  }
+
+  upload(idx, file) {
+    this.progressInfos[idx] = { value: 0, fileName: file.name };
+
+    this.issuesService.addAttachment(this.issue.id, file).subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
+        } else if (event.type === HttpEventType.Response) {
+          this.successMessage = 'Upload successful.';
+          console.log(event);
+          this.issue.attachments.push(event.body as Attachment);
+          console.log(this.issue);
+        }
+      },
+      err => {
+        this.progressInfos[idx].value = 0;
+        this.errorMessage = 'Could not upload the file: ' + file.name;
+      });
+  }
+
+  hideAttachmentsModal() {
+    this.selectedFiles = null;
+    this.fileInput.nativeElement.value = null;
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.progressInfos = [];
+    this.attachmentsModal.hide();
+  }
+
+  getSizeInKb(size: number) {
+    return Math.round(size / 1024);
   }
 
 }

@@ -3,6 +3,7 @@ import { PhaseListItem } from './phase-list-item';
 import { IssueUser } from './issue-user';
 import { User } from './user';
 import { Comment } from './comment';
+import { Attachment } from './attachment';
 
 export interface Issue {
   id: string;
@@ -20,4 +21,5 @@ export interface Issue {
   labels: Label[];
   issuedTo: IssueUser[];
   comments: Comment[];
+  attachments: Attachment[];
 }

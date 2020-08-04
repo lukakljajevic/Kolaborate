@@ -148,6 +148,8 @@ namespace Api.Data
                     .ThenInclude(il => il.Label)
                 .Include(i => i.IssuedTo)
                     .ThenInclude(iu => iu.User)
+                .Include(i => i.Attachments)
+                    .ThenInclude(a => a.CreatedBy)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             var comments = await _context.Comments

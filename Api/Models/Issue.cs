@@ -49,6 +49,7 @@ namespace Api.Models
         public ICollection<IssueLabel> IssueLabels { get; set; }
         public ICollection<IssueUser> IssuedTo { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<Attachment> Attachments { get; set; }
 
         public Issue()
         {

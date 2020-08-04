@@ -39,11 +39,11 @@
 
 <div class="row">
   <!-- Left column -->
-  <div class="col-md-8">
+  <div class="col-md-9">
     <!-- Issue controls -->
     <div class="row issue-controls">
       <div class="col-md-12">
-        <button class="btn btn-default">
+        <button class="btn btn-default" (click)="showModal(attachmentsModal)">
           <fa-icon [icon]="['fas', 'paperclip']"></fa-icon> Attach
         </button>
         <div class="btn-group" dropdown placement="bottom right">
@@ -79,6 +79,23 @@
       <div class="col-md-12">
         <h6>Description</h6>
         <p>{{issue.description}}</p>
+      </div>
+    </div>
+
+    <!-- Attachments -->
+    <div class="row" id="attachments">
+      <div class="col-md-12">
+        <h6>Attachments</h6>
+        <div class="attachment" *ngFor="let attachment of issue.attachments">
+          <h6>
+            <a href="http://localhost:5002/{{attachment.url}}" download>
+              {{attachment.url.split('\\')[3]}}
+            </a>
+          </h6>
+          <p>{{getSizeInKb(attachment.size) | number}} KB</p>
+          <a href="#" class="card-link">Delete</a>
+        </div>
+        
       </div>
     </div>
 
@@ -137,7 +154,7 @@
   </div>
   
   <!-- Right column -->
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="row">
       <div class="col-md-12" id="assignees">
         <h6>{{issue.issuedTo.length > 1 ? 'Assignees' : 'Assignee'}}</h6>
@@ -377,4 +394,45 @@
       </div>
     </div>
   </div>   
+</div>
+
+<!-- Attachments modal -->
+<div class="modal fade"
+     bsModal
+     #attachmentsModal="bs-modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Upload attachments</h5>
+      </div>
+      <div class="modal-body">
+        <!-- <button class="btn btn-primary">Choose files</button> -->
+                
+        <label class="btn">
+          <input type="file" multiple (change)="selectFiles($event)" #fileInput/>
+        </label>
+
+        <div *ngFor="let progressInfo of progressInfos" class="mb-2">
+          <p>{{ progressInfo.fileName }}</p>
+          <p><ngb-progressbar type="success" textType="white" [value]="progressInfo.value" [showValue]="true"></ngb-progressbar></p>
+        </div>
+
+        <div class="alert alert-success" role="alert" *ngIf="successMessage !== ''">
+          {{ successMessage }}
+        </div>
+        
+        <div class="alert alert-danger" role="alert" *ngIf="errorMessage !== ''">
+          {{ errorMessage }}
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button 
+          class="btn btn-primary"
+          [disabled]="!selectedFiles"
+          (click)="uploadFiles()">Upload Files</button>
+        <button type="button" class="btn btn-default" (click)="hideAttachmentsModal()">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

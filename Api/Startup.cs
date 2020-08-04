@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Api
 {
@@ -55,6 +56,14 @@ namespace Api
             services.AddControllers();
 
             services.AddHttpClient();
+
+            services.Configure<FormOptions>(o => 
+            {
+                o.ValueLengthLimit = int.MaxValue;
+                o.MultipartBodyLengthLimit = int.MaxValue;
+                o.MemoryBufferThreshold = int.MaxValue;
+            });
+
 
         }
 

@@ -1,4 +1,5 @@
-﻿using Api.Helpers.DTOs.Comment;
+﻿using Api.Helpers.DTOs.Attachment;
+using Api.Helpers.DTOs.Comment;
 using Api.Helpers.DTOs.Issue;
 using System;
 using System.Collections.Generic;
@@ -25,5 +26,6 @@ namespace Api.Helpers.DTOs
         public ICollection<LabelDto> Labels { get; set; }
         public ICollection<IssueUserDetailDto> IssuedTo { get; set; }
         public ICollection<CommentDto> Comments { get; set; }
+        public ICollection<AttachmentDto> Attachments { get; set; }
     }
 }

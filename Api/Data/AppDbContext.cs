@@ -21,6 +21,7 @@ namespace Api.Data
         public DbSet<IssueUser> IssueUsers { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
