@@ -67,7 +67,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.data.subscribe((data: {project: Project}) => {
-      console.log(data.project);
       this.project = data.project;
       this.initializeLabelsFilter();
       this.previewPhases = JSON.parse(JSON.stringify(data.project.phases));

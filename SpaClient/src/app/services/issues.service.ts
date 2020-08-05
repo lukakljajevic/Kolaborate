@@ -119,16 +119,6 @@ export class IssuesService {
     return this.http.delete(`http://localhost:5002/api/issues/${issueId}/assignee/${assigneeId}`);
   }
 
-  addAttachment(issueId: string, attachment: File) {
-    const formData: FormData = new FormData();
-
-    formData.append('attachment', attachment);
-
-    return this.http.post(`http://localhost:5002/api/issues/${issueId}/attachment`, formData, {
-      reportProgress: true,
-      observe: 'events'
-    });
-
-  }
+  
 
 }

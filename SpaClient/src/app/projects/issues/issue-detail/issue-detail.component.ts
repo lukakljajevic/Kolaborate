@@ -18,6 +18,7 @@ import { Comment } from 'src/app/models/comment';
 import { CommentsService } from 'src/app/services/comments.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Attachment } from 'src/app/models/attachment';
+import { AttachmentsService } from 'src/app/services/attachments.service';
 
 @Component({
   selector: 'app-issue-detail',
@@ -91,7 +92,8 @@ export class IssueDetailComponent implements OnInit {
               private router: Router,
               public authService: AuthService,
               private issuesService: IssuesService,
-              private commentsService: CommentsService) { }
+              private commentsService: CommentsService,
+              private attachmentsService: AttachmentsService) { }
 
   ngOnInit() {
     this.route.data.subscribe((data: {results: {issue: Issue, project: Project}}) => {
@@ -337,8 +339,18 @@ export class IssueDetailComponent implements OnInit {
           },
           error: () => alert('Error deleting the comment.')
         });
-    } else {
+    } else if (this.deleteType === 'issue') {
       this.issuesService.deleteIssue(this.deleteId);
+    } else if (this.deleteType === 'attachment') {
+      this.attachmentsService.delete(this.deleteId)
+        .subscribe({
+          next: () => {
+            const i = this.issue.attachments.findIndex(a => a.id === this.deleteId);
+            this.issue.attachments.splice(i, 1);
+            this.deleteModal.hide();
+          },
+          error: () => alert('Error deleting the attachment.')
+        });
     }
   }
 
@@ -359,7 +371,7 @@ export class IssueDetailComponent implements OnInit {
   upload(idx, file) {
     this.progressInfos[idx] = { value: 0, fileName: file.name };
 
-    this.issuesService.addAttachment(this.issue.id, file).subscribe(
+    this.attachmentsService.uploadAttachment(this.issue.id, file).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress) {
           this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
@@ -387,6 +399,13 @@ export class IssueDetailComponent implements OnInit {
 
   getSizeInKb(size: number) {
     return Math.round(size / 1024);
+  }
+
+  printAttachmentName(name: string) {
+    if (name.length < 21) {
+      return name;
+    }
+    return name.substr(0, 25) + '...';
   }
 
 }

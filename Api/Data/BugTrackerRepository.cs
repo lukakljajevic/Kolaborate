@@ -29,6 +29,7 @@ namespace Api.Data
         Task<Phase> GetPhase(string id);
         Task<User> GetUser(string id);
         Task<Comment> GetComment(string id);
+        Task<Attachment> GetAttachment(string id);
 
     }
 
@@ -178,6 +179,12 @@ namespace Api.Data
         {
             return await _context.Comments
                 .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<Attachment> GetAttachment(string id)
+        {
+            return await _context.Attachments
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
     }
 }

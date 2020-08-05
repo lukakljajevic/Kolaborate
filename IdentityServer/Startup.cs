@@ -96,6 +96,8 @@ namespace IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+
             app.UseCors("MyPolicy");
 
             app.UseRouting();

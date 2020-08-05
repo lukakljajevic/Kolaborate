@@ -196,15 +196,65 @@ h6 {
   margin-bottom: 16px;
 }
 
+.attachments-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
 .attachment {
   width: 250px;
-  height: 150px;
+  height: 170px;
   padding: 20px;
   margin-right: 12px;
-  display: inline-block;
+  margin-bottom: 12px;
+  /* display: inline-block; */
+  flex: 0 0 auto;
+  /* flex-direction: column; */
   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.attachment-header {
+  height: 90px;
+}
+
+.attachment-footer {
+  height: 40px;
+}
+
+.attachment h6 {
+  word-wrap: break-word;
 }
 
 .attachment h6 a {
   color: rgb(66, 82, 110);
+}
+
+.attachment a:hover {
+  cursor: pointer;
+  transition: ease-in-out;
+  transition-duration: 200ms;
+}
+
+.attachment .btn-danger {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease-in-out;
+}
+
+.attachment:hover .btn-danger {
+  visibility: visible;
+  opacity: 1;
+}
+
+span.attachment-size {
+  line-height: 40px;
+}
+
+#delete-modal .btn-default {
+  margin-left: 6px;
+}
+
+#delete-modal .btn-outline-danger {
+  margin-right: 6px;
 }

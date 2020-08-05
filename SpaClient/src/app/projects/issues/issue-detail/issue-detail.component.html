@@ -86,16 +86,23 @@
     <div class="row" id="attachments">
       <div class="col-md-12">
         <h6>Attachments</h6>
-        <div class="attachment" *ngFor="let attachment of issue.attachments">
-          <h6>
-            <a href="http://localhost:5002/{{attachment.url}}" download>
-              {{attachment.url.split('\\')[3]}}
-            </a>
-          </h6>
-          <p>{{getSizeInKb(attachment.size) | number}} KB</p>
-          <a href="#" class="card-link">Delete</a>
+        <div class="attachments-wrapper">
+          <div class="attachment" *ngFor="let attachment of issue.attachments">
+            <div class="attachment-header">
+              <h6>
+                <a href="http://localhost:5002/{{attachment.url}}" download>
+                  {{attachment.url.split('\\')[3]}}
+                </a>
+              </h6>
+            </div>
+            <div class="attachment-footer">
+              <span class="attachment-size">{{getSizeInKb(attachment.size) | number}} KB</span>
+              <button (click)="delete('attachment', attachment.id)" class="btn btn-danger float-right">
+                <fa-icon [icon]="['fas', 'trash-alt']" class="trash-icon"></fa-icon>
+              </button>
+            </div>
+          </div>
         </div>
-        
       </div>
     </div>
 
@@ -376,10 +383,11 @@
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade" 
+<div class="modal fade"
+     id="delete-modal"
      bsModal 
      #deleteModal="bs-modal">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title pull-left">Delete {{deleteType}}</h5>

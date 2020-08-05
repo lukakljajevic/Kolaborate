@@ -9,6 +9,7 @@ namespace Api.Helpers.DTOs.Attachment
 {
     public class AddAttachmentDto
     {
+        public string IssueId { get; set; }
         public IFormFile Attachment { get; set; }
     }
 }
