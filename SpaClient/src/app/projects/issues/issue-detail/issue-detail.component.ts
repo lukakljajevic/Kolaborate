@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Issue } from 'src/app/models/issue';
 import { ModalDirective, ModalOptions } from 'ngx-bootstrap/modal';
@@ -25,7 +25,7 @@ import { AttachmentsService } from 'src/app/services/attachments.service';
   templateUrl: './issue-detail.component.html',
   styleUrls: ['./issue-detail.component.css']
 })
-export class IssueDetailComponent implements OnInit {
+export class IssueDetailComponent implements OnInit, OnDestroy {
 
   issue: Issue;
   issueStatus = {
@@ -153,7 +153,7 @@ export class IssueDetailComponent implements OnInit {
         this.editIssueModal.hide();
       });
 
-    this.issuesService.deletedIssue$
+    this.deletedIssueSubscription = this.issuesService.deletedIssue$
       .subscribe({
         next: response => {
           alert(response.message);
@@ -162,6 +162,11 @@ export class IssueDetailComponent implements OnInit {
         error: err => alert(err.message)
       });
 
+  }
+
+  ngOnDestroy() {
+    this.deletedIssueSubscription.unsubscribe();
+    this.updatedIssueSubscription.unsubscribe();
   }
 
   hasLabel(id: string): boolean {
@@ -179,7 +184,6 @@ export class IssueDetailComponent implements OnInit {
 
   onIssueUpdateSubmit() {
     this.issueEditForm.value.labels = this.selectedLabelIds;
-    // console.log(this.issueEditForm.value);
     this.issueEditForm.value.description = this.issueEditForm.value.description.replace(/\n\r?/g, '<br />');
     this.issuesService.updateIssue(this.issue.id, this.issueEditForm.value);
   }
@@ -296,6 +300,7 @@ export class IssueDetailComponent implements OnInit {
   }
 
   createComment() {
+    this.newCommentText = this.newCommentText.replace(/\n\r?/g, '<br />');
     this.commentsService.createComment({text: this.newCommentText, issueId: this.issue.id})
       .subscribe((comment) => {
         console.log(comment);
@@ -308,10 +313,11 @@ export class IssueDetailComponent implements OnInit {
   editComment(comment: Comment) {
     comment.editMode = true;
     this.typingComment = false;
-    this.editCommentText = comment.text;
+    this.editCommentText = comment.text.replace(/<br\s*[\/]?>/gi, '\n');
   }
 
   updateComment(comment: Comment) {
+    this.editCommentText = this.editCommentText.replace(/\n\r?/g, '<br />');
     this.commentsService.updateComment(comment.id, this.editCommentText)
       .subscribe({
         next: () => {

@@ -140,7 +140,9 @@
               <span class="comment-time">{{comment.createdAt | timeAgo}}</span>
             </p>
             <p>
-              <span *ngIf="!comment.editMode">{{comment.text}}</span>
+              <span 
+                [innerHTML]="comment.text"
+                *ngIf="!comment.editMode"></span>
               <textarea 
                 *ngIf="comment.editMode"
                 rows="4"
