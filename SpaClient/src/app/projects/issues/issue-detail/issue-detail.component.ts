@@ -111,7 +111,7 @@ export class IssueDetailComponent implements OnInit {
       this.issueEditForm = new FormGroup({
         issueType: new FormControl(this.issue.issueType, Validators.required),
         name: new FormControl(this.issue.name, Validators.required),
-        description: new FormControl(this.issue.description, Validators.required),
+        description: new FormControl(this.issue.description.replace(/<br\s*[\/]?>/gi, '\n'), Validators.required),
         dueDate: new FormControl(this.formatDate(this.issue.dueDate)),
         labels: new FormControl(this.selectedLabelIds),
       });
@@ -180,6 +180,7 @@ export class IssueDetailComponent implements OnInit {
   onIssueUpdateSubmit() {
     this.issueEditForm.value.labels = this.selectedLabelIds;
     // console.log(this.issueEditForm.value);
+    this.issueEditForm.value.description = this.issueEditForm.value.description.replace(/\n\r?/g, '<br />');
     this.issuesService.updateIssue(this.issue.id, this.issueEditForm.value);
   }
 

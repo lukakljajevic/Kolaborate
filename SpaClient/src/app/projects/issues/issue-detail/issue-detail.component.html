@@ -78,7 +78,7 @@
     <div class="row">
       <div class="col-md-12">
         <h6>Description</h6>
-        <p>{{issue.description}}</p>
+        <p [innerHTML]="issue.description"></p>
       </div>
     </div>
 
@@ -356,7 +356,7 @@
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea cols="30" rows="10" class="form-control" formControlName="description" placeholder="Issue description"></textarea>
+            <textarea id="edit-description" cols="30" rows="10" class="form-control" formControlName="description" placeholder="Issue description"></textarea>
           </div>
           <div class="form-group">
             <label for="labels">Labels</label>

@@ -154,6 +154,10 @@ td .btn {
   margin-bottom: 12px;
 }
 
+#comments {
+  margin-bottom: 36px;
+}
+
 #comment-avatar {
   height: 36px;
   width: 36px;

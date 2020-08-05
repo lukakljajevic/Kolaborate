@@ -211,6 +211,10 @@ export class PhaseListComponent implements OnInit, OnDestroy {
 
     // formValue.issuedTo = this.formatIssuedTo(formValue.issuedTo);
 
+    console.log(formValue.description);
+    formValue.description = formValue.description.replace(/\n\r?/g, '<br />');
+    // console.log(formValue.description);
+
     this.issuesService.createIssue(formValue);
   }
 
