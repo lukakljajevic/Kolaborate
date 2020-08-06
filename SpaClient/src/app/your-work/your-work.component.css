@@ -55,7 +55,7 @@ h5 {
   margin: 0;
 }
 
-#in-progress, #to-do, #done {
+#in-progress, #to-do, #done, .no-issues-message {
   margin-top: 24px;
   color: rgb(107, 119, 140);
   font-weight: 600;

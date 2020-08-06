@@ -311,6 +311,7 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
   }
 
   editComment(comment: Comment) {
+    this.issue.comments.forEach(c => c.editMode = false);
     comment.editMode = true;
     this.typingComment = false;
     this.editCommentText = comment.text.replace(/<br\s*[\/]?>/gi, '\n');

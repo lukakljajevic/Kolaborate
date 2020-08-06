@@ -23,3 +23,12 @@ h2 {
 img {
   width: 100%;
 }
+
+.col-sm-1 {
+  max-width: 10%;
+  flex-basis: 10%;
+}
+
+.offset-sm-1 {
+  margin-left: 10%;
+}
