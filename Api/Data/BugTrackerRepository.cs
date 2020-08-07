@@ -135,8 +135,8 @@ namespace Api.Data
                 .Where(iu => iu.UserId == userId)
                 .Include(iu => iu.User)
                 .Include(iu => iu.Issue)
-                .ThenInclude(i => i.Phase)
-                .ThenInclude(p => p.Project)
+                    .ThenInclude(i => i.Phase)
+                        .ThenInclude(p => p.Project)
                 .ToListAsync();
         }
 

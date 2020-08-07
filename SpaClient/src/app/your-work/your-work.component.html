@@ -41,15 +41,16 @@
         <a
           class="issue" 
           *ngFor="let issueInProgress of inProgress" 
-          [routerLink]="['/projects', issueInProgress.project.id, 'issues', issueInProgress.id]">
+          [routerLink]="['/projects', issueInProgress.phase.project.id, 'issues', issueInProgress.id]">
             <div class="issue-logo">
               <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
               <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
             </div>
             <span class="issue-content">
               <span class="issue-name">{{issueInProgress.name}}</span>
-              <small class="issue-project">{{issueInProgress.project.name}}</small>
+              <small class="issue-phase">{{issueInProgress.phase.name}}</small>
             </span>
+            <span class="issue-project">{{issueInProgress.phase.project.name}}</span>
             <span class="issue-status">In progress</span>
         </a>
 
@@ -58,15 +59,16 @@
         <a 
           class="issue" 
           *ngFor="let issueToDo of toDo"
-          [routerLink]="['/projects', issueToDo.project.id, 'issues', issueToDo.id]">
+          [routerLink]="['/projects', issueToDo.phase.project.id, 'issues', issueToDo.id]">
             <div class="issue-logo">
               <fa-icon *ngIf="issueToDo.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
               <fa-icon *ngIf="issueToDo.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
             </div>
             <span class="issue-content">
               <span class="issue-name">{{issueToDo.name}}</span>
-              <small class="issue-project">{{issueToDo.project.name}}</small>
+              <small class="issue-phase">{{issueToDo.phase.name}}</small>
             </span>
+            <span class="issue-project">{{issueToDo.phase.project.name}}</span>
             <span class="issue-status">To do</span>
         </a>
       </ng-template>
@@ -82,15 +84,16 @@
         <a 
           class="issue" 
           *ngFor="let issueInProgress of inProgressStarred"
-          [routerLink]="['/projects', issueInProgress.project.id, 'issues', issueInProgress.id]">
+          [routerLink]="['/projects', issueInProgress.phase.project.id, 'issues', issueInProgress.id]">
             <div class="issue-logo">
               <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
               <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
             </div>
             <span class="issue-content">
               <span class="issue-name">{{issueInProgress.name}}</span>
-              <small class="issue-project">{{issueInProgress.project.name}}</small>
+              <small class="issue-phase">{{issueInProgress.phase.name}}</small>
             </span>
+            <span class="issue-project">{{issueInProgress.phase.project.name}}</span>
             <span class="issue-status">In progress</span>
         </a>
   
@@ -99,15 +102,16 @@
         <a 
           class="issue" 
           *ngFor="let issueToDo of toDoStarred"
-          [routerLink]="['/projects', issueToDo.project.id, 'issues', issueToDo.id]">
+          [routerLink]="['/projects', issueToDo.phase.project.id, 'issues', issueToDo.id]">
           <div class="issue-logo">
             <fa-icon *ngIf="issueToDo.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
             <fa-icon *ngIf="issueToDo.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
           </div>
           <span class="issue-content">
             <span class="issue-name">{{issueToDo.name}}</span>
-            <small class="issue-project">{{issueToDo.project.name}}</small>
+            <small class="issue-phase">{{issueToDo.phase.name}}</small>
           </span>
+          <span class="issue-project">{{issueToDo.phase.project.name}}</span>
           <span class="issue-status">To do</span>
         </a>
       </ng-template>
@@ -123,15 +127,16 @@
         <a 
           class="issue issue-done" 
           *ngFor="let issue of done"
-          [routerLink]="['/projects', issue.project.id, 'issues', issue.id]">
+          [routerLink]="['/projects', issue.phase.project.id, 'issues', issue.id]">
           <div class="issue-logo">
             <fa-icon *ngIf="issue.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
             <fa-icon *ngIf="issue.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
           </div>
           <span class="issue-content">
             <span class="issue-name">{{issue.name}}</span>
-            <small class="issue-project">{{issue.project.name}}</small>
+            <small class="issue-phase">{{issue.phase.name}}</small>
           </span>
+          <span class="issue-project">{{issue.phase.project.name}}</span>
           <span class="issue-status">Done</span>
         </a>
       </ng-template>

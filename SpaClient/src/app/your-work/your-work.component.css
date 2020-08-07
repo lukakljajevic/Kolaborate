@@ -47,7 +47,7 @@ h5 {
   margin: 0;
 }
 
-.issue-project {
+.issue-phase {
   flex-grow: 1;
   font-size: 13px;
   color: rgb(107, 119, 140);
@@ -79,13 +79,22 @@ h5 {
 .issue-content {
   display: flex;
   flex-direction: column;
-  flex: 6 1 0%;
+  flex: 1 1 0%;
   margin: 0 8px;
+  max-width: 32rem;
+}
+
+.issue-project {
+  color: rgb(107, 119, 140);
+  max-width: 24rem;
+  font-size: 12px;
+  padding-right: 16px;
+  flex: 1 1 0%;
+  margin: 0;
 }
 
 .issue-status {
   color: rgb(107, 119, 140);
-  min-width: 8em;
   font-size: 12px;
   padding-right: 16px;
   flex: 1 1 0%;
