@@ -1,46 +1,62 @@
 ﻿@model IdentityServer.Helpers.LoginViewModel
 
-    <div class="form-container">
-        <form asp-controller="Auth" asp-action="Login" method="post">
-            <div class="form-row">
-                <h3>Sign In</h3>
-            </div>
-            <input type="hidden" asp-for="ReturnUrl" />
-            <div class="form-row">
-                <label>Username</label>
-                <input asp-for="Username" class="form-control" />
-            </div>
-            <div class="form-row">
-                <label>Password</label>
-                <input asp-for="Password" type="password" class="form-control" />
-            </div>
-            <div class="form-row">
-                <button type="submit" class="btn btn-success btn-block">Sign In</button>
-            </div>
-            <div class="form-row">
-                <p>or login with</p>
-            </div>
-            <div class="form-row">
-                <div class="col">
-                    <button class="btn btn-default btn-block">
-                        <i class="fa fa-facebook-official"></i> Facebook
-                    </button>
-                </div>
-                <div class="col">
-                    <button class="btn btn-default btn-block">
-                        <img src="~/icons/icon-google.png" alt="" /> Google
-                    </button>
-                </div>
-            </div>
-            <div class="form-row">
-                <p>
-                    <span>Don't have an account?</span>
-                    <a asp-controller="Auth"
-                       asp-action="Register"
-                       asp-route-returnUrl="@Model.ReturnUrl">
-                         Sign up now
-                    </a>
-                </p>
-            </div>
-        </form>
-    </div>
+	<div class="form-container">
+		<form asp-controller="Auth" asp-action="Login" method="post">
+			<div class="form-row">
+				<h3>Sign In</h3>
+			</div>
+			<input type="hidden" asp-for="ReturnUrl" />
+			<div class="form-row">
+				<label>Username</label>
+				<input asp-for="Username"
+					   class="form-control @(@Model.InvalidUsername ? "is-invalid" : "")"/>
+				@if (Model.InvalidUsername)
+				{
+					<div class="invalid-feedback">
+						@Model.InvalidUsernameMessage
+					</div>
+				}
+
+			</div>
+			<div class="form-row">
+				<label>Password</label>
+				<input asp-for="Password" 
+					   type="password" 
+					   class="form-control @(@Model.InvalidPassword ? "is-invalid" : "")" />
+				@if (Model.InvalidPassword)
+				{
+					<div class="invalid-feedback">
+						@Model.InvalidPasswordMessage
+					</div>
+				}
+			</div>
+			<div class="form-row">
+				<button type="submit" class="btn btn-success btn-block">Sign In</button>
+			</div>
+			<div class="form-row">
+				<p>or login with</p>
+			</div>
+			<div class="form-row">
+				<div class="col">
+					<button class="btn btn-default btn-block">
+						<i class="fa fa-facebook-official"></i> Facebook
+					</button>
+				</div>
+				<div class="col">
+					<button class="btn btn-default btn-block">
+						<img src="~/icons/icon-google.png" alt="" /> Google
+					</button>
+				</div>
+			</div>
+			<div class="form-row">
+				<p>
+					<span>Don't have an account?</span>
+					<a asp-controller="Auth"
+					   asp-action="Register"
+					   asp-route-returnUrl="@Model.ReturnUrl">
+						 Sign up now
+					</a>
+				</p>
+			</div>
+		</form>
+	</div>

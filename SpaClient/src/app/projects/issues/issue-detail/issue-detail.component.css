@@ -266,3 +266,7 @@ span.attachment-size {
 #delete-modal .btn-outline-danger {
   margin-right: 6px;
 }
+
+.form-row {
+  margin-bottom: 16px;
+}

@@ -333,7 +333,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="issueEditForm" (ngSubmit)="onIssueUpdateSubmit()">       
+        <form [formGroup]="issueEditForm" (ngSubmit)="onIssueUpdateSubmit()">
+          <div class="form-row">
+            <div class="col-md-6">
+              <label>Phase</label>
+              <select class="form-control fa-select" formControlName="phaseId">
+                <option *ngFor="let phase of project.phases" value="{{phase.id}}">{{phase.name}}</option>
+              </select>
+            </div>
+          </div>   
           <div class="form-row">
             <div class="col-md-6">
               <label for="type">Issue type</label>
@@ -352,7 +360,6 @@
                 [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
             </div>
           </div>
-          <hr>
           <div class="form-group">
             <label for="name">Summary</label>
             <input type="text" class="form-control" formControlName="name" placeholder="Issue summary">

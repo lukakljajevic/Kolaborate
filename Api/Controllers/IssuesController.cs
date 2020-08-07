@@ -139,11 +139,15 @@ namespace Api.Controllers
                 }
             }
 
+            var phase = await _repo.GetPhase(dto.PhaseId);
+
+            if (phase == null) return BadRequest();
+
             issue.Name = dto.Name;
             issue.Description = dto.Description;
             issue.IssueType = dto.IssueType;
             issue.DueDate = dto.DueDate;
-
+            issue.PhaseId = dto.PhaseId;
 
             if (await _repo.SaveAll())
             {

@@ -109,6 +109,7 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       }
 
       this.issueEditForm = new FormGroup({
+        phaseId: new FormControl(this.issue.phase.id, Validators.required),
         issueType: new FormControl(this.issue.issueType, Validators.required),
         name: new FormControl(this.issue.name, Validators.required),
         description: new FormControl(this.issue.description.replace(/<br\s*[\/]?>/gi, '\n'), Validators.required),
@@ -138,12 +139,15 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
 
     this.updatedIssueSubscription = this.issuesService.updatedIssue$
       .subscribe((data: {
+        phaseId: string,
         name: string,
         description: string,
         dueDate: string,
         issueType: string,
         labels: string[]
       }) => {
+        const { id, name, project } = this.project.phases.find(p => p.id === data.phaseId);
+        this.issue.phase = { id, name, project };
         this.issue.issueType = data.issueType;
         this.issue.dueDate = data.dueDate;
         this.issue.name = data.name;
