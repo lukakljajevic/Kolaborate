@@ -1,4 +1,7 @@
 ﻿using Api.Data;
+using Api.Helpers.DTOs;
+using Api.Helpers.DTOs.Label;
+using Api.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,18 +28,38 @@ namespace Api.Controllers
         }
 
         // GET /api/labels
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             var labels = await _repo.GetLabels();
-            //if (labels.Count() == 0)
-            //{
-            //    return NotFound("Unable to get labels.");
-            //}
-            return Ok(labels);
+            var labelsToReturn = _mapper.Map<LabelDto[]>(labels);
+            return Ok(labelsToReturn);
         }
 
         // POST /api/labels
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] LabelCreateDto dto)
+		{
+            if (dto.Name == null || dto.Name.Length == 0)
+                return BadRequest(new { Message = "Label name cannot be empty." });
 
+            var label = await _repo.FindLabelByName(dto.Name);
+            if (label != null)
+                return BadRequest(new { Message = "Label with this name already exists." });
+
+            var newLabel = _mapper.Map<Label>(dto);
+            _repo.Add(newLabel);
+
+            if (await _repo.SaveAll())
+			{
+                var labelToReturn = _mapper.Map<LabelDto>(newLabel);
+                return Ok(labelToReturn);
+			}
+
+            return BadRequest(new { Message = "Error creating the label." });
+
+
+		}
 
     }
 }

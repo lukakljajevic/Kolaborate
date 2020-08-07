@@ -193,6 +193,7 @@ namespace Api.Controllers
 
             if (dto.Labels != null)
             {
+                issue.IssueLabels = new List<IssueLabel>();
                 foreach (var labelId in dto.Labels)
                 {
                     var label = await _repo.GetLabel(labelId);
@@ -207,7 +208,8 @@ namespace Api.Controllers
 
             if (await _repo.SaveAll())
             {
-                return Ok();
+                var issueToReturn = _mapper.Map<IssueListItemDto>(issue);
+                return Ok(new { Issue = issueToReturn });
             }
 
             return BadRequest(new { message = "Error adding labels to the issue." });

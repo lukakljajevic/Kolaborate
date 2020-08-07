@@ -11,6 +11,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { IssueListItem } from 'src/app/models/issue-list-item';
 import { UserListItem } from 'src/app/models/user-list-item';
 import { Subscription } from 'rxjs';
+import { LabelsService } from 'src/app/services/labels.service';
 
 @Component({
   selector: 'app-phase-list',
@@ -34,6 +35,8 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   deleteModal: ModalDirective;
   @ViewChild('addLabelsModal', {static: false})
   addLabelsModal: ModalDirective;
+  @ViewChild('createLabelModal', {static: false})
+  createLabelModal: ModalDirective;
 
   labels: Label[] = [];
   minDate: Date;
@@ -46,14 +49,20 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   deleteType: string;
   deleteItem: Phase | IssueListItem;
 
+  labelCreateForm: FormGroup;
+  selectedLabelIds: string[] = [];
+  editLabelsIssue: IssueListItem;
+
   createdPhaseSubscription: Subscription;
   deletedPhaseSubscription: Subscription;
   createdIssueSubscription: Subscription;
   updatedIssueSubscription: Subscription;
   deletedIssueSubscription: Subscription;
+  createdLabelSubscription: Subscription;
 
   constructor(private phasesService: PhasesService,
-              private issuesService: IssuesService) { }
+              private issuesService: IssuesService,
+              private labelsService: LabelsService) { }
 
   ngOnInit() {
     this.minDate = new Date();
@@ -89,6 +98,10 @@ export class PhaseListComponent implements OnInit, OnDestroy {
       issueId: new FormControl('', [Validators.required]),
       issueName: new FormControl('', [Validators.required]),
       labels: new FormControl('', [Validators.required])
+    });
+
+    this.labelCreateForm = new FormGroup({
+      name: new FormControl('', Validators.required)
     });
 
     this.issuesService.getLabels().subscribe(labels => {
@@ -133,6 +146,14 @@ export class PhaseListComponent implements OnInit, OnDestroy {
       alert(response.message);
       this.hideModal(this.deleteModal);
     });
+
+    // Label create subscription
+    this.createdLabelSubscription = this.labelsService.createdLabel$
+      .subscribe((label: Label) => {
+        this.labels.push(label);
+        this.labelCreateForm.patchValue({ name: '' });
+        this.createLabelModal.hide();
+      });
 
   }
 
@@ -214,7 +235,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     console.log(formValue.description);
     formValue.description = formValue.description.replace(/\n\r?/g, '<br />');
     // console.log(formValue.description);
-
+    formValue.labels = this.selectedLabelIds;
     this.issuesService.createIssue(formValue);
   }
 
@@ -254,27 +275,57 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   }
 
   showAddLabelModal(issue: IssueListItem) {
-    this.generateAvailableLabels(issue);
-    this.addLabelsForm.patchValue(
-      {
-        issueId: issue.id,
-        issueName: issue.name
-      }
-    );
-    this.showModal(this.addLabelsModal);
+    // this.generateAvailableLabels(issue);
+    this.editLabelsIssue = issue;
+    this.addLabelsForm.patchValue({
+      issueId: issue.id,
+      issueName: issue.name
+    });
+    this.addLabelsModal.show();
   }
 
   onAddLabelSubmit() {
     const formData = this.addLabelsForm.getRawValue();
+    formData.labels = this.selectedLabelIds;
+    console.log(formData);
     this.issuesService.addLabels({issueId: formData.issueId, labels: formData.labels});
   }
 
-  generateAvailableLabels(issue: IssueListItem) {
-    this.availableLabels = [];
-    this.labels.forEach(label => {
-      if (issue.labels.findIndex(l => l.id === label.id) === -1) {
-        this.availableLabels.push(label);
-      }
-    });
+  // generateAvailableLabels(issue: IssueListItem) {
+  //   this.availableLabels = [];
+  //   this.labels.forEach(label => {
+  //     if (issue.labels.findIndex(l => l.id === label.id) === -1) {
+  //       this.availableLabels.push(label);
+  //     }
+  //   });
+  // }
+
+  showCreateLabelModal() {
+    this.addLabelsModal.hide();
+    this.createLabelModal.show();
+  }
+
+  onCreateLabelSubmit() {
+    if (!this.labelCreateForm.valid) {
+      return;
+    }
+
+    this.labelsService.create(this.labelCreateForm.value.name);
+  }
+
+  labelChecked(event: any) {
+    if (event.target.checked) {
+      this.selectedLabelIds.push(event.target.value);
+    } else {
+      const index = this.selectedLabelIds.findIndex(id => id === event.target.id);
+      this.selectedLabelIds.splice(index, 1);
+    }
+  }
+
+  hasLabel(id: string): boolean {
+    if (!this.editLabelsIssue) {
+      return false;
+    }
+    return this.editLabelsIssue.labels.findIndex(l => l.id === id) > -1;
   }
 }

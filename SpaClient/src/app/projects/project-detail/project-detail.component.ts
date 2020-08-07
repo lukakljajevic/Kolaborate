@@ -141,7 +141,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     // Issue create subscription
     this.createdIssueSubscription = this.issuesService.createdIssue$.subscribe({
       next: response => {
-        const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
+        const phase = this.project.phases.find(p => p.id === response.issue.phase.id);
         phase.issues.push(response.issue);
         this.filterIssues();
         response.issue.labels.forEach(label => {
@@ -156,7 +156,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     // Issue update subscription
     this.updatedIssueSubscription = this.issuesService.updatedIssue$.subscribe({
       next: response => {
-        const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
+        const phase = this.project.phases.find(p => p.id === response.issue.phase.id);
         const index = phase.issues.findIndex(i => i.id === response.issue.id);
         phase.issues[index] = response.issue;
         this.initializeLabelsFilter();
@@ -169,7 +169,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.deletedIssueSubscription = this.issuesService.deletedIssue$.subscribe({
       next: response => {
         console.log(response);
-        const phase = this.project.phases.find(p => p.id === response.issue.phaseId);
+        const phase = this.project.phases.find(p => p.id === response.issue.phase.id);
         const issueIndex = phase.issues.findIndex(i => i.id === response.issue.id);
         phase.issues.splice(issueIndex, 1);
         this.filterIssues();

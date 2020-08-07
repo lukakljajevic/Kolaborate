@@ -24,6 +24,7 @@ namespace Api.Data
         Task<bool> UpdatePhases(IEnumerable<PhaseDetailDto> phases);
         Task<ICollection<ProjectUser>> GetProjectUsers(string projectId);
         Task<Label> GetLabel(string labelId);
+        Task<Label> FindLabelByName(string name);
         Task<ICollection<IssueUser>> GetIssueUsers(string userId);
         Task<Issue> GetIssue(string id);
         Task<Phase> GetPhase(string id);
@@ -103,7 +104,7 @@ namespace Api.Data
 
         public async Task<IEnumerable<Label>> GetLabels()
         {
-            return await _context.Labels.ToListAsync();
+            return await _context.Labels.OrderBy(l => l.Name).ToListAsync();
         }
 
         public async Task<bool> UpdatePhases(IEnumerable<PhaseDetailDto> phases)
@@ -128,6 +129,11 @@ namespace Api.Data
         {
             return await _context.Labels.FirstOrDefaultAsync(l => l.Id == labelId);
         }
+
+        public async Task<Label> FindLabelByName(string name)
+		{
+            return await _context.Labels.FirstOrDefaultAsync(l => l.Name == name);
+		}
 
         public async Task<ICollection<IssueUser>> GetIssueUsers(string userId)
         {

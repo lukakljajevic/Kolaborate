@@ -60,7 +60,7 @@
               <div class="btn-group" dropdown placement="bottom right">
                 <button id="button-animated" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated"><fa-icon [icon]="['fas', 'ellipsis-h']" size="md"></fa-icon></button>
                 <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-animated">
-                  <li role="menuitem"><a class="dropdown-item" (click)="showAddLabelModal(issue)">Add label</a></li>
+                  <li role="menuitem"><a class="dropdown-item" (click)="showAddLabelModal(issue)">Edit labels</a></li>
                   <li role="menuitem">
                     <a class="dropdown-item" 
                        (click)="showModal(deleteModal, {
@@ -238,9 +238,16 @@
           </div>
           <div class="form-group">
             <label for="labels">Labels</label>
-            <select multiple class="form-control" formControlName="labels">
-              <option *ngFor="let label of labels" value="{{label.id}}">{{label.name}}</option>
-            </select>
+            <br>
+            <div class="form-check form-check-inline" *ngFor="let label of labels">
+              <input 
+                class="form-check-input" 
+                type="checkbox"
+                id="{{label.id}}-create" 
+                [value]="label.id"
+                (change)="labelChecked($event)">
+              <label class="form-check-label" for="{{label.id}}-create">{{label.name}}</label>
+            </div>
           </div>
           <button class="btn btn-outline-success btn-block" type="submit" [disabled]="!issueCreateForm.valid">Submit</button>
         </form>
@@ -295,7 +302,7 @@
           </div>
           <div class="form-group">
             <label for="">Labels</label>
-            <select multiple
+            <!-- <select multiple
                 class="form-control"
                 formControlName="labels">
                   <option 
@@ -303,9 +310,52 @@
                     value="{{label.id}}">
                       {{label.name}}
                   </option>
-              </select>
+              </select> -->
+              <br>
+              <div class="form-check form-check-inline" *ngFor="let label of labels">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox"
+                  id="{{label.id}}-edit" 
+                  [value]="label.id"
+                  (change)="labelChecked($event)"
+                  [checked]="hasLabel(label.id)">
+                <label class="form-check-label" for="{{label.id}}-edit">{{label.name}}</label>
+              </div>
           </div>
-          <button class="btn btn-outline-success btn-block" [disabled]="!addLabelsForm.valid">Submit</button>
+          <div class="form-group">
+            <button class="btn btn-default" type="button" (click)="showCreateLabelModal()">Create a new Label</button>
+          </div>
+          <button class="btn btn-outline-success btn-block" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create label modal -->
+<div class="modal fade"
+     bsModal
+     #createLabelModal="bs-modal"
+     (onHidden)="resetForm(labelCreateForm)">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Create a new label</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(createLabelModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="labelCreateForm" (ngSubmit)="onCreateLabelSubmit()">
+          <div class="form-group">
+            <label for="">Label Name</label>
+            <input 
+                type="text"
+                class="form-control"
+                formControlName="name">
+          </div>
+          <button class="btn btn-outline-success btn-block" [disabled]="!labelCreateForm.valid">Submit</button>
         </form>
       </div>
     </div>

@@ -202,3 +202,11 @@ h1 {
 .bug {
   color: #e5493a;
 }
+
+.btn-default {
+  background-color: rgb(244, 245, 247);
+}
+
+.btn-default:hover {
+  background-color: lightgray;
+}

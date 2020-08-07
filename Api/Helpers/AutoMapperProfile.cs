@@ -2,6 +2,7 @@
 using Api.Helpers.DTOs.Attachment;
 using Api.Helpers.DTOs.Comment;
 using Api.Helpers.DTOs.Issue;
+using Api.Helpers.DTOs.Label;
 using Api.Helpers.DTOs.User;
 using Api.Models;
 using AutoMapper;
@@ -47,6 +48,7 @@ namespace Api.Helpers
 
             // Label
             CreateMap<Label, LabelDto>();
+            CreateMap<LabelCreateDto, Label>();
 
             // User
             CreateMap<User, UserDto>();
