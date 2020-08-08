@@ -281,7 +281,7 @@
 <div class="modal fade"
      bsModal
      #addLabelsModal="bs-modal"
-     (onHidden)="resetForm(addLabelsForm)">
+     (onHidden)="onAddLabelsModalHidden()">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -312,14 +312,16 @@
                   </option>
               </select> -->
               <br>
-              <div class="form-check form-check-inline" *ngFor="let label of labels">
+              <div class="form-check form-check-inline" *ngFor="let label of labelsChecked">
                 <input 
                   class="form-check-input" 
                   type="checkbox"
+                  name="{{label.id}}-edit"
                   id="{{label.id}}-edit" 
                   [value]="label.id"
                   (change)="labelChecked($event)"
-                  [checked]="hasLabel(label.id)">
+                  [(ngModel)]="label.checked"
+                  [ngModelOptions]="{standalone: true}">
                 <label class="form-check-label" for="{{label.id}}-edit">{{label.name}}</label>
               </div>
           </div>

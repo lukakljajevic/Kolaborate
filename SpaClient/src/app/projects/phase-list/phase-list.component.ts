@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Phase } from 'src/app/models/phase';
 import { ModalOptions, ModalDirective } from 'ngx-bootstrap/modal';
 import { PhasesService } from 'src/app/services/phases.service';
@@ -60,6 +60,9 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   deletedIssueSubscription: Subscription;
   createdLabelSubscription: Subscription;
 
+  // labelsChecked: [{id: string, name: string, checked: boolean}];
+  labelsChecked = [];
+
   constructor(private phasesService: PhasesService,
               private issuesService: IssuesService,
               private labelsService: LabelsService) { }
@@ -106,6 +109,11 @@ export class PhaseListComponent implements OnInit, OnDestroy {
 
     this.issuesService.getLabels().subscribe(labels => {
       this.labels = labels;
+      labels.forEach(l => this.labelsChecked.push({
+        id: l.id,
+        name: l.name,
+        checked: false
+      }));
     });
 
     // Phase create subscription
@@ -152,6 +160,11 @@ export class PhaseListComponent implements OnInit, OnDestroy {
       .subscribe((label: Label) => {
         this.labels.push(label);
         this.labelCreateForm.patchValue({ name: '' });
+        this.labelsChecked.push({
+          id: label.id,
+          name: label.name,
+          checked: false
+        });
         this.createLabelModal.hide();
       });
 
@@ -226,15 +239,8 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     }
 
     const formValue = this.issueCreateForm.getRawValue();
-    // if (formValue.labels) {
-    //   formValue.labels = this.formatLabels(formValue.labels);
-    // }
-
-    // formValue.issuedTo = this.formatIssuedTo(formValue.issuedTo);
-
     console.log(formValue.description);
     formValue.description = formValue.description.replace(/\n\r?/g, '<br />');
-    // console.log(formValue.description);
     formValue.labels = this.selectedLabelIds;
     this.issuesService.createIssue(formValue);
   }
@@ -275,13 +281,20 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   }
 
   showAddLabelModal(issue: IssueListItem) {
-    // this.generateAvailableLabels(issue);
+    this.resetLabelsCheckedObject();
+    issue.labels.forEach(label =>
+      this.labelsChecked.find(l => l.id === label.id).checked = true);
+
     this.editLabelsIssue = issue;
+    this.selectedLabelIds = [];
+    issue.labels.forEach(l => this.selectedLabelIds.push(l.id));
     this.addLabelsForm.patchValue({
       issueId: issue.id,
       issueName: issue.name
     });
     this.addLabelsModal.show();
+    console.log(issue.labels);
+    console.log(this.labelsChecked);
   }
 
   onAddLabelSubmit() {
@@ -291,18 +304,13 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     this.issuesService.addLabels({issueId: formData.issueId, labels: formData.labels});
   }
 
-  // generateAvailableLabels(issue: IssueListItem) {
-  //   this.availableLabels = [];
-  //   this.labels.forEach(label => {
-  //     if (issue.labels.findIndex(l => l.id === label.id) === -1) {
-  //       this.availableLabels.push(label);
-  //     }
-  //   });
-  // }
-
   showCreateLabelModal() {
     this.addLabelsModal.hide();
     this.createLabelModal.show();
+  }
+
+  resetLabelsCheckedObject() {
+    this.labelsChecked.forEach(l => l.checked = false);
   }
 
   onCreateLabelSubmit() {
@@ -314,10 +322,11 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   }
 
   labelChecked(event: any) {
+    console.log(this.labelsChecked);
     if (event.target.checked) {
       this.selectedLabelIds.push(event.target.value);
     } else {
-      const index = this.selectedLabelIds.findIndex(id => id === event.target.id);
+      const index = this.selectedLabelIds.findIndex(id => id === event.target.value);
       this.selectedLabelIds.splice(index, 1);
     }
   }
@@ -327,5 +336,11 @@ export class PhaseListComponent implements OnInit, OnDestroy {
       return false;
     }
     return this.editLabelsIssue.labels.findIndex(l => l.id === id) > -1;
+  }
+
+  onAddLabelsModalHidden() {
+    this.resetForm(this.addLabelsForm);
+    this.resetLabelsCheckedObject();
+    console.log(this.labelsChecked);
   }
 }

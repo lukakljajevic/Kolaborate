@@ -199,6 +199,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         });
       });
     });
+    this.labels.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   openModal(modal: ModalDirective) {

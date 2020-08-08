@@ -71,7 +71,6 @@ namespace Api.Data
 
             project.Phases = project.Phases.OrderBy(p => p.Index).ToList();
             
-            
             return project;
         }
 

@@ -92,7 +92,16 @@ namespace Api.Controllers
                 {
                     project.ProjectUsers = await _repo.GetProjectUsers(project.Id);
                     var projectDetailDto = _mapper.Map<ProjectDetailDto>(project);
-                    return Ok(projectDetailDto);
+
+					foreach (var phase in projectDetailDto.Phases)
+					{
+						foreach (var issue in phase.Issues)
+						{
+							issue.Labels = issue.Labels.OrderBy(l => l.Name).ToList();
+						}
+					}
+
+					return Ok(projectDetailDto);
                 }
                 return BadRequest(new { message = "Unable to update last active." });
             }
