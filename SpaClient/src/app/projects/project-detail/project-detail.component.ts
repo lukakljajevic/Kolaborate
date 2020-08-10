@@ -92,7 +92,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     this.projectEditForm = new FormGroup({
       name: new FormControl(this.project.name, Validators.required),
-      description: new FormControl(this.project.description, Validators.required),
+      description: new FormControl(this.project.description.replace(/<br\s*[\/]?>/gi, '\n'), Validators.required),
       startDate: new FormControl(this.formatDate(this.project.startDate)),
       endDate: new FormControl(this.formatDate(this.project.endDate))
     }, {validators: validateDates});
@@ -236,6 +236,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   updateProject() {
+    this.projectEditForm.value.description = this.projectEditForm.value.description.replace(/\n\r?/g, '<br />');
     this.projectsService.updateProject(this.project.id, this.projectEditForm.value);
   }
 
