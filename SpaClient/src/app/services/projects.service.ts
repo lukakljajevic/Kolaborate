@@ -57,6 +57,7 @@ export class ProjectsService {
   private _recentProjects$ = new Subject<ProjectListItem[]>();
 
   private projectUpdated = new Subject<any>();
+  private updatedUserRole = new Subject<{userId: string, role: string}>();
 
   private _state: State = {
     page: 1,
@@ -89,6 +90,7 @@ export class ProjectsService {
   get searchTerm() { return this._state.searchTerm; }
   
   get updatedProject$() { return this.projectUpdated.asObservable(); }
+  get updatedUserRole$() { return this.updatedUserRole.asObservable(); }
 
   set page(page: number) { this._set({page}); }
   set pageSize(pageSize: number) { this._set({pageSize}); }
@@ -180,6 +182,13 @@ export class ProjectsService {
 
   deleteProject(id: string) {
     return this.http.delete<{message: string}>(`http://localhost:5002/api/projects/${id}`);
+  }
+
+  updateUserRole(projectId: string, userId: string, role: string) {
+    this.http.put(`http://localhost:5002/api/projects/${projectId}/role`, {userId, role}).subscribe({
+      next: () => this.updatedUserRole.next({userId, role}),
+      error: (err: {message: string}) => this.updatedUserRole.error(err.message)
+    });
   }
 
 }

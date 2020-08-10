@@ -36,6 +36,7 @@ import { AccountComponent } from './account/account.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { ProjectManageComponent } from './projects/project-manage/project-manage.component';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
    return () =>
@@ -72,7 +73,8 @@ export class TimeAgoExtendsPipe extends TimeAgoPipe {}
       TimeAgoExtendsPipe,
       NgbdSortableHeader,
       IssueDetailComponent,
-      AccountComponent
+      AccountComponent,
+      ProjectManageComponent
    ],
    imports: [
       BrowserModule,

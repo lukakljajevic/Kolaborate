@@ -23,6 +23,10 @@
           </li>
           <li role="menuitem">
             <a class="dropdown-item" 
+               [routerLink]="['/projects', project.id, 'manage']">Manage project</a>
+          </li>
+          <li role="menuitem">
+            <a class="dropdown-item" 
                (click)="openModal(editProjectModal)">Edit project</a>
           </li>
           <li role="menuitem">

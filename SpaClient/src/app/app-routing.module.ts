@@ -11,6 +11,7 @@ import { ProjectDetailResolverService } from './services/resolvers/project-detai
 import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detail.component';
 import { IssueDetailResolverService } from './services/resolvers/issue-detail-resolver.service';
 import { AccountComponent } from './account/account.component';
+import { ProjectManageComponent } from './projects/project-manage/project-manage.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,14 @@ const routes: Routes = [
   {
     path: 'projects/:id',
     component: ProjectDetailComponent,
+    resolve: {
+      project: ProjectDetailResolverService
+    },
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'projects/:id/manage',
+    component: ProjectManageComponent,
     resolve: {
       project: ProjectDetailResolverService
     },

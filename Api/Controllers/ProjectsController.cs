@@ -2,6 +2,7 @@
 using Api.Data;
 using Api.Helpers;
 using Api.Helpers.DTOs;
+using Api.Helpers.DTOs.Project;
 using Api.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -64,7 +65,7 @@ namespace Api.Controllers
                     UserRole = Roles.MANAGER,
                     LastActive = DateTime.Now
                 };
-                
+
                 _repo.Add(projectUser);
 
                 if (await _repo.SaveAll())
@@ -75,7 +76,7 @@ namespace Api.Controllers
                 return BadRequest(new { message = "Error saving user data." });
             }
 
-            return BadRequest(new { message = "Error creating the project."});
+            return BadRequest(new { message = "Error creating the project." });
         }
 
         // GET /api/projects/:id
@@ -93,15 +94,15 @@ namespace Api.Controllers
                     project.ProjectUsers = await _repo.GetProjectUsers(project.Id);
                     var projectDetailDto = _mapper.Map<ProjectDetailDto>(project);
 
-					foreach (var phase in projectDetailDto.Phases)
-					{
-						foreach (var issue in phase.Issues)
-						{
-							issue.Labels = issue.Labels.OrderBy(l => l.Name).ToList();
-						}
-					}
+                    foreach (var phase in projectDetailDto.Phases)
+                    {
+                        foreach (var issue in phase.Issues)
+                        {
+                            issue.Labels = issue.Labels.OrderBy(l => l.Name).ToList();
+                        }
+                    }
 
-					return Ok(projectDetailDto);
+                    return Ok(projectDetailDto);
                 }
                 return BadRequest(new { message = "Unable to update last active." });
             }
@@ -117,7 +118,7 @@ namespace Api.Controllers
 
             var userId = User.GetUserId();
             var project = await _repo.GetProject(id, userId);
-            
+
             if (project == null) return NotFound("Project not found.");
 
             project.Name = dto.Name;
@@ -148,7 +149,7 @@ namespace Api.Controllers
                 return NotFound("Project not found.");
             }
             _repo.Delete(project);
-            
+
             if (await _repo.SaveAll())
             {
                 return Ok(new { message = "Project successfully deleted." });
@@ -186,10 +187,34 @@ namespace Api.Controllers
             {
                 newProjectUser.User = await _repo.GetUser(newProjectUser.UserId);
                 var projectUserToReturn = _mapper.Map<ProjectUserDto>(newProjectUser);
-                return Ok(new { message = "Successfully added the user.", projectUser = projectUserToReturn});
+                return Ok(new { message = "Successfully added the user.", projectUser = projectUserToReturn });
             }
 
             return BadRequest("Error adding the user.");
+        }
+
+        // PUT /api/projects/:id/role
+        [HttpPut("{id}/role")]
+        public async Task<IActionResult> UpdateUserRole([FromRoute] string id, [FromBody] UpdateUserRoleDto dto)
+		{
+            var userId = User.GetUserId();
+            var projectUser = await _repo.GetProjectUser(id, userId);
+            if (projectUser == null || projectUser.UserRole != Roles.MANAGER)
+                return Unauthorized(new { Message = "You are not authorized to change user roles." });
+
+            var projectUserToChange = await _repo.GetProjectUser(id, dto.UserId);
+
+            if (projectUserToChange == null)
+                return NotFound(new { Message = "User not found." });
+
+            // [Security] check dto.Role value against 'user' and 'manager'
+            // [Security] check total number of managers before updating
+            projectUserToChange.UserRole = dto.Role;
+
+            if (await _repo.SaveAll())
+                return Ok();
+
+            return BadRequest(new { Message = "Error updating the user role." });
         }
     }
 }

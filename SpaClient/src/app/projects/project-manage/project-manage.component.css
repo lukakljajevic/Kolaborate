@@ -1,0 +1,22 @@
+.breadcrumb {
+  background-color: #fff;
+  margin-top: .5rem;
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+
+h3 {
+  margin-bottom: 24px;
+}
+
+.btn-default {
+  background-color: rgb(244, 245, 247);
+}
+
+.btn-default:hover {
+  background-color: lightgray;
+}
+
+.dropdown-item {
+  cursor: pointer;
+}

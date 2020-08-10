@@ -1,0 +1,74 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page">
+      <a [routerLink]="['/projects']">Projects</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <a [routerLink]="['/projects', project.id]">{{project.name}}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Manage project
+    </li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Manage {{project.name}}</h3>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <form>
+      <div class="form-group form-inline">
+          Full text search: 
+          <input 
+            class="form-control ml-2" 
+            type="text" 
+            [formControl]="filter"/>
+      </div>
+    </form>
+    
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Full name</th>
+        <th scope="col">Username</th>
+        <th scope="col">User role</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let projectUser of projectUsers$ | async; index as i">
+        <th scope="row">{{ i + 1 }}</th>
+        <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
+        <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
+        <td>
+          <div class="btn-group" dropdown [isDisabled]="projectUser.userRole === 'manager' && numberOfManagers() === 1">
+            <button 
+              id="button-animated" 
+              dropdownToggle 
+              type="button" 
+              class="btn btn-default dropdown-toggle"
+              aria-controls="dropdown-animated">
+                {{projectUser.userRole | titlecase}} <span class="caret"></span>
+            </button>
+            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-animated">
+              <li role="menuitem" *ngIf="projectUser.userRole === 'user'">
+                <a class="dropdown-item" 
+                   (click)="updateUserRole('manager', projectUser)">Manager</a>
+              </li>
+              <li role="menuitem" *ngIf="projectUser.userRole === 'manager'">
+                <a class="dropdown-item"
+                   (click)="updateUserRole('user', projectUser)">User</a>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
