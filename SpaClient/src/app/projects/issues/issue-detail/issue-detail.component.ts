@@ -420,4 +420,11 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
     return name.substr(0, 25) + '...';
   }
 
+  isPhoto(attachment: Attachment): boolean {
+    const ext = attachment.url.split('.').pop();
+    return ext === 'jpg'
+      || ext === 'jpeg'
+      || ext === 'png';
+  }
+
 }

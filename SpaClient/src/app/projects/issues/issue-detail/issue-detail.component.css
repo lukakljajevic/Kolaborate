@@ -213,20 +213,26 @@ h6 {
 .attachment {
   width: 250px;
   height: 170px;
-  padding: 20px;
+  /* padding: 20px; */
   margin-right: 12px;
   margin-bottom: 12px;
   /* display: inline-block; */
   flex: 0 0 auto;
   /* flex-direction: column; */
   border: 1px solid rgba(0, 0, 0, 0.125);
+  position: relative;
+  overflow: hidden;
 }
 
-.attachment-header {
+.padding-20 {
+  padding: 20px;
+}
+
+.attachment-header, .attachment-overlay .overlay-header {
   height: 90px;
 }
 
-.attachment-footer {
+.attachment-footer, .attachment-overlay .overlay-footer {
   height: 40px;
 }
 
@@ -242,6 +248,7 @@ h6 {
   cursor: pointer;
   transition: ease-in-out;
   transition-duration: 200ms;
+  text-decoration: none;
 }
 
 .attachment .btn-danger {
@@ -269,4 +276,41 @@ span.attachment-size {
 
 .form-row {
   margin-bottom: 16px;
+}
+
+.attachment-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease-in-out;
+  padding: 20px;
+  color: #fff;
+}
+
+.attachment:hover .attachment-overlay {
+  visibility: visible;
+  opacity: 1;
+}
+
+.attachment-overlay h6 a {
+  color: white;
+}
+
+
+/* .attachment-overlay .overlay-header {
+  height: 90px;
+}
+
+.attachment-overlay .overlay-footer {
+  height: 40px;
+} */
+
+.attachment img {
+  width: 100%;
+  /* height: 170px; */
 }

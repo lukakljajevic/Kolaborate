@@ -87,20 +87,42 @@
       <div class="col-md-12">
         <h6>Attachments</h6>
         <p *ngIf="issue.attachments.length === 0">No attachments</p>
+
         <div class="attachments-wrapper">
-          <div class="attachment" *ngFor="let attachment of issue.attachments">
-            <div class="attachment-header">
+          <div 
+            class="attachment" 
+            *ngFor="let attachment of issue.attachments"
+            [ngClass]="{'padding-20': !isPhoto(attachment)}">
+            <div class="attachment-header" *ngIf="!isPhoto(attachment)">
               <h6>
-                <a href="http://localhost:5002/{{attachment.url}}" download>
+                <a href="http://localhost:5002/{{attachment.url}}" download target="_blank">
+                  <fa-icon [icon]="['fas', 'file-download']"></fa-icon>
                   {{attachment.url.split('\\')[3]}}
                 </a>
               </h6>
             </div>
-            <div class="attachment-footer">
+            <div class="attachment-footer" *ngIf="!isPhoto(attachment)">
               <span class="attachment-size">{{getSizeInKb(attachment.size) | number}} KB</span>
               <button (click)="delete('attachment', attachment.id)" class="btn btn-danger float-right">
                 <fa-icon [icon]="['fas', 'trash-alt']" class="trash-icon"></fa-icon>
               </button>
+            </div>
+            <img src="http://localhost:5002/{{attachment.url}}" *ngIf="isPhoto(attachment)">
+            <div class="attachment-overlay" *ngIf="isPhoto(attachment)">
+              <div class="overlay-header">
+                <h6>
+                  <a href="http://localhost:5002/{{attachment.url}}" download target="_blank">
+                    <fa-icon [icon]="['fas', 'image']"></fa-icon>
+                    {{attachment.url.split('\\')[3]}}
+                  </a>
+                </h6>
+              </div>
+              <div class="overlay-footer">
+                <span class="attachment-size">{{getSizeInKb(attachment.size) | number}} KB</span>
+                <button (click)="delete('attachment', attachment.id)" class="btn btn-danger float-right">
+                  <fa-icon [icon]="['fas', 'trash-alt']" class="trash-icon"></fa-icon>
+                </button>
+              </div>
             </div>
           </div>
         </div>
