@@ -37,6 +37,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ProjectManageComponent } from './projects/project-manage/project-manage.component';
+import { ChartsModule } from 'ng2-charts';
 
 export function configureAuth(oidcConfigService: OidcConfigService) {
    return () =>
@@ -95,7 +96,8 @@ export class TimeAgoExtendsPipe extends TimeAgoPipe {}
       ModalModule.forRoot(),
       TooltipModule.forRoot(),
       ImageCropperModule,
-      ProgressbarModule.forRoot()
+      ProgressbarModule.forRoot(),
+      ChartsModule
    ],
    providers: [
       AuthGuard,

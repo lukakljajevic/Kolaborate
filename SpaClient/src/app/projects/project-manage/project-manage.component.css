@@ -32,3 +32,7 @@ h3 {
 .modal-body .btn-outline-danger {
   margin-right: 6px;
 }
+
+#charts {
+  margin-top: 32px;
+}

@@ -7,7 +7,8 @@ import { FormControl } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { ChartType } from 'chart.js';
+import { Label, SingleDataSet, Color } from 'ng2-charts';
 
 @Component({
   selector: 'app-project-manage',
@@ -29,6 +30,16 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
   @ViewChild('deleteModal', { static: false })
   deleteModal: ModalDirective;
 
+  issueTypesChartLabels: Label[] = ['Tasks', 'Bugs'];
+  issueTypesChartData: SingleDataSet;
+  issyeTypesChartType: ChartType = 'doughnut';
+  issueTypesChartColors: Color[] = [{backgroundColor: ['#4bade8', '#e5493a']}];
+
+  issueStatusesChartLabels: Label[] = ['To do', 'In progress', 'Done'];
+  issueStatusesChartData: SingleDataSet;
+  issueStatusesChartType: ChartType = 'pie';
+  issueStatusesChartColors: Color[] = [{backgroundColor: ['#e5493a', '#ffc107', '#28a745']}];
+
   constructor(private route: ActivatedRoute,
               private projectsService: ProjectsService) {}
 
@@ -39,6 +50,8 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.projectUsersSubject.next(this.project.projectUsers);
       }, 0);
+      this.issueTypesChartData = this.generateIssueTypesChartData();
+      this.issueStatusesChartData = this.generateIssueStatusesChartData();
     });
 
     this.updateUserRoleSubscription = this.projectsService.updatedUserRole$.subscribe({
@@ -69,6 +82,39 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.updateUserRoleSubscription.unsubscribe();
+  }
+
+  generateIssueTypesChartData(): SingleDataSet {
+    let tasks = 0;
+    let bugs = 0;
+    this.project.phases.forEach(phase => {
+      phase.issues.forEach(issue => {
+        if (issue.issueType === 'task') {
+          tasks++;
+        } else {
+          bugs++;
+        }
+      });
+    });
+    return [tasks, bugs];
+  }
+
+  generateIssueStatusesChartData(): SingleDataSet {
+    let toDo = 0;
+    let inProgress = 0;
+    let done = 0;
+    this.project.phases.forEach(phase => {
+      phase.issues.forEach(issue => {
+        if (issue.status === 'to_do') {
+          toDo++;
+        } else if (issue.status === 'in_progress') {
+          inProgress++;
+        } else {
+          done++;
+        }
+      });
+    });
+    return [toDo, inProgress, done];
   }
 
   search(text: string) {

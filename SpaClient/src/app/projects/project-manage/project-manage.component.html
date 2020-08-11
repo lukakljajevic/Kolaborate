@@ -80,6 +80,27 @@
   </div>
 </div>
 
+<div class="row" id="charts">
+  <div class="col-md-6">
+    <h5 class="text-center">Issue types</h5>
+    <canvas baseChart 
+      [data]="issueTypesChartData"
+      [labels]="issueTypesChartLabels"
+      [chartType]="issyeTypesChartType"
+      [colors]="issueTypesChartColors">
+    </canvas>
+  </div>
+  <div class="col-md-6">
+    <h5 class="text-center">Issue statuses</h5>
+    <canvas baseChart 
+      [data]="issueStatusesChartData" 
+      [labels]="issueStatusesChartLabels" 
+      [chartType]="issueStatusesChartType"
+      [colors]="issueStatusesChartColors">
+    </canvas>
+  </div>
+</div>
+
 <!-- Modals -->
 
 <!-- Delete modal -->
