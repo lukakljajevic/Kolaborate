@@ -126,7 +126,9 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       switchMap((fullName: string) => {
         if (fullName) {
           return of(this.project.projectUsers).pipe(
-            map(users => users.filter(pu => !this.issue.issuedTo.find(iu => iu.user.id === pu.user.id))
+            map(users => users.filter(pu =>
+              !this.issue.issuedTo.find(iu => iu.user.id === pu.user.id)
+              && pu.user.fullName.toLowerCase().includes(fullName))
           ));
         }
         return of([]);

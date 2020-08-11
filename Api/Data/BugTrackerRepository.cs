@@ -156,6 +156,7 @@ namespace Api.Data
                     .ThenInclude(iu => iu.User)
                 .Include(i => i.Attachments)
                     .ThenInclude(a => a.CreatedBy)
+                .Include(i => i.CreatedBy)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             var comments = await _context.Comments

@@ -168,8 +168,8 @@ namespace Api.Controllers
             return Ok(projectsToReturn);
         }
 
-        // POST /api/projects/invite
-        [HttpPost("invite")]
+        // POST /api/projects/users
+        [HttpPost("users")]
         public async Task<IActionResult> AddUserToProject([FromBody] ProjectInviteDto dto)
         {
             var userId = User.GetUserId();
@@ -193,16 +193,16 @@ namespace Api.Controllers
             return BadRequest("Error adding the user.");
         }
 
-        // PUT /api/projects/:id/role
-        [HttpPut("{id}/role")]
-        public async Task<IActionResult> UpdateUserRole([FromRoute] string id, [FromBody] UpdateUserRoleDto dto)
+        // PUT /api/projects/:id/users
+        [HttpPut("{id}/users/{userId}")]
+        public async Task<IActionResult> UpdateUserRole([FromRoute] string id, [FromRoute] string userId, [FromBody] UpdateUserRoleDto dto)
 		{
-            var userId = User.GetUserId();
-            var projectUser = await _repo.GetProjectUser(id, userId);
+            var currentUserId = User.GetUserId();
+            var projectUser = await _repo.GetProjectUser(id, currentUserId);
             if (projectUser == null || projectUser.UserRole != Roles.MANAGER)
                 return Unauthorized(new { Message = "You are not authorized to change user roles." });
 
-            var projectUserToChange = await _repo.GetProjectUser(id, dto.UserId);
+            var projectUserToChange = await _repo.GetProjectUser(id, userId);
 
             if (projectUserToChange == null)
                 return NotFound(new { Message = "User not found." });
@@ -215,6 +215,42 @@ namespace Api.Controllers
                 return Ok();
 
             return BadRequest(new { Message = "Error updating the user role." });
+        }
+
+        // DELETE /api/projects/:id/users/:userId
+        [HttpDelete("{id}/users/{userId}")]
+        public async Task<IActionResult> RemoveUser([FromRoute] string id, [FromRoute] string userId)
+		{
+            var currentUserId = User.GetUserId();
+            var projectUser = await _repo.GetProjectUser(id, currentUserId);
+            if (projectUser == null || projectUser.UserRole != Roles.MANAGER)
+                return Unauthorized(new { Message = "You are not authorized to remove users." });
+
+            var projectUserToRemove = await _repo.GetProjectUser(id, userId);
+            if (projectUserToRemove == null)
+                return NotFound(new { Message = "User not found." });
+
+            var project = await _repo.GetProject(id, currentUserId);
+            project.ProjectUsers.Remove(projectUserToRemove);
+
+            foreach (var phase in project.Phases)
+			{
+                foreach (var issue in phase.Issues)
+				{
+                    foreach (var issueUser in issue.IssuedTo.ToList())
+					{
+                        if (issueUser.UserId == userId)
+						{
+                            issue.IssuedTo.Remove(issueUser);
+						}
+					}
+				}
+			}
+
+            if (await _repo.SaveAll())
+                return Ok();
+
+            return BadRequest(new { Message = "Error removing the user." });
         }
     }
 }

@@ -17,6 +17,18 @@ h3 {
   background-color: lightgray;
 }
 
+.btn-group {
+  margin-right: 12px;
+}
+
 .dropdown-item {
   cursor: pointer;
+}
+
+.modal-body .btn-default {
+  margin-left: 6px;
+}
+
+.modal-body .btn-outline-danger {
+  margin-right: 6px;
 }

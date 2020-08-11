@@ -26,7 +26,8 @@
           <input 
             class="form-control ml-2" 
             type="text" 
-            [formControl]="filter"/>
+            [formControl]="filter"
+            (input)="search($event.target.value)"/>
       </div>
     </form>
     
@@ -36,7 +37,7 @@
         <th scope="col">#</th>
         <th scope="col">Full name</th>
         <th scope="col">Username</th>
-        <th scope="col">User role</th>
+        <th scope="col">Actions</th>
       </tr>
       </thead>
       <tbody>
@@ -45,6 +46,7 @@
         <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
         <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
         <td>
+          <!-- User role -->
           <div class="btn-group" dropdown [isDisabled]="projectUser.userRole === 'manager' && numberOfManagers() === 1">
             <button 
               id="button-animated" 
@@ -66,9 +68,37 @@
               </li>
             </ul>
           </div>
+
+          <button class="btn btn-outline-danger" (click)="showDeleteModal(projectUser)">
+            <fa-icon [icon]="['fas', 'user-minus']" class="icon"></fa-icon>
+            Remove
+          </button>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
+</div>
+
+<!-- Modals -->
+
+<!-- Delete modal -->
+<div class="modal fade" 
+     bsModal 
+     #deleteModal="bs-modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Remove user</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(deleteModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <p>Are you sure you want to remove {{userToRemove?.user.fullName}} from this project?</p>
+        <button type="button" class="btn btn-outline-danger" (click)="deleteUser()">Yes</button>
+        <button type="button" class="btn btn-default" (click)="hideModal(deleteModal)">No</button>
+      </div>
+    </div>
+  </div>   
 </div>

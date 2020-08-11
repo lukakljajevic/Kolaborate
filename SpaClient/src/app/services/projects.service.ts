@@ -58,6 +58,7 @@ export class ProjectsService {
 
   private projectUpdated = new Subject<any>();
   private updatedUserRole = new Subject<{userId: string, role: string}>();
+  private removedUser = new Subject<{userId: string}>();
 
   private _state: State = {
     page: 1,
@@ -91,6 +92,7 @@ export class ProjectsService {
   
   get updatedProject$() { return this.projectUpdated.asObservable(); }
   get updatedUserRole$() { return this.updatedUserRole.asObservable(); }
+  get removedUser$() { return this.removedUser.asObservable(); }
 
   set page(page: number) { this._set({page}); }
   set pageSize(pageSize: number) { this._set({pageSize}); }
@@ -156,7 +158,7 @@ export class ProjectsService {
   }
 
   addUser(params: {projectId: string, userId: string, userFullName: string, userRole: string}) {
-    return this.http.post('http://localhost:5002/api/projects/invite', params);
+    return this.http.post('http://localhost:5002/api/projects/users', params);
   }
 
   updateProject(id: string, data: any) {
@@ -185,10 +187,19 @@ export class ProjectsService {
   }
 
   updateUserRole(projectId: string, userId: string, role: string) {
-    this.http.put(`http://localhost:5002/api/projects/${projectId}/role`, {userId, role}).subscribe({
-      next: () => this.updatedUserRole.next({userId, role}),
-      error: (err: {message: string}) => this.updatedUserRole.error(err.message)
-    });
+    this.http.put(`http://localhost:5002/api/projects/${projectId}/users/${userId}`, {role})
+      .subscribe({
+        next: () => this.updatedUserRole.next({userId, role}),
+        error: (err: {message: string}) => this.updatedUserRole.error(err.message)
+      });
+  }
+
+  removeUser(projectId: string, userId: string) {
+    this.http.delete(`http://localhost:5002/api/projects/${projectId}/users/${userId}`)
+      .subscribe({
+        next: () => this.removedUser.next({userId}),
+        error: (err: {message: string}) => this.removedUser.error(err.message)
+      });
   }
 
 }
