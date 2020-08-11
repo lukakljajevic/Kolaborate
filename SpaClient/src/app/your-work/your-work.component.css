@@ -11,6 +11,11 @@ h5 {
   max-width: 18rem;
 }
 
+.card-text {
+  height: 48px;
+  overflow: hidden;
+}
+
 #tabset {
   margin-top: 32px;
 }
@@ -62,10 +67,6 @@ h5 {
   font-size: 13px;
   line-height: 16px;
   margin-bottom: 0;
-}
-
-.issue-done {
-  /* background-color: #f5f6f8; */
 }
 
 .issue-done .issue-name {

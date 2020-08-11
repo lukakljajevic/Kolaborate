@@ -39,7 +39,7 @@ function sort(projects: ProjectListItem[], column: SortColumn, direction: string
 
 function matches(project: ProjectListItem, term: string) {
   return project.name.toLowerCase().includes(term.toLowerCase())
-    || project.createdByFullName.toLowerCase().includes(term.toLowerCase());
+    || project.createdBy.fullName.toLowerCase().includes(term.toLowerCase());
 }
 
 @Injectable({
@@ -177,7 +177,10 @@ export class ProjectsService {
           description: string,
           startDate: string,
           endDate: string
-        }) => this.projectUpdated.next(updatedProjectFields),
+        }) => {
+          this.getRecentProjects();
+          this.projectUpdated.next(updatedProjectFields);
+        },
         error: () => this.projectUpdated.error('Error updating the project.')
       });
   }

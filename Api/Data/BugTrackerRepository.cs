@@ -90,6 +90,7 @@ namespace Api.Data
                 .OrderByDescending(pu => pu.LastActive)
                 .Take(3)
                 .Include(pu => pu.Project)
+                    .ThenInclude(project => project.CreatedBy)
                 .Select(pu => pu.Project)
                 .ToListAsync();
 

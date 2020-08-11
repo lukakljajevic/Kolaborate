@@ -6,27 +6,12 @@
   <div class="card" *ngFor="let project of recentProjects">
     <div class="card-body">
       <h5 class="card-title">{{project.name}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">Created by: {{project.createdByFullName}}</h6>
-      <p class="card-text">{{project.description}}</p>
+      <h6 class="card-subtitle mb-2 text-muted">Created by: {{project.createdBy.fullName}}</h6>
+      <p class="card-text" [innerHTML]="project.description"></p>
       <a [routerLink]="['/projects', project.id]" class="card-link">Go to project page</a>
     </div>
   </div>
 </div>
-
-<!-- <div id="tabset">
-  <tabset>
-    <tab heading="Assigned to me">
-      
-    </tab>
-    <tab heading="Starred">
-      
-    </tab>
-    <tab heading="Completed">
-      
-    </tab>
-
-  </tabset>
-</div> -->
 
 <div id="tabset">
   <ul ngbNav #nav="ngbNav" class="nav-tabs">

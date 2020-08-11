@@ -28,6 +28,7 @@ export class YourWorkComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.recentProjectsSubscription = this.projectsService.recentProjects$.subscribe(projects => {
       this.recentProjects = projects;
+      console.log(projects);
     });
 
     this.projectsService.getRecentProjectsLocal();
