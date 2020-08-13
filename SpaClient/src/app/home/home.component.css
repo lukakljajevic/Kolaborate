@@ -1,0 +1,48 @@
+.landing {
+  height: calc(70vh - 56px);
+  position: relative;
+  background: url('../../assets/home.jpg');
+  background-size: cover;
+  color: #fff;
+}
+
+.landing .content {
+  text-align: center;
+  position: absolute;
+  width: 30%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.landing h1 {
+  font-size: 4rem;
+}
+
+.landing .content button {
+  width: 300px;
+  height: 70px;
+  font-size: 1.5rem;
+  margin-top: 26px;
+}
+
+.footer {
+  height: 30vh;
+  background-color: #25313d;
+  color: white;
+}
+
+.footer .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.footer .col-md-4 {
+  padding: 40px;
+}
+
+.footer .col-md-4 hr, .landing hr {
+  color: #fff;
+  background-color: #fff;
+  border-color: #fff;
+}

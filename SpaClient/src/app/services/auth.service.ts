@@ -28,6 +28,10 @@ export class AuthService {
     });
   }
 
+  login() {
+    this.oidcSecurityService.authorize();
+  }
+
   get userData$() { return this._userData.asObservable(); }
 
   refreshUserData() { this._userData.next({username: this._username, fullName: this._fullName}); }

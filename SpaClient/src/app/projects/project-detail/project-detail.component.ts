@@ -26,7 +26,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   project: Project;
   previewPhases: Phase[];
   labels: Label[] = [];
-  dragModeEnabled = false;
+  dragModeEnabled = true;
   userFullNameSelected = '';
   users$: Observable<UserListItem[]>;
   errorMessage: string;

@@ -1,478 +1,480 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects']">Projects</a></li>
-    <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects', issue.phase.project.id]">{{issue.phase.project.name}}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{issue.phase.name}}</li>
-    <li class="breadcrumb-item active" aria-current="page">{{issue.name}}</li>
-  </ol>
-</nav>
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects']">Projects</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a [routerLink]="['/projects', issue.phase.project.id]">{{issue.phase.project.name}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{issue.phase.name}}</li>
+      <li class="breadcrumb-item active" aria-current="page">{{issue.name}}</li>
+    </ol>
+  </nav>
 
-<div class="row">
-  <div class="col-md-10">
-    <h6 class="issue-type">
-      <span *ngIf="issue.issueType === 'task'"><fa-icon [icon]="['fas', 'check-square']" size="md" class="task"></fa-icon> Task</span>
-      <span *ngIf="issue.issueType === 'bug'"><fa-icon [icon]="['fas', 'bug']" size="md" class="bug"></fa-icon> Bug</span>
-    </h6>
-    <h3>{{issue.name}}</h3>
-  </div>
-  <div class="col-md-2">
-    <div id="issue-actions">
-      <div class="btn-group" dropdown placement="bottom right">
-        <button id="issue-options-button" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated">
-          <fa-icon [icon]="['fas', 'ellipsis-h']" size="lg"></fa-icon>
-        </button>
-        <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="project-options-button">
-          <li role="menuitem">
-            <a class="dropdown-item" (click)="showModal(editIssueModal)">Edit</a>
-          </li>
-          <li role="menuitem">
-            <a class="dropdown-item" (click)="delete('issue', issue.id)">Delete</a>
-          </li>
-        </ul>
-      </div>
-      <button class="btn btn-star" *ngIf="issuedToCurrentUser" (click)="updateStarred()">
-        <fa-icon [icon]="[isStarred ? 'fas': 'far', 'star']" size="lg" [ngClass]="{'gold': isStarred}"></fa-icon>
-      </button>
+  <div class="row">
+    <div class="col-md-10">
+      <h6 class="issue-type">
+        <span *ngIf="issue.issueType === 'task'"><fa-icon [icon]="['fas', 'check-square']" size="md" class="task"></fa-icon> Task</span>
+        <span *ngIf="issue.issueType === 'bug'"><fa-icon [icon]="['fas', 'bug']" size="md" class="bug"></fa-icon> Bug</span>
+      </h6>
+      <h3>{{issue.name}}</h3>
     </div>
-  </div>
-</div>
-
-<div class="row">
-  <!-- Left column -->
-  <div class="col-md-9">
-    <!-- Issue controls -->
-    <div class="row issue-controls">
-      <div class="col-md-12">
-        <button class="btn btn-default" (click)="showModal(attachmentsModal)">
-          <fa-icon [icon]="['fas', 'paperclip']"></fa-icon> Attach
-        </button>
+    <div class="col-md-2">
+      <div id="issue-actions">
         <div class="btn-group" dropdown placement="bottom right">
-          <button 
-            id="issue-status" 
-            dropdownToggle 
-            type="button" 
-            class="btn dropdown-toggle" 
-            aria-controls="dropdown-animated"
-            [ngClass]="{
-              'btn-default': issue.status === 'to_do',
-              'btn-warning': issue.status === 'in_progress',
-              'btn-success': issue.status === 'done'
-            }">
-              {{formatIssueStatus(this.issue.status)}} <span class="caret"></span>
+          <button id="issue-options-button" dropdownToggle type="button" class="btn" aria-controls="dropdown-animated">
+            <fa-icon [icon]="['fas', 'ellipsis-h']" size="lg"></fa-icon>
           </button>
           <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="project-options-button">
             <li role="menuitem">
-              <a 
-                class="dropdown-item" 
-                *ngFor="let status of generateAvailableIssueStatuses()"
-                (click)="updateStatus(status)">
-                  {{formatIssueStatus(status)}}
-              </a>
+              <a class="dropdown-item" (click)="showModal(editIssueModal)">Edit</a>
+            </li>
+            <li role="menuitem">
+              <a class="dropdown-item" (click)="delete('issue', issue.id)">Delete</a>
             </li>
           </ul>
         </div>
+        <button class="btn btn-star" *ngIf="issuedToCurrentUser" (click)="updateStarred()">
+          <fa-icon [icon]="[isStarred ? 'fas': 'far', 'star']" size="lg" [ngClass]="{'gold': isStarred}"></fa-icon>
+        </button>
       </div>
     </div>
-    
-    <!-- Description -->
-    <div class="row">
-      <div class="col-md-12">
-        <h6>Description</h6>
-        <p [innerHTML]="issue.description"></p>
-      </div>
-    </div>
+  </div>
 
-    <!-- Attachments -->
-    <div class="row" id="attachments">
-      <div class="col-md-12">
-        <h6>Attachments</h6>
-        <p *ngIf="issue.attachments.length === 0">No attachments</p>
-
-        <div class="attachments-wrapper">
-          <div 
-            class="attachment" 
-            *ngFor="let attachment of issue.attachments"
-            [ngClass]="{'padding-20': !isPhoto(attachment)}">
-            <div class="attachment-header" *ngIf="!isPhoto(attachment)">
-              <h6>
-                <a href="http://localhost:5002/{{attachment.url}}" download target="_blank">
-                  <fa-icon [icon]="['fas', 'file-download']"></fa-icon>
-                  {{attachment.url.split('\\')[3]}}
+  <div class="row">
+    <!-- Left column -->
+    <div class="col-md-9">
+      <!-- Issue controls -->
+      <div class="row issue-controls">
+        <div class="col-md-12">
+          <button class="btn btn-default" (click)="showModal(attachmentsModal)">
+            <fa-icon [icon]="['fas', 'paperclip']"></fa-icon> Attach
+          </button>
+          <div class="btn-group" dropdown placement="bottom right">
+            <button 
+              id="issue-status" 
+              dropdownToggle 
+              type="button" 
+              class="btn dropdown-toggle" 
+              aria-controls="dropdown-animated"
+              [ngClass]="{
+                'btn-default': issue.status === 'to_do',
+                'btn-warning': issue.status === 'in_progress',
+                'btn-success': issue.status === 'done'
+              }">
+                {{formatIssueStatus(this.issue.status)}} <span class="caret"></span>
+            </button>
+            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="project-options-button">
+              <li role="menuitem">
+                <a 
+                  class="dropdown-item" 
+                  *ngFor="let status of generateAvailableIssueStatuses()"
+                  (click)="updateStatus(status)">
+                    {{formatIssueStatus(status)}}
                 </a>
-              </h6>
-            </div>
-            <div class="attachment-footer" *ngIf="!isPhoto(attachment)">
-              <span class="attachment-size">{{getSizeInKb(attachment.size) | number}} KB</span>
-              <button (click)="delete('attachment', attachment.id)" class="btn btn-danger float-right">
-                <fa-icon [icon]="['fas', 'trash-alt']" class="trash-icon"></fa-icon>
-              </button>
-            </div>
-            <img src="http://localhost:5002/{{attachment.url}}" *ngIf="isPhoto(attachment)">
-            <div class="attachment-overlay" *ngIf="isPhoto(attachment)">
-              <div class="overlay-header">
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Description -->
+      <div class="row">
+        <div class="col-md-12">
+          <h6>Description</h6>
+          <p [innerHTML]="issue.description"></p>
+        </div>
+      </div>
+
+      <!-- Attachments -->
+      <div class="row" id="attachments">
+        <div class="col-md-12">
+          <h6>Attachments</h6>
+          <p *ngIf="issue.attachments.length === 0">No attachments</p>
+
+          <div class="attachments-wrapper">
+            <div 
+              class="attachment" 
+              *ngFor="let attachment of issue.attachments"
+              [ngClass]="{'padding-20': !isPhoto(attachment)}">
+              <div class="attachment-header" *ngIf="!isPhoto(attachment)">
                 <h6>
                   <a href="http://localhost:5002/{{attachment.url}}" download target="_blank">
-                    <fa-icon [icon]="['fas', 'image']"></fa-icon>
+                    <fa-icon [icon]="['fas', 'file-download']"></fa-icon>
                     {{attachment.url.split('\\')[3]}}
                   </a>
                 </h6>
               </div>
-              <div class="overlay-footer">
+              <div class="attachment-footer" *ngIf="!isPhoto(attachment)">
                 <span class="attachment-size">{{getSizeInKb(attachment.size) | number}} KB</span>
                 <button (click)="delete('attachment', attachment.id)" class="btn btn-danger float-right">
                   <fa-icon [icon]="['fas', 'trash-alt']" class="trash-icon"></fa-icon>
                 </button>
               </div>
+              <img src="http://localhost:5002/{{attachment.url}}" *ngIf="isPhoto(attachment)">
+              <div class="attachment-overlay" *ngIf="isPhoto(attachment)">
+                <div class="overlay-header">
+                  <h6>
+                    <a href="http://localhost:5002/{{attachment.url}}" download target="_blank">
+                      <fa-icon [icon]="['fas', 'image']"></fa-icon>
+                      {{attachment.url.split('\\')[3]}}
+                    </a>
+                  </h6>
+                </div>
+                <div class="overlay-footer">
+                  <span class="attachment-size">{{getSizeInKb(attachment.size) | number}} KB</span>
+                  <button (click)="delete('attachment', attachment.id)" class="btn btn-danger float-right">
+                    <fa-icon [icon]="['fas', 'trash-alt']" class="trash-icon"></fa-icon>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Comments -->
-    <div class="row" id="comments">
-      <div class="col-md-12">
-        <h6>Comments</h6>
-        <!-- Comments insert div -->
-        <div class="row">
-          <!-- Avatar or initials -->
-          <div class="col-md-1">
-            <img [src]="authService.avatar" id="comment-avatar">
-          </div>
-          <!-- Textarea -->
-          <div class="col-md-11">
-            <textarea 
-              (focus)="initializeCreateComment()"
-              rows="{{typingComment ? 6 : 1}}"
-              class="form-control"
-              [(ngModel)]="newCommentText"
-              placeholder="Write a comment..."></textarea>
-            <button class="btn btn-primary" *ngIf="typingComment" (click)="createComment()">Save</button>  
-            <button class="btn btn-default" *ngIf="typingComment" (click)="typingComment = false">Cancel</button>  
-          </div>
-        </div>
-
-        <!-- Comments preview div -->
-        <div class="row comment" *ngFor="let comment of issue.comments">
-          <div class="col-md-1">
-            <img [src]="'http://localhost:5002/' + comment.createdBy.avatar" id="comment-avatar">
-          </div>
-          <div class="col-md-11">
-            <p class="comment-header">
-              <span class="comment-fullName">{{comment.createdBy.fullName}}</span>
-              <span class="comment-time">{{comment.createdAt | timeAgo}}</span>
-            </p>
-            <p>
-              <span 
-                [innerHTML]="comment.text"
-                *ngIf="!comment.editMode"></span>
+      <!-- Comments -->
+      <div class="row" id="comments">
+        <div class="col-md-12">
+          <h6>Comments</h6>
+          <!-- Comments insert div -->
+          <div class="row">
+            <!-- Avatar or initials -->
+            <div class="col-md-1">
+              <img [src]="authService.avatar" id="comment-avatar">
+            </div>
+            <!-- Textarea -->
+            <div class="col-md-11">
               <textarea 
-                *ngIf="comment.editMode"
-                rows="4"
+                (focus)="initializeCreateComment()"
+                rows="{{typingComment ? 6 : 1}}"
                 class="form-control"
-                [(ngModel)]="editCommentText"></textarea>
-              <button class="btn btn-primary" *ngIf="comment.editMode" (click)="updateComment(comment)">Save</button>  
-              <button class="btn btn-default" *ngIf="comment.editMode" (click)="comment.editMode = false">Cancel</button> 
-            </p>
-            <div class="comment-footer" *ngIf="comment.createdBy.id === authService.userId && !comment.editMode">
-              <a class="comment-action" (click)="editComment(comment)">Edit</a> &middot;
-              <a class="comment-action" (click)="delete('comment', comment.id)">Delete</a>
+                [(ngModel)]="newCommentText"
+                placeholder="Write a comment..."></textarea>
+              <button class="btn btn-primary" *ngIf="typingComment" (click)="createComment()">Save</button>  
+              <button class="btn btn-default" *ngIf="typingComment" (click)="typingComment = false">Cancel</button>  
+            </div>
+          </div>
+
+          <!-- Comments preview div -->
+          <div class="row comment" *ngFor="let comment of issue.comments">
+            <div class="col-md-1">
+              <img [src]="'http://localhost:5002/' + comment.createdBy.avatar" id="comment-avatar">
+            </div>
+            <div class="col-md-11">
+              <p class="comment-header">
+                <span class="comment-fullName">{{comment.createdBy.fullName}}</span>
+                <span class="comment-time">{{comment.createdAt | timeAgo}}</span>
+              </p>
+              <p>
+                <span 
+                  [innerHTML]="comment.text"
+                  *ngIf="!comment.editMode"></span>
+                <textarea 
+                  *ngIf="comment.editMode"
+                  rows="4"
+                  class="form-control"
+                  [(ngModel)]="editCommentText"></textarea>
+                <button class="btn btn-primary" *ngIf="comment.editMode" (click)="updateComment(comment)">Save</button>  
+                <button class="btn btn-default" *ngIf="comment.editMode" (click)="comment.editMode = false">Cancel</button> 
+              </p>
+              <div class="comment-footer" *ngIf="comment.createdBy.id === authService.userId && !comment.editMode">
+                <a class="comment-action" (click)="editComment(comment)">Edit</a> &middot;
+                <a class="comment-action" (click)="delete('comment', comment.id)">Delete</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
+    </div>
+    
+    <!-- Right column -->
+    <div class="col-md-3">
+      <div class="row">
+        <div class="col-md-12" id="assignees">
+          <h6>{{issue.issuedTo.length > 1 ? 'Assignees' : 'Assignee'}}</h6>
+          <p *ngFor="let assignee of issue.issuedTo" class="assignee">
+            <span class="initials">{{getInitials(assignee.user.fullName)}}</span>
+            <span>{{assignee.user.fullName}}</span>
+          </p>
+          <a (click)="showModal(assigneesModal)" *ngIf="true">Show more...</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12" id="created-by">
+          <h6>Created By</h6>
+          <p><span class="initials">{{getInitials(issue.createdBy.fullName)}}</span><span>{{issue.createdBy.fullName}}</span></p>
+        </div>
+      </div>
+      <div class="row" *ngIf="issue.labels.length > 0">
+        <div class="col-md-12">
+          <h6>Labels</h6>
+          <p>
+            <span class="label" *ngFor="let label of issue.labels; let i = index">
+              <span class="label-name">{{label.name}}</span>
+              <span *ngIf="i !== issue.labels.length - 1">, </span>
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="row" id="priority-row">
+        <div class="col-md-12">
+          <h6>Priority</h6>
+          <div class="btn-group" dropdown placement="bottom right">
+            <button 
+              id="priority" 
+              dropdownToggle 
+              type="button" 
+              class="btn dropdown-toggle btn-default" 
+              aria-controls="dropdown-animated">
+                <fa-icon [icon]="['fas', issueIcon[issue.priority]]" size="md" class="{{issuePriority[issue.priority] | lowercase}}"></fa-icon>
+                {{issuePriority[issue.priority]}} <span class="caret"></span>
+            </button>
+            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="priority-button">
+              <li role="menuitem">
+                <a 
+                  class="dropdown-item" 
+                  *ngFor="let priority of generateAvailableIssuePriorities()"
+                  (click)="updatePriority(priority)">
+                  <fa-icon [icon]="['fas', issueIcon[issue.priority]]" size="md" class="{{issuePriority[priority] | lowercase}}"></fa-icon>
+                    {{issuePriority[priority]}}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="issue.dueDate">
+        <div class="col-md-12">
+          <h6>Due date</h6>
+          <p>{{printDate(issue.dueDate)}}</p>
+        </div>
+      </div>
+    </div>
   </div>
-  
-  <!-- Right column -->
-  <div class="col-md-3">
-    <div class="row">
-      <div class="col-md-12" id="assignees">
-        <h6>{{issue.issuedTo.length > 1 ? 'Assignees' : 'Assignee'}}</h6>
-        <p *ngFor="let assignee of issue.issuedTo" class="assignee">
-          <span class="initials">{{getInitials(assignee.user.fullName)}}</span>
-          <span>{{assignee.user.fullName}}</span>
-        </p>
-        <a (click)="showModal(assigneesModal)" *ngIf="true">Show more...</a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12" id="created-by">
-        <h6>Created By</h6>
-        <p><span class="initials">{{getInitials(issue.createdBy.fullName)}}</span><span>{{issue.createdBy.fullName}}</span></p>
-      </div>
-    </div>
-    <div class="row" *ngIf="issue.labels.length > 0">
-      <div class="col-md-12">
-        <h6>Labels</h6>
-        <p>
-          <span class="label" *ngFor="let label of issue.labels; let i = index">
-            <span class="label-name">{{label.name}}</span>
-            <span *ngIf="i !== issue.labels.length - 1">, </span>
-          </span>
-        </p>
-      </div>
-    </div>
-    <div class="row" id="priority-row">
-      <div class="col-md-12">
-        <h6>Priority</h6>
-        <div class="btn-group" dropdown placement="bottom right">
-          <button 
-            id="priority" 
-            dropdownToggle 
-            type="button" 
-            class="btn dropdown-toggle btn-default" 
-            aria-controls="dropdown-animated">
-              <fa-icon [icon]="['fas', issueIcon[issue.priority]]" size="md" class="{{issuePriority[issue.priority] | lowercase}}"></fa-icon>
-              {{issuePriority[issue.priority]}} <span class="caret"></span>
+
+  <!-- Assignees modal -->
+  <div class="modal fade"
+      id="assignees-modal"
+      bsModal
+      #assigneesModal="bs-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title pull-left">List of all assignees</h5>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(assigneesModal)">
+            <span aria-hidden="true">&times;</span>
           </button>
-          <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="priority-button">
-            <li role="menuitem">
-              <a 
-                class="dropdown-item" 
-                *ngFor="let priority of generateAvailableIssuePriorities()"
-                (click)="updatePriority(priority)">
-                <fa-icon [icon]="['fas', issueIcon[issue.priority]]" size="md" class="{{issuePriority[priority] | lowercase}}"></fa-icon>
-                  {{issuePriority[priority]}}
-              </a>
-            </li>
-          </ul>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead class="">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Username</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let assignee of issue.issuedTo; let i = index">
+                <th>{{i+1}}</th>
+                <td>{{assignee.user.fullName}}</td>
+                <td>{{assignee.user.username}}</td>
+                <td>
+                  <button class="btn btn-outline-danger" (click)="deleteAssignee(assignee, assigneesModal)">
+                    <fa-icon [icon]="['far', 'trash-alt']" size="md"></fa-icon> Remove
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="showAddAssigneeModal(assigneesModal, addAssigneeModal)">
+            <fa-icon [icon]="['fas', 'user-plus']" size="md"></fa-icon> Add Assignee
+          </button>
         </div>
       </div>
     </div>
-    <div class="row" *ngIf="issue.dueDate">
-      <div class="col-md-12">
-        <h6>Due date</h6>
-        <p>{{printDate(issue.dueDate)}}</p>
-      </div>
-    </div>
   </div>
-</div>
 
-<!-- Assignees modal -->
-<div class="modal fade"
-     id="assignees-modal"
-     bsModal
-     #assigneesModal="bs-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title pull-left">List of all assignees</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(assigneesModal)">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <table class="table">
-          <thead class="">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Full Name</th>
-              <th scope="col">Username</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let assignee of issue.issuedTo; let i = index">
-              <th>{{i+1}}</th>
-              <td>{{assignee.user.fullName}}</td>
-              <td>{{assignee.user.username}}</td>
-              <td>
-                <button class="btn btn-outline-danger" (click)="deleteAssignee(assignee, assigneesModal)">
-                  <fa-icon [icon]="['far', 'trash-alt']" size="md"></fa-icon> Remove
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" (click)="showAddAssigneeModal(assigneesModal, addAssigneeModal)">
-          <fa-icon [icon]="['fas', 'user-plus']" size="md"></fa-icon> Add Assignee
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Add assignee modal -->
-<div class="modal fade" 
-     bsModal 
-     #addAssigneeModal="bs-modal" 
-     (onHidden)="userFullName = ''">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title pull-left">Assign issue to</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(addAssigneeModal)">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12">
-            <label for="name">Name</label>
-            <input [(ngModel)]="userFullName"
-                   [typeahead]="users$"
-                   [typeaheadAsync]="true"
-                   [typeaheadItemTemplate]="itemTemplate"
-                   [isAnimated]="true"
-                   (typeaheadOnSelect)="typeaheadOnSelect($event)"
-                   typeaheadOptionField="user.fullName"
-                   typeaheadWaitMs="1000"
-                   type="text" 
-                   placeholder="Please enter user's full name" 
-                   class="form-control">
+  <!-- Add assignee modal -->
+  <div class="modal fade" 
+      bsModal 
+      #addAssigneeModal="bs-modal" 
+      (onHidden)="userFullName = ''">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title pull-left">Assign issue to</h5>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(addAssigneeModal)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <label for="name">Name</label>
+              <input [(ngModel)]="userFullName"
+                    [typeahead]="users$"
+                    [typeaheadAsync]="true"
+                    [typeaheadItemTemplate]="itemTemplate"
+                    [isAnimated]="true"
+                    (typeaheadOnSelect)="typeaheadOnSelect($event)"
+                    typeaheadOptionField="user.fullName"
+                    typeaheadWaitMs="1000"
+                    type="text" 
+                    placeholder="Please enter user's full name" 
+                    class="form-control">
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <button class="btn btn-outline-success btn-block"
-                    (click)="addAssignee(addAssigneeModal)"
-                    [disabled]="selectedUser === null">Assign</button>
+          <div class="row">
+            <div class="col-md-12">
+              <button class="btn btn-outline-success btn-block"
+                      (click)="addAssignee(addAssigneeModal)"
+                      [disabled]="selectedUser === null">Assign</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<ng-template #itemTemplate let-model="item" let-index="index">
-  {{model.user.fullName}} <i>({{model.user.username}})</i>
-</ng-template>
+  <ng-template #itemTemplate let-model="item" let-index="index">
+    {{model.user.fullName}} <i>({{model.user.username}})</i>
+  </ng-template>
 
-<!-- Edit issue modal -->
-<div class="modal fade" 
-     bsModal 
-     #editIssueModal="bs-modal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title pull-left">Edit {{issue.name}}</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(editIssueModal)">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="issueEditForm" (ngSubmit)="onIssueUpdateSubmit()">
-          <div class="form-row">
-            <div class="col-md-6">
-              <label>Phase</label>
-              <select class="form-control fa-select" formControlName="phaseId">
-                <option *ngFor="let phase of project.phases" value="{{phase.id}}">{{phase.name}}</option>
-              </select>
-            </div>
-          </div>   
-          <div class="form-row">
-            <div class="col-md-6">
-              <label for="type">Issue type</label>
-              <select class="form-control fa-select" formControlName="issueType">
-                <option value="task">&#xf14a; Task</option>
-                <option value="bug">&#xf188; Bug</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="startDate">Due date</label>
-              <input 
-                class="form-control"
-                placeholder="Due date"
-                bsDatepicker
-                formControlName="dueDate"
-                [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="name">Summary</label>
-            <input type="text" class="form-control" formControlName="name" placeholder="Issue summary">
-          </div>
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="edit-description" cols="30" rows="10" class="form-control" formControlName="description" placeholder="Issue description"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="labels">Labels</label>
-            <br>
-            <!-- <select multiple class="form-control" formControlName="labels">
-              <option *ngFor="let label of labels" value="{{label.id}}">{{label.name}}</option>
-            </select> -->
-            <div class="form-check form-check-inline" *ngFor="let label of labels">
-              <input 
-                class="form-check-input" 
-                type="checkbox" 
-                id="{{label.id}}" 
-                [value]="label.id"
-                (change)="labelChecked($event)" 
-                [checked]="hasLabel(label.id)">
-              <label class="form-check-label" for="{{label.id}}">{{label.name}}</label>
-            </div>
-          </div>
-          <button class="btn btn-outline-success btn-block" type="submit">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div>   
-</div>
-
-<!-- Delete Modal -->
-<div class="modal fade"
-     id="delete-modal"
-     bsModal 
-     #deleteModal="bs-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title pull-left">Delete {{deleteType}}</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(deleteModal)">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body text-center">
-        <p>Are you sure you want to delete this {{deleteType}}?</p>
-        <button type="button" class="btn btn-outline-danger" (click)="confirmDelete()">Yes</button>
-        <button type="button" class="btn btn-default" (click)="hideModal(deleteModal)">No</button>
-      </div>
-    </div>
-  </div>   
-</div>
-
-<!-- Attachments modal -->
-<div class="modal fade"
-     bsModal
-     #attachmentsModal="bs-modal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title pull-left">Upload attachments</h5>
-      </div>
-      <div class="modal-body">
-        <!-- <button class="btn btn-primary">Choose files</button> -->
-                
-        <label class="btn">
-          <input type="file" multiple (change)="selectFiles($event)" #fileInput/>
-        </label>
-
-        <div *ngFor="let progressInfo of progressInfos" class="mb-2">
-          <p>{{ progressInfo.fileName }}</p>
-          <p><ngb-progressbar type="success" textType="white" [value]="progressInfo.value" [showValue]="true"></ngb-progressbar></p>
+  <!-- Edit issue modal -->
+  <div class="modal fade" 
+      bsModal 
+      #editIssueModal="bs-modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title pull-left">Edit {{issue.name}}</h5>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(editIssueModal)">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-
-        <div class="alert alert-success" role="alert" *ngIf="successMessage !== ''">
-          {{ successMessage }}
+        <div class="modal-body">
+          <form [formGroup]="issueEditForm" (ngSubmit)="onIssueUpdateSubmit()">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label>Phase</label>
+                <select class="form-control fa-select" formControlName="phaseId">
+                  <option *ngFor="let phase of project.phases" value="{{phase.id}}">{{phase.name}}</option>
+                </select>
+              </div>
+            </div>   
+            <div class="form-row">
+              <div class="col-md-6">
+                <label for="type">Issue type</label>
+                <select class="form-control fa-select" formControlName="issueType">
+                  <option value="task">&#xf14a; Task</option>
+                  <option value="bug">&#xf188; Bug</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="startDate">Due date</label>
+                <input 
+                  class="form-control"
+                  placeholder="Due date"
+                  bsDatepicker
+                  formControlName="dueDate"
+                  [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="name">Summary</label>
+              <input type="text" class="form-control" formControlName="name" placeholder="Issue summary">
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea id="edit-description" cols="30" rows="10" class="form-control" formControlName="description" placeholder="Issue description"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="labels">Labels</label>
+              <br>
+              <!-- <select multiple class="form-control" formControlName="labels">
+                <option *ngFor="let label of labels" value="{{label.id}}">{{label.name}}</option>
+              </select> -->
+              <div class="form-check form-check-inline" *ngFor="let label of labels">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  id="{{label.id}}" 
+                  [value]="label.id"
+                  (change)="labelChecked($event)" 
+                  [checked]="hasLabel(label.id)">
+                <label class="form-check-label" for="{{label.id}}">{{label.name}}</label>
+              </div>
+            </div>
+            <button class="btn btn-outline-success btn-block" type="submit">Submit</button>
+          </form>
         </div>
-        
-        <div class="alert alert-danger" role="alert" *ngIf="errorMessage !== ''">
-          {{ errorMessage }}
-        </div>
-
       </div>
-      <div class="modal-footer">
-        <button 
-          class="btn btn-primary"
-          [disabled]="!selectedFiles"
-          (click)="uploadFiles()">Upload Files</button>
-        <button type="button" class="btn btn-default" (click)="hideAttachmentsModal()">Close</button>
+    </div>   
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade"
+      id="delete-modal"
+      bsModal 
+      #deleteModal="bs-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title pull-left">Delete {{deleteType}}</h5>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(deleteModal)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <p>Are you sure you want to delete this {{deleteType}}?</p>
+          <button type="button" class="btn btn-outline-danger" (click)="confirmDelete()">Yes</button>
+          <button type="button" class="btn btn-default" (click)="hideModal(deleteModal)">No</button>
+        </div>
+      </div>
+    </div>   
+  </div>
+
+  <!-- Attachments modal -->
+  <div class="modal fade"
+      bsModal
+      #attachmentsModal="bs-modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title pull-left">Upload attachments</h5>
+        </div>
+        <div class="modal-body">
+          <!-- <button class="btn btn-primary">Choose files</button> -->
+                  
+          <label class="btn">
+            <input type="file" multiple (change)="selectFiles($event)" #fileInput/>
+          </label>
+
+          <div *ngFor="let progressInfo of progressInfos" class="mb-2">
+            <p>{{ progressInfo.fileName }}</p>
+            <p><ngb-progressbar type="success" textType="white" [value]="progressInfo.value" [showValue]="true"></ngb-progressbar></p>
+          </div>
+
+          <div class="alert alert-success" role="alert" *ngIf="successMessage !== ''">
+            {{ successMessage }}
+          </div>
+          
+          <div class="alert alert-danger" role="alert" *ngIf="errorMessage !== ''">
+            {{ errorMessage }}
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button 
+            class="btn btn-primary"
+            [disabled]="!selectedFiles"
+            (click)="uploadFiles()">Upload Files</button>
+          <button type="button" class="btn btn-default" (click)="hideAttachmentsModal()">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</div>  

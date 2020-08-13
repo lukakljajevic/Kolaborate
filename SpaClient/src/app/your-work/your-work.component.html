@@ -1,50 +1,94 @@
-<h2>Your work</h2>
+<div class="container">
+  <h2>Your work</h2>
 
-<h5>Recent projects</h5>
+  <h5>Recent projects</h5>
 
-<div class="card-deck">
-  <div class="card" *ngFor="let project of recentProjects">
-    <div class="card-body">
-      <h5 class="card-title">{{project.name}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">Created by: {{project.createdBy.fullName}}</h6>
-      <p class="card-text" [innerHTML]="project.description"></p>
-      <a [routerLink]="['/projects', project.id]" class="card-link">Go to project page</a>
+  <div class="card-deck">
+    <div class="card" *ngFor="let project of recentProjects">
+      <div class="card-body">
+        <h5 class="card-title">{{project.name}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Created by: {{project.createdBy.fullName}}</h6>
+        <p class="card-text" [innerHTML]="project.description"></p>
+        <a [routerLink]="['/projects', project.id]" class="card-link">Go to project page</a>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="tabset">
-  <ul ngbNav #nav="ngbNav" class="nav-tabs">
-    <li [ngbNavItem]="1">
-      <a ngbNavLink>
-        <fa-icon [icon]="['fas', 'list']"></fa-icon>
-        Assigned to me
-      </a>
-      <ng-template ngbNavContent>
-        <h6 id="in-progress">IN PROGRESS</h6>
-        <h6 *ngIf="inProgress.length === 0" class="no-issues-message">No issues in progress...</h6>
-        <a
-          class="issue" 
-          *ngFor="let issueInProgress of inProgress" 
-          [routerLink]="['/projects', issueInProgress.phase.project.id, 'issues', issueInProgress.id]">
-            <div class="issue-logo">
-              <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
-              <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
-            </div>
-            <span class="issue-content">
-              <span class="issue-name">{{issueInProgress.name}}</span>
-              <small class="issue-phase">{{issueInProgress.phase.name}}</small>
-            </span>
-            <span class="issue-project">{{issueInProgress.phase.project.name}}</span>
-            <span class="issue-status">In progress</span>
+  <div id="tabset">
+    <ul ngbNav #nav="ngbNav" class="nav-tabs">
+      <li [ngbNavItem]="1">
+        <a ngbNavLink>
+          <fa-icon [icon]="['fas', 'list']"></fa-icon>
+          Assigned to me
         </a>
+        <ng-template ngbNavContent>
+          <h6 id="in-progress">IN PROGRESS</h6>
+          <h6 *ngIf="inProgress.length === 0" class="no-issues-message">No issues in progress...</h6>
+          <a
+            class="issue" 
+            *ngFor="let issueInProgress of inProgress" 
+            [routerLink]="['/projects', issueInProgress.phase.project.id, 'issues', issueInProgress.id]">
+              <div class="issue-logo">
+                <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+                <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+              </div>
+              <span class="issue-content">
+                <span class="issue-name">{{issueInProgress.name}}</span>
+                <small class="issue-phase">{{issueInProgress.phase.name}}</small>
+              </span>
+              <span class="issue-project">{{issueInProgress.phase.project.name}}</span>
+              <span class="issue-status">In progress</span>
+          </a>
 
-        <h6 id="to-do">TO DO</h6>
-        <h6 *ngIf="toDo.length === 0" class="no-issues-message">No issues to do...</h6>
-        <a 
-          class="issue" 
-          *ngFor="let issueToDo of toDo"
-          [routerLink]="['/projects', issueToDo.phase.project.id, 'issues', issueToDo.id]">
+          <h6 id="to-do">TO DO</h6>
+          <h6 *ngIf="toDo.length === 0" class="no-issues-message">No issues to do...</h6>
+          <a 
+            class="issue" 
+            *ngFor="let issueToDo of toDo"
+            [routerLink]="['/projects', issueToDo.phase.project.id, 'issues', issueToDo.id]">
+              <div class="issue-logo">
+                <fa-icon *ngIf="issueToDo.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+                <fa-icon *ngIf="issueToDo.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+              </div>
+              <span class="issue-content">
+                <span class="issue-name">{{issueToDo.name}}</span>
+                <small class="issue-phase">{{issueToDo.phase.name}}</small>
+              </span>
+              <span class="issue-project">{{issueToDo.phase.project.name}}</span>
+              <span class="issue-status">To do</span>
+          </a>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="2">
+        <a ngbNavLink>
+          <fa-icon [icon]="['fas', 'star']"></fa-icon>
+          Starred
+        </a>
+        <ng-template ngbNavContent>
+          <h6 id="in-progress">IN PROGRESS</h6>
+          <h6 *ngIf="inProgressStarred.length === 0" class="no-issues-message">No issues in progress...</h6>
+          <a 
+            class="issue" 
+            *ngFor="let issueInProgress of inProgressStarred"
+            [routerLink]="['/projects', issueInProgress.phase.project.id, 'issues', issueInProgress.id]">
+              <div class="issue-logo">
+                <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+                <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+              </div>
+              <span class="issue-content">
+                <span class="issue-name">{{issueInProgress.name}}</span>
+                <small class="issue-phase">{{issueInProgress.phase.name}}</small>
+              </span>
+              <span class="issue-project">{{issueInProgress.phase.project.name}}</span>
+              <span class="issue-status">In progress</span>
+          </a>
+    
+          <h6 id="to-do">TO DO</h6>
+          <h6 *ngIf="toDoStarred.length === 0" class="no-issues-message">No issues to do...</h6>
+          <a 
+            class="issue" 
+            *ngFor="let issueToDo of toDoStarred"
+            [routerLink]="['/projects', issueToDo.phase.project.id, 'issues', issueToDo.id]">
             <div class="issue-logo">
               <fa-icon *ngIf="issueToDo.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
               <fa-icon *ngIf="issueToDo.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
@@ -55,78 +99,36 @@
             </span>
             <span class="issue-project">{{issueToDo.phase.project.name}}</span>
             <span class="issue-status">To do</span>
+          </a>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="3">
+        <a ngbNavLink>
+          <fa-icon [icon]="['fas', 'check']"></fa-icon>
+          Completed
         </a>
-      </ng-template>
-    </li>
-    <li [ngbNavItem]="2">
-      <a ngbNavLink>
-        <fa-icon [icon]="['fas', 'star']"></fa-icon>
-        Starred
-      </a>
-      <ng-template ngbNavContent>
-        <h6 id="in-progress">IN PROGRESS</h6>
-        <h6 *ngIf="inProgressStarred.length === 0" class="no-issues-message">No issues in progress...</h6>
-        <a 
-          class="issue" 
-          *ngFor="let issueInProgress of inProgressStarred"
-          [routerLink]="['/projects', issueInProgress.phase.project.id, 'issues', issueInProgress.id]">
+        <ng-template ngbNavContent>
+          <h6 id="done">DONE</h6>
+          <h6 *ngIf="done.length === 0" class="no-issues-message">No completed issues...</h6>
+          <a 
+            class="issue issue-done" 
+            *ngFor="let issue of done"
+            [routerLink]="['/projects', issue.phase.project.id, 'issues', issue.id]">
             <div class="issue-logo">
-              <fa-icon *ngIf="issueInProgress.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
-              <fa-icon *ngIf="issueInProgress.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
+              <fa-icon *ngIf="issue.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
+              <fa-icon *ngIf="issue.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
             </div>
             <span class="issue-content">
-              <span class="issue-name">{{issueInProgress.name}}</span>
-              <small class="issue-phase">{{issueInProgress.phase.name}}</small>
+              <span class="issue-name">{{issue.name}}</span>
+              <small class="issue-phase">{{issue.phase.name}}</small>
             </span>
-            <span class="issue-project">{{issueInProgress.phase.project.name}}</span>
-            <span class="issue-status">In progress</span>
-        </a>
-  
-        <h6 id="to-do">TO DO</h6>
-        <h6 *ngIf="toDoStarred.length === 0" class="no-issues-message">No issues to do...</h6>
-        <a 
-          class="issue" 
-          *ngFor="let issueToDo of toDoStarred"
-          [routerLink]="['/projects', issueToDo.phase.project.id, 'issues', issueToDo.id]">
-          <div class="issue-logo">
-            <fa-icon *ngIf="issueToDo.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
-            <fa-icon *ngIf="issueToDo.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
-          </div>
-          <span class="issue-content">
-            <span class="issue-name">{{issueToDo.name}}</span>
-            <small class="issue-phase">{{issueToDo.phase.name}}</small>
-          </span>
-          <span class="issue-project">{{issueToDo.phase.project.name}}</span>
-          <span class="issue-status">To do</span>
-        </a>
-      </ng-template>
-    </li>
-    <li [ngbNavItem]="3">
-      <a ngbNavLink>
-        <fa-icon [icon]="['fas', 'check']"></fa-icon>
-        Completed
-      </a>
-      <ng-template ngbNavContent>
-        <h6 id="done">DONE</h6>
-        <h6 *ngIf="done.length === 0" class="no-issues-message">No completed issues...</h6>
-        <a 
-          class="issue issue-done" 
-          *ngFor="let issue of done"
-          [routerLink]="['/projects', issue.phase.project.id, 'issues', issue.id]">
-          <div class="issue-logo">
-            <fa-icon *ngIf="issue.issueType === 'task'" [icon]="['fas', 'check-square']" size="lg" class="task"></fa-icon>
-            <fa-icon *ngIf="issue.issueType === 'bug'" [icon]="['fas', 'bug']" size="lg" class="bug"></fa-icon>
-          </div>
-          <span class="issue-content">
-            <span class="issue-name">{{issue.name}}</span>
-            <small class="issue-phase">{{issue.phase.name}}</small>
-          </span>
-          <span class="issue-project">{{issue.phase.project.name}}</span>
-          <span class="issue-status">Done</span>
-        </a>
-      </ng-template>
-    </li>
-  </ul>
-  
-  <div [ngbNavOutlet]="nav" class="mt-2"></div>
-</div>
+            <span class="issue-project">{{issue.phase.project.name}}</span>
+            <span class="issue-status">Done</span>
+          </a>
+        </ng-template>
+      </li>
+    </ul>
+    
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  </div>
+</div> 
