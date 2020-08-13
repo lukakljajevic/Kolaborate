@@ -54,8 +54,8 @@ namespace IdentityServer
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "IdentityServer.Cookie";
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.LoginPath = "/Auth/Login";
                 options.LogoutPath = "/Auth/Logout";
             });

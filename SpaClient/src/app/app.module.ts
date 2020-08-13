@@ -42,7 +42,7 @@ import { ChartsModule } from 'ng2-charts';
 export function configureAuth(oidcConfigService: OidcConfigService) {
    return () =>
        oidcConfigService.withConfig({
-           stsServer: 'http://localhost:5000',
+           stsServer: 'https://localhost:44305',
            redirectUrl: 'http://localhost:4200',
            postLogoutRedirectUri: 'http://localhost:4200',
            clientId: 'angular_spa',
