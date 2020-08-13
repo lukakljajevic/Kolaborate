@@ -40,6 +40,9 @@ namespace Api.Controllers
                 return NotFound("Project not found.");
             }
 
+            if (project.Phases.FirstOrDefault(p => p.Name == phaseCreateDto.Name) != null)
+                return BadRequest(new { message = "Phase already exists." });
+
             var phase = new Phase
             {
                 Name = phaseCreateDto.Name,

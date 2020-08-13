@@ -3,6 +3,7 @@ using Api.Helpers.DTOs.Attachment;
 using Api.Helpers.DTOs.Comment;
 using Api.Helpers.DTOs.Issue;
 using Api.Helpers.DTOs.Label;
+using Api.Helpers.DTOs.Phase;
 using Api.Helpers.DTOs.User;
 using Api.Models;
 using AutoMapper;
@@ -29,7 +30,8 @@ namespace Api.Helpers
             CreateMap<PhaseCreateDto, Phase>();
             CreateMap<Phase, PhaseDetailDto>();
             CreateMap<Phase, PhaseListItemDto>();
-            
+            CreateMap<Phase, PhaseMinimalDto>();
+
             // Issue
             CreateMap<IssueCreateDto, Issue>()
                 .ForMember(i => i.IssuedTo, opt => opt.Ignore());

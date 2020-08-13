@@ -6,7 +6,9 @@ import { faStar as fasStar } from '@fortawesome/free-solid-svg-icons';
 
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { NgbdSortableHeader, SortEvent, State } from 'src/app/services/sortable.directive';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-project-list',
@@ -15,33 +17,40 @@ import { Observable } from 'rxjs';
 })
 export class ProjectListComponent implements OnInit {
 
-  projects$: Observable<ProjectListItem[]>;
-  total$: Observable<number>;
-  @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
-  
+  projects: ProjectListItem[];
 
-  constructor(public projectsService: ProjectsService, library: FaIconLibrary) {
-    this.projects$ = projectsService.projects$;
-    this.total$ = projectsService.total$;
-    
-    // library.addIcons(fasStar, farStar);
-  }
+  projectsSubject = new Subject<ProjectListItem[]>();
+  totalSubject = new Subject<number>();
+
+  projects$ = this.projectsSubject.asObservable();
+  total$ = this.totalSubject.asObservable();
+  filter = new FormControl('');
+  page = 1;
+  pageSize = 4;
+
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.projectsService.getProjects();
+    this.route.data.subscribe(data => {
+      this.projects = data.projects;
+      console.log(this.projects);
+      setTimeout(() => {
+        this.onPageChange();
+        this.totalSubject.next(this.projects.length);
+      }, 0);
+    });
   }
 
-  onSort({column, direction}: SortEvent) {
-    this.headers.forEach(header => {
-      if (header.sortable !== column) {
-        header.direction = '';
-      }
-    });
+  search(text: string) {
+    this.projectsSubject.next(
+      this.projects.filter(project => project.name.toLowerCase().includes(text.toLowerCase())
+      || project.createdBy.fullName.toLowerCase().includes(text.toLowerCase()))
+    );
+  }
 
-    console.log('onsortevent');
-
-    this.projectsService.sortColumn = column;
-    this.projectsService.sortDirection = direction;
+  onPageChange() {
+    this.projectsSubject.next(this.projects
+      .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize));
   }
 
 }

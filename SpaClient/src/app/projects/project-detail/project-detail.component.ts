@@ -92,7 +92,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     this.projectEditForm = new FormGroup({
       name: new FormControl(this.project.name, Validators.required),
-      description: new FormControl(this.project.description.replace(/<br\s*[\/]?>/gi, '\n'), Validators.required),
+      description: new FormControl(this.project.description.replace(/<br\s*[\/]?>/gi, '\n')),
       startDate: new FormControl(this.formatDate(this.project.startDate)),
       endDate: new FormControl(this.formatDate(this.project.endDate))
     }, {validators: validateDates});
@@ -119,8 +119,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       next: response => {
         this.project.phases.push(response.phase);
         this.filterIssues();
-      },
-        error: (err: {message: string}) => alert(err.message)
+      }
     });
 
     // Phase update subscription
@@ -242,7 +241,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   deleteProject() {
     this.projectsService.deleteProject(this.project.id).subscribe(response => {
-      alert(response.message);
       this.projectsService.getRecentProjects();
       this.closeModal(this.deleteModal);
       this.router.navigate(['/your-work']);

@@ -12,6 +12,8 @@ import { IssueDetailComponent } from './projects/issues/issue-detail/issue-detai
 import { IssueDetailResolverService } from './services/resolvers/issue-detail-resolver.service';
 import { AccountComponent } from './account/account.component';
 import { ProjectManageComponent } from './projects/project-manage/project-manage.component';
+import { HomeAuthGuard } from './guards/home-auth.guard';
+import { ProjectListResolverService } from './services/resolvers/project-list-resolver.service';
 
 const routes: Routes = [
   {
@@ -28,6 +30,9 @@ const routes: Routes = [
     path: 'projects',
     component: ProjectListComponent,
     canActivate: [AuthGuard],
+    resolve: {
+      projects: ProjectListResolverService
+    }
   },
   {
     path: 'projects/:id',
@@ -64,7 +69,8 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [HomeAuthGuard]
   },
   // {
   //   path: '**',
@@ -75,6 +81,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [ProjectDetailResolverService]
+  providers: []
 })
 export class AppRoutingModule { }

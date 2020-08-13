@@ -10,8 +10,9 @@ import { Label } from 'src/app/models/label';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { IssueListItem } from 'src/app/models/issue-list-item';
 import { UserListItem } from 'src/app/models/user-list-item';
-import { Subscription } from 'rxjs';
+import { Subscription, of, Observable, throwError } from 'rxjs';
 import { LabelsService } from 'src/app/services/labels.service';
+import { catchError, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-phase-list',
@@ -38,7 +39,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   @ViewChild('createLabelModal', {static: false})
   createLabelModal: ModalDirective;
 
-  labels: Label[] = [];
+  // labels: Label[] = [];
   minDate: Date;
 
   phaseCreateForm: FormGroup;
@@ -108,7 +109,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     });
 
     this.issuesService.getLabels().subscribe(labels => {
-      this.labels = labels;
+      // this.labels = labels;
       labels.forEach(l => this.labelsChecked.push({
         id: l.id,
         name: l.name,
@@ -117,18 +118,20 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     });
 
     // Phase create subscription
-    this.createdPhaseSubscription = this.phasesService.createdPhase$.subscribe({
-      next: response => {
-        this.resetForm(this.phaseCreateForm);
-        this.hideModal(this.phaseCreateModal);
-      },
-      error: (err: {message: string}) => alert(err.message)
-    });
+    this.createdPhaseSubscription = this.phasesService.createdPhase$
+      .subscribe({
+        next: () => {
+          this.resetForm(this.phaseCreateForm);
+          this.hideModal(this.phaseCreateModal);
+        },
+        error: err => {
+          alert(err.error.message);
+        }
+      });
 
     // Phase delete subscription
     this.deletedPhaseSubscription = this.phasesService.deletedPhase$.subscribe({
       next: response => {
-        alert(response.message);
         this.hideModal(this.deleteModal);
       }
     });
@@ -136,6 +139,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     // Issue create subscription
     this.createdIssueSubscription = this.issuesService.createdIssue$.subscribe({
       next: () => {
+        this.resetLabelsCheckedObject();
         this.resetForm(this.issueCreateForm);
         this.hideModal(this.issueCreateModal);
       },
@@ -151,14 +155,13 @@ export class PhaseListComponent implements OnInit, OnDestroy {
 
     // Issue delete subscription
     this.deletedIssueSubscription = this.issuesService.deletedIssue$.subscribe(response => {
-      alert(response.message);
       this.hideModal(this.deleteModal);
     });
 
     // Label create subscription
     this.createdLabelSubscription = this.labelsService.createdLabel$
       .subscribe((label: Label) => {
-        this.labels.push(label);
+        // this.labels.push(label);
         this.labelCreateForm.patchValue({ name: '' });
         this.labelsChecked.push({
           id: label.id,
@@ -245,13 +248,13 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     this.issuesService.createIssue(formValue);
   }
 
-  formatLabels(labelIds: string[]) {
-    const labels: string[] = [];
-    labelIds.forEach(labelId => {
-      labels.push(labelId);
-    });
-    return labels;
-  }
+  // formatLabels(labelIds: string[]) {
+  //   const labels: string[] = [];
+  //   labelIds.forEach(labelId => {
+  //     labels.push(labelId);
+  //   });
+  //   return labels;
+  // }
 
   formatIssuedTo(issuedToIds: string[]) {
     const issuedToUsers = [];
@@ -341,6 +344,5 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   onAddLabelsModalHidden() {
     this.resetForm(this.addLabelsForm);
     this.resetLabelsCheckedObject();
-    console.log(this.labelsChecked);
   }
 }

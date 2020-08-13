@@ -53,7 +53,7 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
       this.project = data.project;
       console.log(this.project);
       setTimeout(() => {
-        this.projectUsersSubject.next(this.project.projectUsers);
+        this.onPageChange();
         this.totalSubject.next(this.project.projectUsers.length);
       }, 0);
       this.issueTypesChartData = this.generateIssueTypesChartData();

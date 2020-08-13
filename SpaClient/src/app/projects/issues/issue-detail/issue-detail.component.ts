@@ -118,6 +118,7 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       });
 
       this.issue.labels.forEach(l => this.selectedLabelIds.push(l.id));
+      this.issue.labels.sort((a, b) => a.name.localeCompare(b.name));
     });
 
     this.users$ = new Observable((observer: Observer<string>) => {
@@ -162,7 +163,6 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
     this.deletedIssueSubscription = this.issuesService.deletedIssue$
       .subscribe({
         next: response => {
-          alert(response.message);
           this.router.navigate(['/projects', this.issue.phase.project.id]);
         },
         error: err => alert(err.message)

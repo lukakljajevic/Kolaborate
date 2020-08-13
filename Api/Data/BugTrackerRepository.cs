@@ -79,7 +79,14 @@ namespace Api.Data
             return await _context.ProjectUsers
                 .Where(pu => pu.UserId == userId)
                 .Include(pu => pu.Project)
+                    .ThenInclude(p => p.CreatedBy)
+                .Include(pu => pu.Project)
+                    .ThenInclude(p => p.Phases)
+                .Include(pu => pu.Project)
+                    .ThenInclude(p => p.ProjectUsers)
+                        .ThenInclude(projectUser => projectUser.User)
                 .Select(pu => pu.Project)
+                .OrderBy(p => p.Name)
                 .ToListAsync();
         }
 

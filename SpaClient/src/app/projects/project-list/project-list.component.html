@@ -1,40 +1,58 @@
 <h2>Projects</h2>
 <form>
   <div class="form-group form-inline">
-      Full text search: <input class="form-control ml-2" type="text" name="searchTerm" [(ngModel)]="projectsService.searchTerm"/>
-      <span class="ml-3" *ngIf="projectsService.loading$ | async">Loading...</span>
+      Full text search: 
+      <input class="form-control ml-2" 
+             type="text" 
+             name="searchTerm"
+             [formControl]="filter"
+             (input)="search($event.target.value)"/>
   </div>
-
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th scope="col"><fa-icon [icon]="['fas', 'star']"></fa-icon></th>
-        <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
-        <th scope="col" sortable="createdByFullName" (sort)="onSort($event)">Created By</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let project of projects$ | async">
-      <td><fa-icon [icon]="['far', 'star']"></fa-icon></td>
-      <td><a [routerLink]="['/projects', project.id]" ><ngb-highlight [result]="project.name" [term]="projectsService.searchTerm"></ngb-highlight></a></td>
-      <!-- <td><ngb-highlight [result]="project.name" [term]="service.searchTerm"></ngb-highlight></td> -->
-      <td><ngb-highlight [result]="project.createdBy.fullName" [term]="projectsService.searchTerm"></ngb-highlight></td>
-      <td><ngb-highlight>Options</ngb-highlight></td>
-    </tr>
-    </tbody>
-  </table>
-
-  <div class="d-flex justify-content-between p-2">
-    <ngb-pagination
-      [collectionSize]="(total$ | async)!" [(page)]="projectsService.page" [pageSize]="projectsService.pageSize">
-    </ngb-pagination>
-
-    <select class="custom-select" style="width: auto" name="pageSize" [(ngModel)]="projectsService.pageSize">
-      <option [ngValue]="2">2 items per page</option>
-      <option [ngValue]="4">4 items per page</option>
-      <option [ngValue]="6">6 items per page</option>
-    </select>
-  </div>
-
 </form>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col" >Created By</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let project of projects$ | async; index as i">
+    <td>{{ i + 1 }}</td>
+    <td>
+      <a [routerLink]="['/projects', project.id]" >
+        <ngb-highlight [result]="project.name" 
+                        [term]="filter.value"></ngb-highlight>
+      </a>
+    </td>
+    <td>
+      <ngb-highlight [result]="project.createdBy.fullName" 
+                      [term]="filter.value"></ngb-highlight>
+    </td>
+    <td>
+      <ngb-highlight>Options</ngb-highlight>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination [collectionSize]="(total$ | async)!" 
+                  [(page)]="page" 
+                  [pageSize]="pageSize"
+                  (pageChange)="onPageChange()">
+  </ngb-pagination>
+
+  <select class="custom-select" 
+          style="width: auto" 
+          [(ngModel)]="pageSize"
+          (ngModelChange)="onPageChange()">
+    <option [ngValue]="2">2 items per page</option>
+    <option [ngValue]="4">4 items per page</option>
+    <option [ngValue]="6">6 items per page</option>
+  </select>
+</div>
+

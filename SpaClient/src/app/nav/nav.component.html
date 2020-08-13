@@ -22,7 +22,9 @@
             <a class="dropdown-item" [routerLink]="['/project-create']">Create project</a>
           </div>
         </li>
-        <button class="btn btn-primary btn ml-4 nav-button" type="button">Create</button>
+        <button class="btn btn-primary btn ml-4 nav-button" 
+                type="button" 
+                (click)="showModal(issueCreateModal)">Create</button>
 
         
       </ul>
@@ -50,3 +52,102 @@
 
   </div>
 </nav>
+
+<div class="modal fade" 
+     bsModal 
+     #issueCreateModal="bs-modal" 
+     (onHidden)="onIssueCreateModalHidden()">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Create a new issue</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(issueCreateModal)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="issueCreateForm" (ngSubmit)="onIssueCreateSubmit()">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="project">Project</label>
+              <select class="form-control" formControlName="projectId" (change)="onProjectSelected($event)">
+                <option value="" disabled hidden>Select a project</option>
+                <option *ngFor="let project of projects" 
+                        value="{{project.id}}">{{project.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="phase">Phase</label>
+              <select class="form-control" formControlName="phaseId">
+                <option value="" disabled hidden>Select a phase</option>
+                <option *ngFor="let phase of selectedProject?.phases" 
+                        value="{{phase?.id}}">{{phase?.name}}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="type">Issue type</label>
+            <select class="form-control col-md-4 fa-select" formControlName="issueType">
+              <option value="task">&#xf14a; Task</option>
+              <option value="bug">&#xf188; Bug</option>
+            </select>
+          </div>
+          <hr>
+          <div class="form-group">
+            <label for="name">Summary</label>
+            <input type="text" class="form-control" formControlName="name" placeholder="Issue summary">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea cols="30" rows="10" class="form-control" formControlName="description" placeholder="Issue description"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="col-xs-12 col-md-6 form-group">
+              <label for="startDate">Due date</label>
+              <input 
+              class="form-control"
+              placeholder="Due date"
+              bsDatepicker
+              formControlName="dueDate"
+              [minDate]="minDate"
+              [bsConfig]="{ dateInputFormat: 'DD.MM.YYYY.', isAnimated: true, containerClass: 'theme-dark-blue' }">
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="priority">Priority</label>
+              <select class="form-control" formControlName="priority">
+                <option value="" selected disabled hidden>Priority</option>
+                <option value="1">Lowest</option>
+                <option value="2">Low</option>
+                <option value="3">Medium</option>
+                <option value="4">High</option>
+                <option value="5">Highest</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="asignee">Asignee</label>
+            <select multiple class="form-control" formControlName="issuedTo">
+              <option *ngFor="let projectUser of selectedProject?.projectUsers" 
+                      value="{{projectUser?.user.id}}">{{projectUser?.user.fullName}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="labels">Labels</label>
+            <br>
+            <div class="form-check form-check-inline" *ngFor="let label of labels">
+              <input 
+                class="form-check-input" 
+                type="checkbox"
+                id="{{label.id}}-nav" 
+                [value]="label.id"
+                (change)="labelChecked($event)">
+              <label class="form-check-label" for="{{label.id}}-nav">{{label.name}}</label>
+            </div>
+          </div>
+          <button class="btn btn-success btn-block" type="submit" [disabled]="!issueCreateForm.valid">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>   
+</div>

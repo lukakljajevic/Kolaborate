@@ -11,37 +11,6 @@ import { tap, debounceTime, switchMap, delay } from 'rxjs/operators';
 import { Project } from '../models/project';
 import { ProjectUser } from '../models/project-user';
 
-interface SearchResult {
-  projects: ProjectListItem[];
-  total: number;
-}
-
-interface State {
-  page: number;
-  pageSize: number;
-  searchTerm: string;
-  sortColumn: SortColumn;
-  sortDirection: SortDirection;
-}
-
-const compare = (v1: string, v2: string) => v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
-
-function sort(projects: ProjectListItem[], column: SortColumn, direction: string): ProjectListItem[] {
-  if (direction === '' || column === '') {
-    return projects;
-  } else {
-    return [...projects].sort((a, b) => {
-      const res = compare(`${a[column]}`, `${b[column]}`);
-      return direction === 'asc' ? res : -res;
-    });
-  }
-}
-
-function matches(project: ProjectListItem, term: string) {
-  return project.name.toLowerCase().includes(term.toLowerCase())
-    || project.createdBy.fullName.toLowerCase().includes(term.toLowerCase());
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -50,75 +19,23 @@ export class ProjectsService {
   private projects: ProjectListItem[];
   private recentProjects: ProjectListItem[];
 
-  private _loading$ = new BehaviorSubject<boolean>(true);
-  private _search$ = new Subject<void>();
-  private _projects$ = new BehaviorSubject<ProjectListItem[]>([]);
-  private _total$ = new BehaviorSubject<number>(0);
+  private _projects = new Subject<ProjectListItem[]>();
   private _recentProjects$ = new Subject<ProjectListItem[]>();
-
   private projectUpdated = new Subject<any>();
   private updatedUserRole = new Subject<{userId: string, role: string}>();
   private removedUser = new Subject<{userId: string}>();
 
-  private _state: State = {
-    page: 1,
-    pageSize: 4,
-    searchTerm: '',
-    sortColumn: '',
-    sortDirection: ''
-  };
 
   constructor(private http: HttpClient,
               private datepipe: DatePipe,
               private authService: AuthService,
-              private router: Router) {
-    this._search$.pipe(
-      tap(() => this._loading$.next(true)),
-      switchMap(() => this._search()),
-      tap(() => this._loading$.next(false))
-    ).subscribe(result => {
-      this._projects$.next(result.projects);
-      this._total$.next(result.total);
-    });
-  }
+              private router: Router) {}
 
-  get projects$() { return this._projects$.asObservable(); }
-  get total$() { return this._total$.asObservable(); }
-  get loading$() { return this._loading$.asObservable(); }
+  get projects$() { return this._projects.asObservable(); }
   get recentProjects$() { return this._recentProjects$.asObservable(); }
-  get page() { return this._state.page; }
-  get pageSize() { return this._state.pageSize; }
-  get searchTerm() { return this._state.searchTerm; }
-  
   get updatedProject$() { return this.projectUpdated.asObservable(); }
   get updatedUserRole$() { return this.updatedUserRole.asObservable(); }
   get removedUser$() { return this.removedUser.asObservable(); }
-
-  set page(page: number) { this._set({page}); }
-  set pageSize(pageSize: number) { this._set({pageSize}); }
-  set searchTerm(searchTerm: string) { this._set({searchTerm}); }
-  set sortColumn(sortColumn: SortColumn) { this._set({sortColumn}); }
-  set sortDirection(sortDirection: SortDirection) { this._set({sortDirection}); }
-
-  private _set(patch: Partial<State>) {
-    Object.assign(this._state, patch);
-    this._search$.next();
-  }
-
-  private _search(): Observable<SearchResult> {
-    const {sortColumn, sortDirection, pageSize, page, searchTerm} = this._state;
-
-    // 1. sort
-    let projects = sort(this.projects, sortColumn, sortDirection);
-
-    // 2. filter
-    projects = projects.filter(country => matches(country, searchTerm));
-    const total = projects.length;
-
-    // 3. paginate
-    projects = projects.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
-    return of({projects, total});
-  }
 
   createProject(data: any) {
     if (data.startDate) {
@@ -135,11 +52,16 @@ export class ProjectsService {
     });
   }
 
+  getProjectsAsObservable() {
+    return this.http.get<ProjectListItem[]>('http://localhost:5002/api/projects');
+  }
+
   getProjects() {
-    this.http.get<ProjectListItem[]>('http://localhost:5002/api/projects').subscribe(projects => {
-      this.projects = projects;
-      this._search$.next();
-    });
+    this.http.get<ProjectListItem[]>('http://localhost:5002/api/projects')
+      .subscribe({
+        next: projects => this._projects.next(projects),
+        error: err => this._projects.error('Failed to get projects')
+      });
   }
 
   getRecentProjects() {

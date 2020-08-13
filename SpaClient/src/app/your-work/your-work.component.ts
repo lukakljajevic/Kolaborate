@@ -14,6 +14,7 @@ import { IssueListItem } from '../models/issue-list-item';
 export class YourWorkComponent implements OnInit, OnDestroy {
 
   recentProjectsSubscription: Subscription;
+  issueCreatedSubscription: Subscription;
   recentProjects: ProjectListItem[];
 
   toDo: IssueListItem[] = [];
@@ -29,6 +30,11 @@ export class YourWorkComponent implements OnInit, OnDestroy {
     this.recentProjectsSubscription = this.projectsService.recentProjects$.subscribe(projects => {
       this.recentProjects = projects;
       console.log(projects);
+    });
+
+    this.issueCreatedSubscription = this.issuesService.createdIssue$.subscribe({
+      next: response => this.toDo.push(response.issue),
+      error: err => alert(err.message)
     });
 
     this.projectsService.getRecentProjectsLocal();
