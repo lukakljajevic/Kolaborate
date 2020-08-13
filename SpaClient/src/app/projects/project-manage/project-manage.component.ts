@@ -19,9 +19,14 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
 
   project: Project;
   projectUsersSubject: Subject<ProjectUser[]> = new Subject<ProjectUser[]>();
-  // projectUsers$: Observable<ProjectUser[]>;
+  totalSubject: Subject<number> = new Subject<number>();
+
   projectUsers$: Observable<ProjectUser[]> = this.projectUsersSubject.asObservable();
+  total$: Observable<number> = this.totalSubject.asObservable();
   filter = new FormControl('');
+
+  page = 1;
+  pageSize = 4;
 
   updateUserRoleSubscription: Subscription;
   removedUserSubscription: Subscription;
@@ -49,6 +54,7 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
       console.log(this.project);
       setTimeout(() => {
         this.projectUsersSubject.next(this.project.projectUsers);
+        this.totalSubject.next(this.project.projectUsers.length);
       }, 0);
       this.issueTypesChartData = this.generateIssueTypesChartData();
       this.issueStatusesChartData = this.generateIssueStatusesChartData();
@@ -82,6 +88,11 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.updateUserRoleSubscription.unsubscribe();
+  }
+
+  onPageChange() {
+    this.projectUsersSubject.next(this.project.projectUsers
+      .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize));
   }
 
   generateIssueTypesChartData(): SingleDataSet {
