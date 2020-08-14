@@ -1,142 +1,145 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item" aria-current="page">
-      <a [routerLink]="['/projects']">Projects</a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">
-      <a [routerLink]="['/projects', project.id]">{{project.name}}</a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">
-      Manage project
-    </li>
-  </ol>
-</nav>
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page">
+        <a [routerLink]="['/projects']">Projects</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <a [routerLink]="['/projects', project.id]">{{project.name}}</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Manage project
+      </li>
+    </ol>
+  </nav>
 
-<div class="row">
-  <div class="col-md-12">
-    <h3>Manage {{project.name}}</h3>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Manage {{project.name}}</h3>
+    </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-md-12">
-    <form>
-      <div class="form-group form-inline">
-          Full text search: 
-          <input 
-            class="form-control ml-2" 
-            type="text" 
-            [formControl]="filter"
-            (input)="search($event.target.value)"/>
-      </div>
-    </form>
-    
-    <table class="table table-hover">
-      <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Full name</th>
-        <th scope="col">Username</th>
-        <th scope="col">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let projectUser of projectUsers$ | async; index as i">
-        <th scope="row">{{ i + 1 }}</th>
-        <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
-        <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
-        <td>
-          <!-- User role -->
-          <div class="btn-group" dropdown [isDisabled]="projectUser.userRole === 'manager' && numberOfManagers() === 1">
-            <button 
-              id="button-animated" 
-              dropdownToggle 
-              type="button" 
-              class="btn btn-default dropdown-toggle"
-              aria-controls="dropdown-animated">
-                {{projectUser.userRole | titlecase}} <span class="caret"></span>
+  <div class="row">
+    <div class="col-md-12">
+      <form>
+        <div class="form-group form-inline">
+            Full text search: 
+            <input 
+              class="form-control ml-2" 
+              type="text" 
+              [formControl]="filter"
+              (input)="search($event.target.value)"/>
+        </div>
+      </form>
+      
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Full name</th>
+          <th scope="col">Username</th>
+          <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let projectUser of projectUsers$ | async; index as i">
+          <th scope="row">{{ i + 1 }}</th>
+          <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
+          <td><ngb-highlight [result]="projectUser.user.fullName" [term]="filter.value"></ngb-highlight></td>
+          <td>
+            <!-- User role -->
+            <div class="btn-group" dropdown [isDisabled]="projectUser.userRole === 'manager' && numberOfManagers() === 1">
+              <button 
+                id="button-animated" 
+                dropdownToggle 
+                type="button" 
+                class="btn btn-default dropdown-toggle"
+                aria-controls="dropdown-animated">
+                  {{projectUser.userRole | titlecase}} <span class="caret"></span>
+              </button>
+              <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
+                  role="menu" aria-labelledby="button-animated">
+                <li role="menuitem" *ngIf="projectUser.userRole === 'user'">
+                  <a class="dropdown-item" 
+                    (click)="updateUserRole('manager', projectUser)">Manager</a>
+                </li>
+                <li role="menuitem" *ngIf="projectUser.userRole === 'manager'">
+                  <a class="dropdown-item"
+                    (click)="updateUserRole('user', projectUser)">User</a>
+                </li>
+              </ul>
+            </div>
+
+            <button class="btn btn-outline-danger" (click)="showDeleteModal(projectUser)">
+              <fa-icon [icon]="['fas', 'user-minus']" class="icon"></fa-icon>
+              Remove
             </button>
-            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu"
-                role="menu" aria-labelledby="button-animated">
-              <li role="menuitem" *ngIf="projectUser.userRole === 'user'">
-                <a class="dropdown-item" 
-                   (click)="updateUserRole('manager', projectUser)">Manager</a>
-              </li>
-              <li role="menuitem" *ngIf="projectUser.userRole === 'manager'">
-                <a class="dropdown-item"
-                   (click)="updateUserRole('user', projectUser)">User</a>
-              </li>
-            </ul>
-          </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
 
-          <button class="btn btn-outline-danger" (click)="showDeleteModal(projectUser)">
-            <fa-icon [icon]="['fas', 'user-minus']" class="icon"></fa-icon>
-            Remove
+      <div class="d-flex justify-content-between p-2">
+        <ngb-pagination [collectionSize]="total$ | async" 
+                        [(page)]="page" 
+                        [pageSize]="pageSize" 
+                        (pageChange)="onPageChange()">
+        </ngb-pagination>
+      
+        <select class="custom-select" 
+                style="width: auto" 
+                [(ngModel)]="pageSize" 
+                (ngModelChange)="onPageChange()">
+          <option [ngValue]="2">2 items per page</option>
+          <option [ngValue]="4">4 items per page</option>
+          <option [ngValue]="8">8 items per page</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" id="charts">
+    <div class="col-md-6">
+      <h5 class="text-center">Issue types</h5>
+      <canvas baseChart 
+        [data]="issueTypesChartData"
+        [labels]="issueTypesChartLabels"
+        [chartType]="issyeTypesChartType"
+        [colors]="issueTypesChartColors">
+      </canvas>
+    </div>
+    <div class="col-md-6">
+      <h5 class="text-center">Issue statuses</h5>
+      <canvas baseChart 
+        [data]="issueStatusesChartData" 
+        [labels]="issueStatusesChartLabels" 
+        [chartType]="issueStatusesChartType"
+        [colors]="issueStatusesChartColors">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Modals -->
+
+  <!-- Delete modal -->
+  <div class="modal fade" 
+      bsModal 
+      #deleteModal="bs-modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title pull-left">Remove user</h5>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(deleteModal)">
+            <span aria-hidden="true">&times;</span>
           </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-    <div class="d-flex justify-content-between p-2">
-      <ngb-pagination [collectionSize]="total$ | async" 
-                      [(page)]="page" 
-                      [pageSize]="pageSize" 
-                      (pageChange)="onPageChange()">
-      </ngb-pagination>
-    
-      <select class="custom-select" 
-              style="width: auto" 
-              [(ngModel)]="pageSize" 
-              (ngModelChange)="onPageChange()">
-        <option [ngValue]="2">2 items per page</option>
-        <option [ngValue]="4">4 items per page</option>
-        <option [ngValue]="8">8 items per page</option>
-      </select>
-    </div>
-  </div>
-</div>
-
-<div class="row" id="charts">
-  <div class="col-md-6">
-    <h5 class="text-center">Issue types</h5>
-    <canvas baseChart 
-      [data]="issueTypesChartData"
-      [labels]="issueTypesChartLabels"
-      [chartType]="issyeTypesChartType"
-      [colors]="issueTypesChartColors">
-    </canvas>
-  </div>
-  <div class="col-md-6">
-    <h5 class="text-center">Issue statuses</h5>
-    <canvas baseChart 
-      [data]="issueStatusesChartData" 
-      [labels]="issueStatusesChartLabels" 
-      [chartType]="issueStatusesChartType"
-      [colors]="issueStatusesChartColors">
-    </canvas>
-  </div>
-</div>
-
-<!-- Modals -->
-
-<!-- Delete modal -->
-<div class="modal fade" 
-     bsModal 
-     #deleteModal="bs-modal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title pull-left">Remove user</h5>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal(deleteModal)">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        </div>
+        <div class="modal-body text-center">
+          <p>Are you sure you want to remove {{userToRemove?.user.fullName}} from this project?</p>
+          <button type="button" class="btn btn-outline-danger" (click)="deleteUser()">Yes</button>
+          <button type="button" class="btn btn-default" (click)="hideModal(deleteModal)">No</button>
+        </div>
       </div>
-      <div class="modal-body text-center">
-        <p>Are you sure you want to remove {{userToRemove?.user.fullName}} from this project?</p>
-        <button type="button" class="btn btn-outline-danger" (click)="deleteUser()">Yes</button>
-        <button type="button" class="btn btn-default" (click)="hideModal(deleteModal)">No</button>
-      </div>
-    </div>
-  </div>   
+    </div>   
+  </div>
+
 </div>

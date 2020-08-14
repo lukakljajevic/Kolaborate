@@ -313,6 +313,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   }
 
   resetLabelsCheckedObject() {
+    this.selectedLabelIds = [];
     this.labelsChecked.forEach(l => l.checked = false);
   }
 
@@ -343,6 +344,15 @@ export class PhaseListComponent implements OnInit, OnDestroy {
 
   onAddLabelsModalHidden() {
     this.resetForm(this.addLabelsForm);
+    this.resetLabelsCheckedObject();
+  }
+
+  onIssueCreateModalHidden() {
+    this.resetForm(this.issueCreateForm, {
+      projectId: this.project.id,
+      issueType: 'task',
+      priority: ''
+    });
     this.resetLabelsCheckedObject();
   }
 }

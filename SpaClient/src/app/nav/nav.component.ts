@@ -50,7 +50,6 @@ export class NavComponent implements OnInit, OnDestroy {
       this.isAuthenticated = auth;
       if (this.isAuthenticated) {
         this.fullName = this.authService.fullName;
-        this.router.navigate(['/your-work']);
         this.recentProjectsSubscription = this.projectsService.recentProjects$.subscribe(projects => {
           this.recentProjects = projects;
         });

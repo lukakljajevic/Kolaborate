@@ -165,7 +165,7 @@
 <div class="modal fade" 
      bsModal 
      #issueCreateModal="bs-modal" 
-     (onHidden)="resetForm(issueCreateForm, {projectId: this.project.id, issueType: 'task', priority: ''})">
+     (onHidden)="onIssueCreateModalHidden()">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">

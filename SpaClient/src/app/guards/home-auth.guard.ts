@@ -13,9 +13,9 @@ export class HomeAuthGuard implements CanActivate {
               private oidcSecurityService: OidcSecurityService) { }
 
   canActivate(): Observable<boolean> {
-    return this.oidcSecurityService.isAuthenticated$.pipe(
-      map((isAuthorized: boolean) => {
-          if (isAuthorized) {
+    return this.oidcSecurityService.checkAuth().pipe(
+      map((isAuthenticated: boolean) => {
+          if (isAuthenticated) {
             this.router.navigate(['/your-work']);
             return true;
           }
