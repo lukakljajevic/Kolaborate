@@ -11,6 +11,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Label } from '../models/label';
 import { IssuesService } from '../services/issues.service';
 import { LabelsService } from '../services/labels.service';
+import { PhasesService } from '../services/phases.service';
 
 @Component({
   selector: 'app-nav',
@@ -24,8 +25,9 @@ export class NavComponent implements OnInit, OnDestroy {
   authSubscription: Subscription;
   userDataSubscription: Subscription;
   recentProjects: ProjectListItem[];
-  recentProjectsSubscription: Subscription;
-  issueCreatedSubscription: Subscription;
+
+  // recentProjectsSubscription: Subscription;
+  // issueCreatedSubscription: Subscription;
 
   issueCreateForm: FormGroup;
   minDate: Date;
@@ -39,18 +41,18 @@ export class NavComponent implements OnInit, OnDestroy {
 
   constructor(private oidcSecurityService: OidcSecurityService,
               private projectsService: ProjectsService,
+              private phasesService: PhasesService,
               private issuesService: IssuesService,
               private usersService: UsersService,
               private labelsService: LabelsService,
-              public authService: AuthService,
-              private router: Router) { }
+              public authService: AuthService) {}
 
   ngOnInit() {
     this.authSubscription = this.oidcSecurityService.checkAuth().subscribe(auth => {
       this.isAuthenticated = auth;
       if (this.isAuthenticated) {
         this.fullName = this.authService.fullName;
-        this.recentProjectsSubscription = this.projectsService.recentProjects$.subscribe(projects => {
+        this.projectsService.recentProjects$.subscribe(projects => {
           this.recentProjects = projects;
         });
         this.projectsService.getRecentProjects();
@@ -63,10 +65,8 @@ export class NavComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.userDataSubscription = this.authService.userData$
-      .subscribe(data => {
-        this.fullName = data.fullName;
-      });
+    this.authService.userData$
+      .subscribe(data => this.fullName = data.fullName);
 
     this.minDate = new Date();
 
@@ -84,10 +84,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
     // Get projects subscription
     this.projectsService.projects$
-      .subscribe(projects => {
-        this.projects = projects;
-        console.log(this.projects);
-      });
+      .subscribe(projects => this.projects = projects);
 
     // Get labels subscription
     this.labelsService.labels$
@@ -97,10 +94,55 @@ export class NavComponent implements OnInit, OnDestroy {
         checked: false
       })));
 
+    // Created issue subscription
     this.issuesService.createdIssue$.subscribe({
       next: () => {
         this.issueCreateModal.hide();
         this.resetForm();
+      }
+    });
+
+    // Created project subscription
+    this.projectsService.createdProject$.subscribe({
+      next: () => this.projectsService.getProjects()
+    });
+
+    // Updated project subscription
+    this.projectsService.updatedProject$.subscribe({
+      next: data => this.projects.find(p => p.id === data.id).name = data.name
+    });
+
+    // Deleted project subscription
+    this.projectsService.deletedProject$.subscribe({
+      next: (id: string) => {
+        const i = this.projects.findIndex(p => p.id === id);
+        this.projects.splice(i, 1);
+      }
+    });
+
+    // Created phase subscription
+    this.phasesService.createdPhase$.subscribe({
+      next: response => {
+        this.projects.find(p => p.id === response.phase.project.id).phases.push({
+          id: response.phase.id,
+          name: response.phase.name
+        });
+      }
+    });
+
+    // Updated phase subscription
+    this.phasesService.updatedPhase$.subscribe({
+      next: response => this.projects
+        .find(p => p.id === response.projectId).phases
+        .find(p => p.id === response.phaseId).name = response.name
+    });
+
+    // Deleted phase subscription
+    this.phasesService.deletedPhase$.subscribe({
+      next: response => {
+        const project = this.projects.find(p => p.id === response.projectId);
+        project.phases = [];
+        response.phases.forEach(p => project.phases.push({ id: p.id, name: p.name }));
       }
     });
 
@@ -164,6 +206,7 @@ export class NavComponent implements OnInit, OnDestroy {
   onIssueCreateModalHidden() {
     this.resetForm();
     this.resetLabels();
+    this.selectedProject = null;
   }
 
 }

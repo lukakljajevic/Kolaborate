@@ -21,7 +21,9 @@ export class ProjectsService {
 
   private _projects = new Subject<ProjectListItem[]>();
   private _recentProjects$ = new Subject<ProjectListItem[]>();
+  private createdProject = new Subject<any>();
   private projectUpdated = new Subject<any>();
+  private deletedProject = new Subject<any>();
   private updatedUserRole = new Subject<{userId: string, role: string}>();
   private removedUser = new Subject<{userId: string}>();
 
@@ -33,7 +35,9 @@ export class ProjectsService {
 
   get projects$() { return this._projects.asObservable(); }
   get recentProjects$() { return this._recentProjects$.asObservable(); }
+  get createdProject$() { return this.createdProject.asObservable(); }
   get updatedProject$() { return this.projectUpdated.asObservable(); }
+  get deletedProject$() { return this.deletedProject.asObservable(); }
   get updatedUserRole$() { return this.updatedUserRole.asObservable(); }
   get removedUser$() { return this.removedUser.asObservable(); }
 
@@ -47,8 +51,9 @@ export class ProjectsService {
     }
 
     this.http.post('http://localhost:5002/api/projects', data).subscribe((response: {id: string}) => {
-      console.log(response);
       this.router.navigate(['/projects', response.id]);
+      console.log(response);
+      this.createdProject.next();
     });
   }
 
@@ -101,14 +106,18 @@ export class ProjectsService {
           endDate: string
         }) => {
           this.getRecentProjects();
-          this.projectUpdated.next(updatedProjectFields);
+          this.projectUpdated.next({...updatedProjectFields, id});
         },
         error: () => this.projectUpdated.error('Error updating the project.')
       });
   }
 
   deleteProject(id: string) {
-    return this.http.delete<{message: string}>(`http://localhost:5002/api/projects/${id}`);
+    this.http.delete<{message: string}>(`http://localhost:5002/api/projects/${id}`)
+      .subscribe({
+        next: () => this.deletedProject.next(id),
+        error: error => this.deletedProject.error(error)
+      });
   }
 
   updateUserRole(projectId: string, userId: string, role: string) {

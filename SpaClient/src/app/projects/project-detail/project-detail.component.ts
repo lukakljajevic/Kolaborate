@@ -48,6 +48,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   editProjectModal: ModalDirective;
 
   updatedProjectSubscription: Subscription;
+  deletedProjectSubscription: Subscription;
   createdPhaseSubscription: Subscription;
   updatedPhaseSubscription: Subscription;
   deletedPhaseSubscription: Subscription;
@@ -112,6 +113,16 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.closeModal(this.editProjectModal);
       },
       error: error => alert(error)
+    });
+
+    // Project delete subscription
+    this.deletedProjectSubscription = this.projectsService.deletedProject$.subscribe({
+      next: (() => {
+        this.projectsService.getRecentProjects();
+        this.closeModal(this.deleteModal);
+        this.router.navigate(['/your-work']);
+      }),
+      error: err => alert(err.message)
     });
 
     // Phase create subscription
@@ -179,6 +190,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.updatedProjectSubscription.unsubscribe();
+    this.deletedProjectSubscription.unsubscribe();
     this.createdPhaseSubscription.unsubscribe();
     this.updatedPhaseSubscription.unsubscribe();
     this.deletedPhaseSubscription.unsubscribe();
@@ -240,13 +253,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   deleteProject() {
-    this.projectsService.deleteProject(this.project.id).subscribe(response => {
-      this.projectsService.getRecentProjects();
-      this.closeModal(this.deleteModal);
-      this.router.navigate(['/your-work']);
-    }, error => {
-      alert(error.message);
-    });
+    this.projectsService.deleteProject(this.project.id);
   }
 
   search(event: any) {

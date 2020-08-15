@@ -10,12 +10,14 @@ import { Observable, Subject } from 'rxjs';
 export class PhasesService {
 
   private createdPhase: Subject<{message: string, phase: Phase}> = new Subject();
+  private updatedPhase: Subject<{projectId: string, phaseId: string, name: string}> = new Subject<any>();
   private updatedPhases: Subject<Phase[]> = new Subject();
-  private deletedPhase: Subject<{message: string, phases: Phase[]}> = new Subject();
+  private deletedPhase: Subject<{message: string, phases: Phase[], projectId: string}> = new Subject();
 
   constructor(private http: HttpClient) {}
 
   get createdPhase$() { return this.createdPhase.asObservable(); }
+  get updatedPhase$() { return this.updatedPhase.asObservable(); }
   get updatedPhases$() { return this.updatedPhases.asObservable(); }
   get deletedPhase$() { return this.deletedPhase.asObservable(); }
 
@@ -36,13 +38,16 @@ export class PhasesService {
   }
 
   updatePhase(projectId: string, phaseId: string, name: string) {
-    return this.http.put(`http://localhost:5002/api/projects/${projectId}/phases/${phaseId}`, {name});
+    this.http.put(`http://localhost:5002/api/projects/${projectId}/phases/${phaseId}`, {name}).subscribe({
+      next: () => this.updatedPhase.next({projectId, phaseId, name}),
+      error: (err: {message: string}) => alert(err.message)
+    });
   }
 
   deletePhase(phase: Phase) {
     this.http.delete<{message: string, phases: Phase[]}>(`http://localhost:5002/api/projects/${phase.project.id}/phases/${phase.id}`)
       .subscribe({
-        next: response => this.deletedPhase.next(response),
+        next: response => this.deletedPhase.next({...response, projectId: phase.project.id}),
         error: (err: {message: string}) => this.deletedPhase.error(err)
       });
   }

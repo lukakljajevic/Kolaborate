@@ -30,6 +30,8 @@ export class PhaseListComponent implements OnInit, OnDestroy {
 
   @ViewChild('phaseCreateModal', {static: false})
   phaseCreateModal: ModalDirective;
+  @ViewChild('phaseEditModal', {static: false})
+  phaseEditModal: ModalDirective;
   @ViewChild('issueCreateModal', {static: false})
   issueCreateModal: ModalDirective;
   @ViewChild('deleteModal', {static: false})
@@ -55,6 +57,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   editLabelsIssue: IssueListItem;
 
   createdPhaseSubscription: Subscription;
+  updatedPhaseSubscription: Subscription;
   deletedPhaseSubscription: Subscription;
   createdIssueSubscription: Subscription;
   updatedIssueSubscription: Subscription;
@@ -128,6 +131,15 @@ export class PhaseListComponent implements OnInit, OnDestroy {
           alert(err.error.message);
         }
       });
+
+    // Phase updated subscription
+    this.updatedPhaseSubscription = this.phasesService.updatedPhase$.subscribe({
+      next: response => {
+        this.project.phases.find(p => p.id === response.phaseId).name = response.name;
+        this.phases.find(p => p.id === response.phaseId).name = response.name;
+        this.phaseEditModal.hide();
+      }
+    });
 
     // Phase delete subscription
     this.deletedPhaseSubscription = this.phasesService.deletedPhase$.subscribe({
@@ -224,15 +236,7 @@ export class PhaseListComponent implements OnInit, OnDestroy {
   onPhaseEditSubmit(modal: ModalDirective) {
     const phaseId = this.phaseEditForm.value.id;
     const phaseName = this.phaseEditForm.value.name;
-    this.phasesService.updatePhase(this.project.id, phaseId, phaseName)
-      .subscribe({
-        next: () => {
-          this.project.phases.find(p => p.id === phaseId).name = phaseName;
-          this.phases.find(p => p.id === phaseId).name = phaseName;
-          modal.hide();
-        },
-        error: (err: {message: string}) => alert(err.message)
-      });
+    this.phasesService.updatePhase(this.project.id, phaseId, phaseName);
   }
 
   onIssueCreateSubmit() {
