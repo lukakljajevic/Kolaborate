@@ -184,10 +184,8 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   onProjectSelected(event: any) {
-    // console.log(event);
     const id = event.target.value;
     this.selectedProject = this.projects.find(p => p.id === id);
-    console.log(this.selectedProject);
   }
 
   labelChecked(event: any) {

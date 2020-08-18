@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "l1Hf5nQssZzsejxlO4aEeH5gqmNvXitSd4amTLMS8Fkjcv0YKBI1rl8zVrs+z4p6p1dHC+epX+Nk5Kh7NJsKfQ==",
+  "dgSpecHash": "GR0tKOkgP6Pq9VeeqXuLHUpEqnObLS7aY9zF5CR9DaXcNmrP2p9hNapAqC9V2iwFckLo3EwsRtgeoyaCvEUJwQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Luka\\Desktop\\BugTracker\\IdentityServer\\IdentityServer.csproj",
   "expectedPackageFiles": [
@@ -11,6 +11,8 @@
     "C:\\Users\\Luka\\.nuget\\packages\\identityserver4.entityframework\\4.0.2\\identityserver4.entityframework.4.0.2.nupkg.sha512",
     "C:\\Users\\Luka\\.nuget\\packages\\identityserver4.entityframework.storage\\4.0.2\\identityserver4.entityframework.storage.4.0.2.nupkg.sha512",
     "C:\\Users\\Luka\\.nuget\\packages\\identityserver4.storage\\4.0.2\\identityserver4.storage.4.0.2.nupkg.sha512",
+    "C:\\Users\\Luka\\.nuget\\packages\\microsoft.aspnetcore.authentication.facebook\\3.1.7\\microsoft.aspnetcore.authentication.facebook.3.1.7.nupkg.sha512",
+    "C:\\Users\\Luka\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\3.1.7\\microsoft.aspnetcore.authentication.google.3.1.7.nupkg.sha512",
     "C:\\Users\\Luka\\.nuget\\packages\\microsoft.aspnetcore.authentication.openidconnect\\3.1.0\\microsoft.aspnetcore.authentication.openidconnect.3.1.0.nupkg.sha512",
     "C:\\Users\\Luka\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\3.1.6\\microsoft.aspnetcore.cryptography.internal.3.1.6.nupkg.sha512",
     "C:\\Users\\Luka\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\3.1.6\\microsoft.aspnetcore.cryptography.keyderivation.3.1.6.nupkg.sha512",

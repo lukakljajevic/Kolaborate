@@ -77,8 +77,6 @@ C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Vi
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\_ViewImports.cshtml.g.cs
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\IdentityServer.RazorTargetAssemblyInfo.cs
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\IdentityServer.Views.pdb
-C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\IdentityServer.csproj.CoreCompileInputs.cache
-C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\IdentityServer.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\AutoMapper.dll
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\IdentityServer4.EntityFramework.dll
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\IdentityServer4.EntityFramework.Storage.dll
@@ -88,3 +86,8 @@ C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Vi
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Layout.cshtml.g.cs
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\_ViewStart.cshtml.g.cs
 C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Nav.cshtml.g.cs
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.Facebook.dll
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\Razor\Views\Auth\ExternalRegister.cshtml.g.cs
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.Google.dll
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\IdentityServer.csproj.CoreCompileInputs.cache
+C:\Users\Luka\Desktop\BugTracker\IdentityServer\obj\Debug\netcoreapp3.1\IdentityServer.MvcApplicationPartsAssemblyInfo.cache

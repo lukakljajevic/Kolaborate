@@ -27,6 +27,8 @@
           "IdentityServer4": "4.0.2",
           "IdentityServer4.AspNetIdentity": "4.0.2",
           "IdentityServer4.EntityFramework": "4.0.2",
+          "Microsoft.AspNetCore.Authentication.Facebook": "3.1.7",
+          "Microsoft.AspNetCore.Authentication.Google": "3.1.7",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.6",
           "Microsoft.EntityFrameworkCore": "3.1.6",
           "Microsoft.EntityFrameworkCore.Design": "3.1.6",
@@ -410,6 +412,28 @@
         },
         "compile": {
           "lib/netstandard2.0/IdentityServer4.Storage.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Facebook/3.1.7": {
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+            "assemblyVersion": "3.1.7.0",
+            "fileVersion": "3.100.720.37213"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.Facebook.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/3.1.7": {
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "assemblyVersion": "3.1.7.0",
+            "fileVersion": "3.100.720.37213"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.Google.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication.OpenIdConnect/3.1.0": {
@@ -3168,6 +3192,20 @@
       "sha512": "sha512-xSE6cIQaDeeaHx4zZj+sXsSQ13YbANBwIWHVx0UiO4ox9Z4eFN6cnDFNNTIDXKRyoAlR248A6ALOtBC6wZTQ0g==",
       "path": "identityserver4.storage/4.0.2",
       "hashPath": "identityserver4.storage.4.0.2.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Facebook/3.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R3j72nKQG16hO/SnVrcHR4SJsQwRDHXgtUWu6Vc/UwhXRxBYt3w13RYdwXdLvGPsW0aOgpWeon6Ao4nwo6p8Zw==",
+      "path": "microsoft.aspnetcore.authentication.facebook/3.1.7",
+      "hashPath": "microsoft.aspnetcore.authentication.facebook.3.1.7.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Google/3.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6Y4oKM4f8QPOKLiiznna2HIQzMObrkWFHns8TWRcUOQWadUK+4ki7qP2mtU763HZZSWZ1riY5kpzlvQUXgZ/GA==",
+      "path": "microsoft.aspnetcore.authentication.google/3.1.7",
+      "hashPath": "microsoft.aspnetcore.authentication.google.3.1.7.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication.OpenIdConnect/3.1.0": {
       "type": "package",

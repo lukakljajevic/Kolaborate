@@ -101,6 +101,9 @@ namespace Api.Controllers
             var userId = User.GetUserId();
             var user = await _repo.GetUser(userId);
 
+            if (user == null)
+                return Ok(new { Avatar = "" });
+
             return Ok(new { user.Avatar });
         }
 

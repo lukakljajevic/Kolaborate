@@ -13,5 +13,8 @@ namespace IdentityServer.Models
         [Required]
         [MaxLength(255)]
         public string FullName { get; set; }
-    }
+
+        [Required]
+		public bool ExternalLogin { get; set; }
+	}
 }

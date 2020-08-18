@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Helpers;
+using IdentityServer.Helpers.ViewModels;
 using IdentityServer.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,8 +52,10 @@ namespace IdentityServer.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult Login(string returnUrl)
+		public async Task<IActionResult> Login(string returnUrl)
 		{
+			var externalProviders = await _signInManager.GetExternalAuthenticationSchemesAsync();
+
 			return View(new LoginViewModel { ReturnUrl = returnUrl });
 		}
 
@@ -90,6 +94,104 @@ namespace IdentityServer.Controllers
 			vm.InvalidPassword = true;
 			vm.InvalidPasswordMessage = "Invalid username or password.";
 			return View(vm);
+		}
+
+		[HttpPost]
+		public IActionResult ExternalLogin(string provider, string returnUrl)
+		{
+			var redirectUri = Url.Action(nameof(ExternalLoginCallback), "Auth", new { returnUrl });
+			var properties = _signInManager
+				.ConfigureExternalAuthenticationProperties(provider, redirectUri);
+			return Challenge(properties, provider);
+		}
+
+		public async Task<IActionResult> ExternalLoginCallback(string returnUrl)
+		{
+			var info = await _signInManager.GetExternalLoginInfoAsync();
+			
+			if (info == null)
+				return RedirectToAction("Login");
+
+			//var result = await _signInManager
+			//.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+
+			var email = info.Principal.FindFirst(ClaimTypes.Email).Value;
+			var user = await _userManager.FindByEmailAsync(email);
+
+			if (user != null)
+			{
+				await _signInManager.SignInAsync(user, false);
+				return Redirect(returnUrl);
+			}
+
+			
+
+			var username = info.Principal
+				.FindFirst(ClaimTypes.Name).Value.ToLower().Replace(" ", "");
+
+			var fullName = info.Principal.FindFirst(ClaimTypes.Name).Value;
+
+			return View("ExternalRegister", new ExternalRegisterViewModel 
+			{ 
+				Username = username,
+				Email = email,
+				FullName = fullName,
+				ReturnUrl = returnUrl
+			});
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ExternalRegister(ExternalRegisterViewModel vm)
+		{
+			var info = await _signInManager.GetExternalLoginInfoAsync();
+
+			if (info == null)
+				return RedirectToAction("Login");
+
+			if (vm.Username == null || vm.Username.Length == 0)
+			{
+				vm.InvalidUsername = true;
+				vm.InvalidUsernameMessage = "Please enter a username.";
+				return View(vm);
+			}
+
+			var u = await _userManager.FindByNameAsync(vm.Username);
+
+			if (u != null)
+			{
+				vm.InvalidUsername = true;
+				vm.InvalidUsernameMessage = "Username already taken.";
+				return View(vm);
+			}
+
+			if (vm.FullName == null || vm.FullName.Length == 0)
+			{
+				vm.InvalidFullName = true;
+				vm.InvalidFullNameMessage = "Please enter your full name.";
+				return View(vm);
+			}
+
+			var user = new ApplicationUser
+			{
+				UserName = vm.Username,
+				Email = vm.Email,
+				FullName = vm.FullName,
+				ExternalLogin = true
+			};
+
+			var signUpResult = await _userManager.CreateAsync(user);
+
+			if (signUpResult.Succeeded)
+			{
+				await _signInManager.SignInAsync(user, false);
+				return Redirect(vm.ReturnUrl);
+			}
+
+			vm.InvalidUsername = true;
+			vm.InvalidFullName = true;
+			vm.InvalidUsernameMessage = "Error signing up.";
+			return View(vm);
+
 		}
 
 		[HttpGet]
@@ -140,7 +242,8 @@ namespace IdentityServer.Controllers
 
 			var user = new ApplicationUser { 
 				UserName = vm.Username,
-				FullName = vm.FullName
+				FullName = vm.FullName,
+				ExternalLogin = false
 			};
 
 			var signUpResult = await _userManager.CreateAsync(user, vm.Password);

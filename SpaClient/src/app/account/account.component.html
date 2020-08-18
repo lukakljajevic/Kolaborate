@@ -82,85 +82,88 @@
         <button 
           class="btn btn-block btn-primary"
           type="button"
-          (click)="showModal(passwordModal)"
+          (click)="onUserSettingsSubmit()"
           [disabled]="!isSaveSettingsButtonEnabled()">Save settings</button>
       </div>
     </div>
   </form>
 
-  <h5 class="password-header">Change your password</h5>
-  <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-    <!-- Current password -->
-    <div class="row">
-      <div class="col-sm-1">
-        <label class="col-form-label">Current Password: </label>
-      </div>
-      <div class="col-sm-3">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <fa-icon [icon]="['fas', 'user-lock']"></fa-icon>
+  <div *ngIf="!externalLogin">
+    <h5 class="password-header">Change your password</h5>
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <!-- Current password -->
+      <div class="row">
+        <div class="col-sm-1">
+          <label class="col-form-label">Current Password: </label>
+        </div>
+        <div class="col-sm-3">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <fa-icon [icon]="['fas', 'user-lock']"></fa-icon>
+              </div>
             </div>
+            <input 
+              formControlName="currentPassword"
+              type="password" 
+              class="form-control" 
+              placeholder="Current password">
           </div>
-          <input 
-            formControlName="currentPassword"
-            type="password" 
-            class="form-control" 
-            placeholder="Current password">
         </div>
       </div>
-    </div>
-    <!-- New Password -->
-    <div class="row">
-      <div class="col-sm-1">
-        <label class="col-form-label">New Password: </label>
-      </div>
-      <div class="col-sm-3">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <fa-icon [icon]="['fas', 'lock']"></fa-icon>
+      <!-- New Password -->
+      <div class="row">
+        <div class="col-sm-1">
+          <label class="col-form-label">New Password: </label>
+        </div>
+        <div class="col-sm-3">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <fa-icon [icon]="['fas', 'lock']"></fa-icon>
+              </div>
             </div>
+            <input 
+              formControlName="newPassword"
+              type="password" 
+              class="form-control" 
+              placeholder="New password">
           </div>
-          <input 
-            formControlName="newPassword"
-            type="password" 
-            class="form-control" 
-            placeholder="New password">
         </div>
       </div>
-    </div>
-    <!-- Confirm new password -->
-    <div class="row">
-      <div class="col-sm-1">
-        <label class="col-form-label">Confirm password: </label>
-      </div>
-      <div class="col-sm-3">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <fa-icon [icon]="['fas', 'lock']"></fa-icon>
+      <!-- Confirm new password -->
+      <div class="row">
+        <div class="col-sm-1">
+          <label class="col-form-label">Confirm password: </label>
+        </div>
+        <div class="col-sm-3">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <fa-icon [icon]="['fas', 'lock']"></fa-icon>
+              </div>
             </div>
+            <input 
+              formControlName="confirmNewPassword"
+              type="password" 
+              class="form-control" 
+              placeholder="Confirm password">
           </div>
-          <input 
-            formControlName="confirmNewPassword"
-            type="password" 
-            class="form-control" 
-            placeholder="Confirm password">
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="offset-sm-1 col-sm-3">
-        <button 
-          class="btn btn-block btn-success"
-          type="submit"
-          [disabled]="!passwordForm.valid">
-            Update password
-        </button>
+      <div class="row">
+        <div class="offset-sm-1 col-sm-3">
+          <button 
+            class="btn btn-block btn-success"
+            type="submit"
+            [disabled]="!passwordForm.valid">
+              Update password
+          </button>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
+  
 
   <!-- Image cropping modal -->
   <div class="modal fade" 

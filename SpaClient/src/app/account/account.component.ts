@@ -30,6 +30,8 @@ export class AccountComponent implements OnInit {
   passwordModal: ModalDirective;
   password = '';
 
+  externalLogin: boolean;
+
   constructor(private authService: AuthService,
               private usersService: UsersService) { }
 
@@ -52,6 +54,15 @@ export class AccountComponent implements OnInit {
     }, {validators: [validatePasswords]});
 
     this.croppedImagePreview = this.authService.avatar;
+    this.externalLogin = this.authService.externalLogin;
+  }
+
+  onUserSettingsSubmit() {
+    if (!this.externalLogin) {
+      this.passwordModal.show();
+    } else {
+      this.submitUserSettingsForm();
+    }
   }
 
   changePassword() {
@@ -85,7 +96,11 @@ export class AccountComponent implements OnInit {
   }
 
   submitUserSettingsForm() {
-    this.userSettingsForm.patchValue({password: this.password});
+    if (!this.externalLogin) {
+      this.userSettingsForm.patchValue({password: this.password});
+    } else {
+      this.userSettingsForm.patchValue({password: 'placeholder_password'});
+    }
     this.updateUserSettings();
     this.password = '';
   }
@@ -107,18 +122,24 @@ export class AccountComponent implements OnInit {
             fullName: string,
             name: string,
             preferred_username: string,
+            external_login: string,
             avatar: string,
             sub: string} = JSON.parse(sessionStorage.getItem('angular_spa_userData'));
+
           storageItem.name = username;
           storageItem.preferred_username = username;
           storageItem.fullName = fullName;
+
           sessionStorage.setItem('angular_spa_userData', JSON.stringify(storageItem));
 
           this.authService.username = username;
           this.authService.fullName = fullName;
           this.authService.avatar = response.avatarUrl;
           this.authService.refreshUserData();
-          this.passwordModal.hide();
+
+          if (!this.externalLogin) {
+            this.passwordModal.hide();
+          }
         },
         error: error => alert(error.error.message)
       });

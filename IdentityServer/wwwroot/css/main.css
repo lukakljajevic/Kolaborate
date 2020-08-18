@@ -3,7 +3,7 @@
     position: relative;
 }
 
-form {
+.form-wrapper {
     width: 375px;
     margin: 0;
     position: absolute;

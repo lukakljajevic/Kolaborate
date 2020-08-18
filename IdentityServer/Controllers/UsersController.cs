@@ -52,10 +52,12 @@ namespace IdentityServer.Controllers
             if (user == null)
                 return NotFound(new { message = "User not found." });
 
-            var validPassword = await _userManager.CheckPasswordAsync(user, dto.Password);
-            
-            if (!validPassword)
-                return BadRequest(new { message = "Invalid password." });
+            if (!user.ExternalLogin)
+			{
+                var validPassword = await _userManager.CheckPasswordAsync(user, dto.Password);
+                if (!validPassword)
+                    return BadRequest(new { message = "Invalid password." });
+            }
 
             user.FullName = dto.FullName;
             user.UserName = dto.Username;

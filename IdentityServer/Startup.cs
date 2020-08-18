@@ -84,6 +84,20 @@ namespace IdentityServer
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<ProfileService>();
 
+            services.AddAuthentication()
+                .AddFacebook(options =>
+                {
+                    options.AppId = "615151995863222";
+                    options.AppSecret = "997d752677f475db21736eccb0de62b9";
+                });
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "736119677104-0914qdiuinh1ksurh2237ig0t7imogof.apps.googleusercontent.com";
+                    options.ClientSecret = "euFoEgYzo0le6tlDoPP4ZwAf";
+                });
+
             services.AddControllersWithViews();
 
             services.AddHttpClient();

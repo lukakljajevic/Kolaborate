@@ -1,83 +1,89 @@
-﻿@model IdentityServer.Helpers.RegisterViewModel
+﻿@model IdentityServer.Helpers.ViewModels.RegisterViewModel
 
 <div class="form-container">
-	<form asp-controller="Auth" asp-action="Register" method="post">
-		<div class="form-row">
-			<h3>Sign Up</h3>
-		</div>
-		<input type="hidden" asp-for="ReturnUrl" />
-		<div class="form-row">
-			<label>Username</label>
-			<input asp-for="Username"
-				   class="form-control @(@Model.InvalidUsername ? "is-invalid" : "")" />
-				@if (Model.InvalidUsername)
-				{
-					<div class="invalid-feedback">
-						@Model.InvalidUsernameMessage
-					</div>
-				}
-		</div>
-		<div class="form-row">
-			<label>Full name</label>
-			<input asp-for="FullName"
-				   class="form-control @(@Model.InvalidFullName ? "is-invalid" : "")" />
-			@if (Model.InvalidFullName)
-			{
-				<div class="invalid-feedback">
-					@Model.InvalidFullNameMessage
-				</div>
-			}
-		</div>
-		<div class="form-row">
-			<label>Password</label>
-			<input asp-for="Password"
-				   type="password"
-				   class="form-control @(@Model.InvalidPassword ? "is-invalid" : "")" />
-			@if (Model.InvalidPassword)
-			{
-				<div class="invalid-feedback">
-					@Model.InvalidPasswordMessage
-				</div>
-			}
-			else
-			{
-				<small class="form-text text-muted">
-					Your password must be at least 4 characters long.
-				</small>
-			}
-		</div>
-		<div class="form-row">
-			<label>Confirm password</label>
-			<input asp-for="ConfirmPassword"
-				   type="password"
-				   class="form-control @(@Model.InvalidConfirmPassword ? "is-invalid" : "")" />
+    <div class="form-wrapper">
+        <form asp-controller="Auth" asp-action="Register" method="post">
+            <div class="form-row">
+                <h3>Sign Up</h3>
+            </div>
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div class="form-row">
+                <label>Username</label>
+                <input asp-for="Username"
+                       placeholder="Username"
+                       class="form-control @(@Model.InvalidUsername ? "is-invalid" : "")" />
+                @if (Model.InvalidUsername)
+                {
+                    <div class="invalid-feedback">
+                        @Model.InvalidUsernameMessage
+                    </div>
+                }
+            </div>
+            <div class="form-row">
+                <label>Full name</label>
+                <input asp-for="FullName"
+                       placeholder="Full name"
+                       class="form-control @(@Model.InvalidFullName ? "is-invalid" : "")" />
+                @if (Model.InvalidFullName)
+                {
+                    <div class="invalid-feedback">
+                        @Model.InvalidFullNameMessage
+                    </div>
+                }
+            </div>
+            <div class="form-row">
+                <label>Password</label>
+                <input asp-for="Password"
+                       type="password"
+                       placeholder="Password"
+                       class="form-control @(@Model.InvalidPassword ? "is-invalid" : "")" />
+                @if (Model.InvalidPassword)
+                {
+                    <div class="invalid-feedback">
+                        @Model.InvalidPasswordMessage
+                    </div>
+                }
+                else
+                {
+                    <small class="form-text text-muted">
+                        Your password must be at least 4 characters long.
+                    </small>
+                }
+            </div>
+            <div class="form-row">
+                <label>Confirm password</label>
+                <input asp-for="ConfirmPassword"
+                       type="password"
+                       placeholder="Confirm password"
+                       class="form-control @(@Model.InvalidConfirmPassword ? "is-invalid" : "")" />
 
-			@if (Model.InvalidConfirmPassword)
-			{
-				<div class="invalid-feedback">
-					@Model.InvalidConfirmPasswordMessage
-				</div>
-			}
-			else
-			{
-				<small class="form-text text-muted">
-					Passwords must match.
-				</small>
-			}
-		</div>
-		<div class="form-row">
-			<button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-		</div>
-		<div class="form-row">
-			<p>
-				<span>Already have an account?</span>
-				<a asp-controller="Auth"
-				   asp-action="Login"
-				   asp-route-returnUrl="@Model.ReturnUrl">
-					Sign in
-				</a>
-			</p>
-		</div>
-	</form>
+                @if (Model.InvalidConfirmPassword)
+                {
+                    <div class="invalid-feedback">
+                        @Model.InvalidConfirmPasswordMessage
+                    </div>
+                }
+                else
+                {
+                    <small class="form-text text-muted">
+                        Passwords must match.
+                    </small>
+                }
+            </div>
+            <div class="form-row">
+                <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+            </div>
+            <div class="form-row">
+                <p>
+                    <span>Already have an account?</span>
+                    <a asp-controller="Auth"
+                       asp-action="Login"
+                       asp-route-returnUrl="@Model.ReturnUrl">
+                        Sign in
+                    </a>
+                </p>
+            </div>
+        </form>
+	</div>
 </div>
 

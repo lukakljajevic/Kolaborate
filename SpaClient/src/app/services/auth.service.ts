@@ -13,6 +13,7 @@ export class AuthService {
   private _userId: string;
   private _username: string;
   private _avatar: string = '';
+  private _externalLogin: boolean;
   private _userData: Subject<{fullName: string, username: string}> = new Subject();
 
   constructor(private http: HttpClient,
@@ -23,6 +24,7 @@ export class AuthService {
         this._fullName = userData.fullName;
         this._userId = userData.sub;
         this._username = userData.name;
+        this._externalLogin = userData.external_login === 'true' ? true : false;
         this.getAvatar();
       }
     });
@@ -33,26 +35,24 @@ export class AuthService {
   }
 
   get userData$() { return this._userData.asObservable(); }
+  get userId() { return this._userId; }
+
+  get username() { return this._username; }
+  set username(value: string) { this._username = value; }
+
+  get fullName() { return this._fullName; }
+  set fullName(value: string) { this._fullName = value; }
+
+  get avatar() { return this._avatar === '' ? 'assets/default-avatar.png' : `http://localhost:5002/${this._avatar}`; }
+  set avatar(value: string) { this._avatar = value; }
+
+  get externalLogin() { return this._externalLogin; }
 
   refreshUserData() { this._userData.next({username: this._username, fullName: this._fullName}); }
 
   isLoggedIn(): Observable<boolean> { return this.oidcSecurityService.checkAuth(); }
 
-  get fullName() { return this._fullName; }
-
-  set fullName(value: string) { this._fullName = value; }
-
   getToken() { return this.oidcSecurityService.getToken(); }
-
-  get userId() { return this._userId; }
-
-  get username() { return this._username; }
-
-  set username(value: string) { this._username = value; }
-
-  get avatar() { return this._avatar === '' ? 'assets/default-avatar.png' : `http://localhost:5002/${this._avatar}`; }
-
-  set avatar(value: string) { this._avatar = value; }
 
   updatePassword(currentPassword: string, newPassword: string) {
     return this.http.post('http://localhost:5000/auth/password', {currentPassword, newPassword, userId: this.userId});
