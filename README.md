@@ -1,7 +1,7 @@
 # Kolaborate
 
 Kolaborate is a full-stack web application for bug tracking and project management. Technologies used for development are:
-  * Angular Single-Page-App
+  * Angular
   * ASP.NET Core Web API
   * Identity Server 4
 
