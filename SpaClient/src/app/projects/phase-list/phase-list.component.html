@@ -55,6 +55,7 @@
           <div class="row">
             <div class="col-md-8" [routerLink]="['issues', issue.id]">
               <span class="issue-name">{{issue.name}}</span>
+              <fa-icon class="priority-circle priority-{{issue.priority}}" [icon]="['fas', 'circle']"></fa-icon>
             </div>
             <div class="col-md-4">
               <div class="btn-group" dropdown placement="bottom right">
@@ -77,6 +78,9 @@
         </div>
         <div class="issue-labels">
           <span class="label" *ngFor="let label of issue.labels">{{label.name}}</span>
+        </div>
+        <div class="issue-status">
+          <span>Status: {{getIssueStatus(issue.status)}}</span>
         </div>
         <div class="issue-type">
           <span *ngIf="issue.issueType === 'task'"><fa-icon [icon]="['fas', 'check-square']" size="md" class="task"></fa-icon> Task</span>

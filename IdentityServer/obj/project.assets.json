@@ -5797,11 +5797,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Luka\\Desktop\\BugTracker\\IdentityServer\\IdentityServer.csproj",
+      "projectUniqueName": "C:\\Users\\Luka\\dev\\Kolaborate\\IdentityServer\\IdentityServer.csproj",
       "projectName": "IdentityServer",
-      "projectPath": "C:\\Users\\Luka\\Desktop\\BugTracker\\IdentityServer\\IdentityServer.csproj",
+      "projectPath": "C:\\Users\\Luka\\dev\\Kolaborate\\IdentityServer\\IdentityServer.csproj",
       "packagesPath": "C:\\Users\\Luka\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Luka\\Desktop\\BugTracker\\IdentityServer\\obj\\",
+      "outputPath": "C:\\Users\\Luka\\dev\\Kolaborate\\IdentityServer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Luka\\AppData\\Roaming\\NuGet\\NuGet.Config",

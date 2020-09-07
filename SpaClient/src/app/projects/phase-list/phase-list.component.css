@@ -11,40 +11,23 @@ h1 {
 .phase {
   display: flex;
   flex-direction: column;
-  /* align-self: auto; */
-  /* min-height: 282px; */
   min-width: 282px;
   margin-bottom: 50px;
 }
 
 .phase-content {
-  /* flex: 1; */
   margin-left: 6px;
   margin-right: 6px;
   min-width: 270px;
   max-width: 270px;
-  /* overflow: hidden; */
-  /* min-height: 600px; */
-  /* height: ; */
   border-radius: 6px;
   background-color: rgb(244, 245, 247);
   color: rgba(0, 0, 0, .65);
-  /* position: sticky;
-  top: 0px; */
 }
 
 .phase-name {
-  /* width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  height: 100%;
-  position: relative;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px; */
-  /* font-size: 14px; */
   padding: 16px;
   padding-bottom: 0;
-  /* font-weight: 400; */
 }
 
 .phase-name .row {
@@ -97,6 +80,30 @@ h1 {
   background-color: lightgray;
 }
 
+.priority-1 {
+  color: limegreen; 
+}
+
+.priority-2 {
+  color: green;
+}
+
+.priority-3 {
+  color: orange;
+}
+
+.priority-4 {
+  color: darkred; 
+}
+
+.priority-5 {
+  color: red;
+}
+
+.priority-circle {
+  font-size: 12px;
+}
+
 .issue {
   background-color: #fff;
   margin-left: 10px;
@@ -127,6 +134,7 @@ h1 {
 
 .issue-name {
   font-size: 16px;
+  margin-right: 12px;
 }
 
 .issue .btn-group {
@@ -154,10 +162,15 @@ h1 {
   opacity: 1;
 }
 
+.issue-status {
+  padding-left: 6px;
+  margin-bottom: 12px;
+}
+
 .issue-labels {
   padding-left: 6px;
   padding-right: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .label {

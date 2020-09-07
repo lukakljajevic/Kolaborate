@@ -13,10 +13,9 @@ namespace Api.Helpers.DTOs
         public string Name { get; set; }
         public string IssueType { get; set; }
         public ICollection<LabelDto> Labels { get; set; }
-        //public ProjectListItemDto Project { get; set; }
-		//public string PhaseId { get; set; }
 		public PhaseListItemDto Phase { get; set; }
 		public string Status { get; set; }
+        public int Priority { get; set; }
         public ICollection<string> IssuedToUserIds { get; set; }
     }
 }

@@ -9,5 +9,6 @@ export interface IssueListItem {
   labels: Label[];
   phase: PhaseListItem;
   status: string;
+  priority: number;
   issuedToUserIds: string[];
 }

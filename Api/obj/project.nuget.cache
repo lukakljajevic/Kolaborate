@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "giVkjLsKrN9g47nFx5U6aaBRAR2TT5D7/SsISgJ/qMI5leXCF9UeLtdD7eQDHRYfXUkH9AUt0WuOYxrfzMsPGA==",
+  "dgSpecHash": "9ro5jDRw0XRLxp4OeiKVHJMOPLoT7yP4Tl3TZHxAnOicnQ9GcyfZlTVC5aMM5cDliT8Zb4WTc2Nq3P+XhDbpNA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Luka\\Desktop\\BugTracker\\Api\\Api.csproj",
+  "projectFilePath": "C:\\Users\\Luka\\dev\\Kolaborate\\Api\\Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Luka\\.nuget\\packages\\automapper\\9.0.0\\automapper.9.0.0.nupkg.sha512",
     "C:\\Users\\Luka\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\7.0.0\\automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512",

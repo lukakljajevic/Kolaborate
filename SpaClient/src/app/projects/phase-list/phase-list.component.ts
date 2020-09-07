@@ -359,4 +359,14 @@ export class PhaseListComponent implements OnInit, OnDestroy {
     });
     this.resetLabelsCheckedObject();
   }
+
+  getIssueStatus(status: string) {
+    const issueStatuses = {
+      'to_do': 'To do',
+      'in_progress': 'In progress',
+      'done': 'Done'
+    };
+
+    return issueStatuses[status];
+  }
 }
